@@ -10,7 +10,6 @@ using MerosWebApi.Application.Interfaces;
 using MerosWebApi.Application.Common;
 using MerosWebApi.Application.Services;
 using MerosWebApi.Application.Common.SecurityHelpers;
-using MerosWebApi.Application.Common.Mapping;
 using System.Reflection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -18,8 +17,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Security.Claims;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using MerosWebApi.Application.Common.DTOs;
 using MerosWebApi.Application.Common.ValidatorOptions;
 using MerosWebApi.Core.Repository;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MerosWebApi.Application
 {
@@ -92,12 +94,7 @@ namespace MerosWebApi.Application
         {
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IEmailSender, EmailSender>();
-
-            services.AddAutoMapper(config =>
-            {
-                config.AddProfile(new AssemblyMappingProfile(Assembly.GetExecutingAssembly()));
-            });
-
+            services.AddScoped<IAuthHelper, AuthHelper>();
 
             return services;
         }
@@ -143,7 +140,7 @@ namespace MerosWebApi.Application
                         },
                         OnMessageReceived = context =>
                         {
-                            context.Token = context.Request.Cookies["tasty"];
+                            context.Token = context.Request.Headers.Authorization;
 
                             return Task.CompletedTask;
                         }
@@ -155,10 +152,10 @@ namespace MerosWebApi.Application
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SecretKey)),
                         ValidateIssuerSigningKey = true,
                         ValidateIssuer = false,
+                        ValidateLifetime = true,
                         ValidateAudience = false
                     };
-                })
-                .AddCookie();
+                });
 
             services.AddAuthorization();
 
@@ -176,6 +173,14 @@ namespace MerosWebApi.Application
 
             // Регистрация валидаторов из текущей сборки
             services.AddControllers()
+                .ConfigureApiBehaviorOptions(options =>
+                {
+                    options.InvalidModelStateResponseFactory = context =>
+                    {
+                        return new BadRequestObjectResult(
+                            new MyResponseMessage{ Message = "One or more validation errors occurred." });
+                    };
+                })
                 .AddFluentValidation(config =>
                 {
                     config.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());

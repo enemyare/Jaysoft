@@ -1,13 +1,13 @@
 ﻿using MerosWebApi.Core.Models;
 using MerosWebApi.Core.Repository;
 using MerosWebApi.Persistence.Entites;
-using MerosWebApi.Persistence.Helpers;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MerosWebApi.Persistence.Helpers;
 
 namespace MerosWebApi.Persistence.Repositories
 {
@@ -22,17 +22,24 @@ namespace MerosWebApi.Persistence.Repositories
 
         public async Task AddUser(User user)
         {
-            var dbUser = PropertyAssigner.Map<DatabaseUser, User>(user);
+            var dbUser = PropertyAssigner.MapFrom(user);
 
             await _dbContext.Users.AddAsync(dbUser);
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task DeleteUser(User user)
+        public async Task<bool> DeleteUser(Guid userId)
         {
-            var dbUser = PropertyAssigner.Map<DatabaseUser, User>(user);
+            var dbUser = await _dbContext.Users.FindAsync(userId);
 
-            _dbContext.Users.Remove(dbUser);
+            if (dbUser != null)
+            {
+                _dbContext.Users.Remove(dbUser);
+                await _dbContext.SaveChangesAsync();
+                return true;
+            }
+
+            return false;
         }
 
         public async Task<User> GetUserByEmail(string email)
@@ -42,7 +49,7 @@ namespace MerosWebApi.Persistence.Repositories
             if (dbUser == null)
                 return null;
 
-            return PropertyAssigner.Map<User, DatabaseUser>(dbUser) ;
+            return PropertyAssigner.MapFrom(dbUser) ;
         }
 
         public async Task<User> GetUserById(Guid id)
@@ -52,7 +59,7 @@ namespace MerosWebApi.Persistence.Repositories
             if (dbUser == null)
                 return null;
 
-            return PropertyAssigner.Map<User, DatabaseUser>(dbUser);
+            return PropertyAssigner.MapFrom(dbUser);
         }
 
         public async Task<User> GetUserByUnconfirmedCode(string unconfirmedCode)
@@ -63,7 +70,18 @@ namespace MerosWebApi.Persistence.Repositories
             if (dbUser == null)
                 return null;
 
-            return PropertyAssigner.Map<User, DatabaseUser>(dbUser);
+            return PropertyAssigner.MapFrom(dbUser);
+        }
+
+        public async Task<User> GetUserByResetCode(string resetCode, string email)
+        {
+            var dbUser = await _dbContext.Users
+                .FirstOrDefaultAsync(u => u.ResetPasswordCode == resetCode &&
+                                          u.Email == email);
+            if (dbUser == null)
+                return null;
+
+            return PropertyAssigner.MapFrom(dbUser);
         }
 
         public async Task<User> UpdateUser(User user)
@@ -71,7 +89,7 @@ namespace MerosWebApi.Persistence.Repositories
             var dbUserToUpdate = await _dbContext.Users
                 .FirstOrDefaultAsync(u => u.Id == user.Id);
 
-            PropertyAssigner.AssignPropertyValues<DatabaseUser, User>(dbUserToUpdate, user);
+            PropertyAssigner.AssignPropertyValues(dbUserToUpdate, user);
 
             await _dbContext.SaveChangesAsync();
 
@@ -86,7 +104,7 @@ namespace MerosWebApi.Persistence.Repositories
             if (user == null)
                 return default;
 
-            return PropertyAssigner.Map<User, DatabaseUser>(user);
+            return PropertyAssigner.MapFrom(user);
         }
     }
 }

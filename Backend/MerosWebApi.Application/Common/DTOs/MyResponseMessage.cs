@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MerosWebApi.Application.Common.DTOs.UserService
+namespace MerosWebApi.Application.Common.DTOs
 {
-    public class PasswordResetDto
+    public class MyResponseMessage
     {
-        public string Email { get; set; }
+        public string Message { get; set; }
     }
 }

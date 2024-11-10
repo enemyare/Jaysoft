@@ -11,9 +11,9 @@ namespace MerosWebApi.Application.Common.DTOs.UserService.DtoValidators
     {
         public UpdateReqDtoValidator()
         {
-            RuleFor(u => u.Email).Email();
-            RuleFor(u => u.Password).Password();
-            RuleFor(u => u.Full_name).Fullname();
+            RuleFor(u => u.Email).Email().When(u => u.Email != null);
+            RuleFor(u => u.Password).Password().When(u => u.Password != null);
+            RuleFor(u => u.Full_name).Fullname().When(u => u.Full_name != null);
         }
     }
 }

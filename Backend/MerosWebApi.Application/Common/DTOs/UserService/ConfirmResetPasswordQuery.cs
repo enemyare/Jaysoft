@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace MerosWebApi.Application.Common.DTOs.UserService
 {
-    public class PasswordResetDto
+    public class ConfirmResetPasswordQuery
     {
+        public string Code { get; set; }
         public string Email { get; set; }
     }
 }

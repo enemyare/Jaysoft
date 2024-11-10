@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using AutoMapper;
+using System.Web;
 using MerosWebApi.Application.Common;
 using MerosWebApi.Application.Common.DTOs.UserService;
 using MerosWebApi.Application.Common.Exceptions;
@@ -25,8 +25,6 @@ namespace MerosWebApi.Application.Services
 
         private readonly ITokenGenerator _tokenGenerator;
 
-        private readonly IMapper _mapper;
-
         private readonly IEmailSender _emailSender;
 
         private readonly AppSettings _appSettings;
@@ -34,18 +32,17 @@ namespace MerosWebApi.Application.Services
         private readonly EmbeddedFileProvider _embedded;
 
         public UserService(IUserRepository repository, IPasswordHelper passwordHelper,
-            IMapper mapper, IEmailSender emailSender, AppSettings appSettings, ITokenGenerator generator)
+            IEmailSender emailSender, AppSettings appSettings, ITokenGenerator generator)
         {
             _repository = repository;
             _passwordHelper = passwordHelper;
-            _mapper = mapper;
             _emailSender = emailSender;
             _appSettings = appSettings;
             _embedded = new EmbeddedFileProvider(Assembly.GetExecutingAssembly());
             _tokenGenerator = generator;
         }
 
-        public async Task<(AuthenticationResDto, RefreshToken)> AuthenticateAsync(AuthenticateReqDto dto)
+        public async Task<AuthenticationResDto> AuthenticateAsync(AuthenticateReqDto dto)
         {
             var user = await _repository.GetUserByEmail(dto.Email);
 
@@ -63,6 +60,7 @@ namespace MerosWebApi.Application.Services
                 if (isMaxCountExceeded && !isWaitingTimePassed)
                 {
                     var secondsToWait = _appSettings.LoginFailedWaitingTime - secondsPassed;
+                    
                     throw new TooManyFailedLoginAttemptsException(string.Format(
                         "You must wait for {0} seconds before you try to log in again.", secondsToWait));
                 }
@@ -88,16 +86,18 @@ namespace MerosWebApi.Application.Services
 
             await _repository.UpdateUser(user);
 
-            var responseDto = _mapper.Map<User, AuthenticationResDto>(user);
-            responseDto.Token = _tokenGenerator.GenerateAccessToken(user.Id.ToString());
+            var responseDto = AuthenticationResDto.Map(user);
 
-            return (responseDto, refreshToken);
+            responseDto.AccessToken = _tokenGenerator.GenerateAccessToken(user.Id.ToString());
+            responseDto.RefreshToken = refreshToken.Token;
+
+            return responseDto;
         }
 
         //Did
         public async Task<GetDetailsResDto> RegisterAsync(RegisterReqDto dto)
         {
-            if(string.IsNullOrEmpty(dto.Password))
+            if (string.IsNullOrEmpty(dto.Password))
                 throw new InvalidPasswordException("Password is required");
 
             var existingUser = await _repository.GetUserByEmail(dto.Email);
@@ -109,6 +109,7 @@ namespace MerosWebApi.Application.Services
 
             var user = new User
             {
+                Id = Guid.NewGuid(),
                 Full_name = dto.Full_name,
                 CreatedAt = DateTime.Now,
                 PasswordHash = passwordHash,
@@ -124,7 +125,7 @@ namespace MerosWebApi.Application.Services
 
             await _repository.AddUser(user);
 
-            return _mapper.Map<User, GetDetailsResDto>(user);
+            return GetDetailsResDto.Map(user);
         }
 
         public async Task<string> RefreshAccessToken(string refreshToken)
@@ -147,18 +148,50 @@ namespace MerosWebApi.Application.Services
             if (user == null)
                 throw new EntityNotFoundException("User not found");
 
-            return _mapper.Map<User, GetDetailsResDto>(user);
+            return GetDetailsResDto.Map(user);
         }
 
-        public async Task<GetDetailsResDto> UpdateAsync(string email, string userEmail,
+        public async Task<GetDetailsResDto> UpdateAsync(Guid id, Guid userId,
             UpdateReqDto dto)
         {
-            throw new NotImplementedException();
+            if (userId != id)
+                throw new ForbiddenException("Доступ запрещен");
+
+            var user = await _repository.GetUserById(id);
+
+            if (user == null)
+                throw new EntityNotFoundException("User not found");
+
+            if (dto.Full_name != null && dto.Full_name != user.Full_name)
+                user.Full_name = dto.Full_name;
+
+            if (dto.Email != null)
+            {
+                var emailSuccess = await ChangeEmailAsync(user, dto.Email);
+
+                if (!emailSuccess)
+                    throw new EmailNotSentException("Sending of confirmation email failed");
+            }
+
+            if (dto.Password != null)
+            {
+                var (passwordHash, passwordSalt) = _passwordHelper.CreateHash(dto.Password);
+
+                user.PasswordHash = passwordHash;
+                user.PasswordSalt = passwordSalt;
+            }
+
+            user.UpdatedAt = DateTime.Now;
+            _repository.UpdateUser(user);
+
+            return GetDetailsResDto.Map(user);
         }
 
-        public async Task DeleteAsync(string email, string userEmail)
+        public async Task<bool> DeleteAsync(Guid id, Guid userId)
         {
-            throw new NotImplementedException();
+            if (userId != id) throw new ForbiddenException("Доступ запрещен");
+
+            return await _repository.DeleteUser(id);
         }
 
         public async Task ConfirmEmailAsync(string code)
@@ -181,16 +214,82 @@ namespace MerosWebApi.Application.Services
 
         public async Task PasswordResetAsync(PasswordResetDto dto)
         {
-            throw new NotImplementedException();
+            var user = await _repository.GetUserByEmail(dto.Email);
+            if (user == null)
+                throw new EntityNotFoundException("Something went wrong... Please contact support.");
+
+            var secondsPassed = DateTime.Now.Subtract(user.ResetPasswordCreatedAt.GetValueOrDefault()).Seconds;
+
+            var isMaxCountExceeded = user.ResetPasswordCount >= _appSettings.MaxResetPasswordCount;
+            var isWaitingTimePassed = secondsPassed > _appSettings.ResetPasswordWaitingTime;
+
+            if (isMaxCountExceeded && !isWaitingTimePassed)
+            {
+                var secondsToWait = _appSettings.ResetPasswordWaitingTime - secondsPassed;
+                throw new TooManyResetPasswordAttemptsException(
+                    $"You must wait for {secondsToWait} seconds before you try reset password again");
+            }
+
+            user.ResetPasswordCode = _passwordHelper.GenerateRandomString(20) + Guid.NewGuid();
+            user.ResetPasswordCount += 1;
+            user.ResetPasswordCreatedAt = DateTime.Now;
+
+            var emailSuccess = await SentResetPasswordCode(user);
+            if (!emailSuccess)
+                throw new EmailNotSentException("Sending of email failed.");
+
+            _repository.UpdateUser(user);
         }
 
         public async Task<ConfirmResetPswdDto> ConfirmResetPasswordAsync(string code,
             string email)
         {
-            throw new NotImplementedException();
+            var user = await _repository.GetUserByResetCode(code, email);
+            
+            if(user == null || user.ResetPasswordCode == null)
+                throw new EntityNotFoundException("Invalid code.");
+
+            var secondsPassed = DateTime.Now.Subtract(user.ResetPasswordCreatedAt.GetValueOrDefault()).Seconds;
+            if (secondsPassed > _appSettings.ResetPasswordValidTime)
+                throw new AppException("This link has exprired... Please try to reset password again");
+
+            user.ResetPasswordCode = null;
+            user.ResetPasswordCount = 0;
+            user.ResetPasswordCreatedAt = null;
+
+            var newPassword = _passwordHelper.GenerateRandomString(8);
+
+            (user.PasswordHash, user.PasswordSalt) = _passwordHelper.CreateHash(newPassword);
+
+            _repository.UpdateUser(user);
+
+            var dto = ConfirmResetPswdDto.CreateFromUser(user);
+            dto.Password = newPassword;
+
+            return dto;
         }
 
         #region Private helper methods
+
+        private async Task<bool> SentResetPasswordCode(User user)
+        {
+            // Prepare email template.
+            var parentDir = Directory.GetParent(Directory.GetCurrentDirectory());
+            string relativePath = Path.Combine(parentDir.FullName,
+                "MerosWebApi.Application/Common/EmailSender/EmailTemplates/Email_PasswordReset.html");
+
+            await using var stream = File.OpenRead(relativePath);
+            
+            var encPasswordCode = HttpUtility.UrlEncode(user.ResetPasswordCode);
+            var encEmail = HttpUtility.UrlEncode(user.Email);
+            var emailBody = await new StreamReader(stream).ReadToEndAsync();
+            emailBody = emailBody.Replace("{{APP_NAME}}", _appSettings.Name);
+            emailBody = emailBody.Replace("{{PASSWORD_RESET_CONFIRM_URL}}",
+                $"{_appSettings.ResetPasswordUrl}?code={encPasswordCode}&email={encEmail}");
+
+            // Send an email.
+            return await _emailSender.SendAsync(user.Email, "Reset your password", emailBody);
+        }
 
         private async Task<bool> ChangeEmailAsync(User user, string newEmail)
         {

@@ -15,12 +15,14 @@ namespace MerosWebApi.Core.Repository
 
         public Task<User> GetUserByUnconfirmedCode(string unconfirmedCode);
 
+        public Task<User> GetUserByResetCode(string resetCode, string email);
+
         public Task<User> GetUserByRefreshToken(string refreshToken);
 
         public Task AddUser(User user);
 
         public Task<User> UpdateUser(User user);
 
-        public Task DeleteUser(User user);
+        public Task<bool> DeleteUser(Guid userId);
     }
 }

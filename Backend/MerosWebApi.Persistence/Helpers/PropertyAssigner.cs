@@ -11,110 +11,91 @@ namespace MerosWebApi.Persistence.Helpers
     /// </summary>
     /// <typeparam name="TObjTo">Объект, которому надо присвоить значения свойств.</typeparam>
     /// <typeparam name="TObjFrom">Объект, с которого надо считать свойства.</typeparam>
-    public class PropertyAssigner<TObjTo, TObjFrom>
+    public class PropertyAssigner 
+        : IPropertyAssigner<DatabaseUser, User>,
+        IPropertyAssigner<User, DatabaseUser>,
+        IPropertyValuesAssigner<DatabaseUser, User>
+
     {
-        private static readonly Dictionary<string, PropertyInfo> _sourceProperties = new();
-
-        private static readonly Dictionary<string, PropertyInfo> _targetProperties = new();
-
-        private static readonly Action<TObjFrom, TObjTo> _propertyAssigner;
-
-        private static readonly Func<TObjFrom, TObjTo> _someMapper;
-
-
-        static PropertyAssigner()
+        public static User MapFrom(DatabaseUser source)
         {
-            InitializePropertyDictionaries();
-
-            _propertyAssigner = GeneratePropertyAssigner();
-            _someMapper = GenerateMapperFunction();
-        }
-
-        public static void AssignPropertyValues(TObjTo objTo, TObjFrom objFrom)
-        {
-            _propertyAssigner(objFrom, objTo);
-        }
-        public static TObjTo Map(TObjFrom objFrom)
-        {
-            return _someMapper(objFrom);
-        }
-
-        private static void InitializePropertyDictionaries()
-        {
-            PopulatePropertyDictionary(typeof(TObjFrom), _sourceProperties);
-            PopulatePropertyDictionary(typeof(TObjTo), _targetProperties);
-        }
-
-        private static void PopulatePropertyDictionary(Type type, 
-            Dictionary<string, PropertyInfo> propertyDictionary)
-        {
-            foreach (var prop in type.GetProperties())
+            return new User
             {
-                propertyDictionary[prop.Name] = prop;
-            }
+                Id = source.Id,
+                Full_name = source.Full_name,
+                Email = source.Email,
+                CreatedAt = source.CreatedAt,
+                UpdatedAt = source.UpdatedAt,
+                LastLoginAt = source.LastLoginAt,
+                LoginFailedAt = source.LoginFailedAt,
+                LoginFailedCount = source.LoginFailedCount,
+                UnconfirmedEmail = source.UnconfirmedEmail,
+                UnconfirmedEmailCreatedAt = source.UnconfirmedEmailCreatedAt,
+                UnconfirmedEmailCode = source.UnconfirmedEmailCode,
+                UnconfirmedEmailCount = source.UnconfirmedEmailCount,
+                ResetPasswordCreatedAt = source.ResetPasswordCreatedAt,
+                ResetPasswordCount = source.ResetPasswordCount,
+                ResetPasswordCode = source.ResetPasswordCode,
+                PasswordHash = source.PasswordHash,
+                PasswordSalt = source.PasswordSalt,
+                RefreshToken = source.RefreshToken,
+                TokenCreated = source.TokenCreated,
+                TokenExpires = source.TokenExpires,
+                IsActive = source.IsActive
+            };
         }
 
-        private static Action<TObjFrom, TObjTo> GeneratePropertyAssigner()
+        public static DatabaseUser MapFrom(User source)
         {
-            var sourceParam = Expression.Parameter(typeof(TObjFrom), "source");
-            var targetParam = Expression.Parameter(typeof(TObjTo), "target");
-
-            var assignments = _targetProperties
-                .Select(kvp =>
-                {
-                    if (_sourceProperties.TryGetValue(kvp.Key, out var sourceProp))
-                    {
-                        var sourceAccess = Expression.Property(sourceParam, sourceProp);
-                        var targetAccess = Expression.Property(targetParam, kvp.Value);
-                        return Expression.Assign(targetAccess, sourceAccess);
-                    }
-                    return null;
-                })
-                .Where(assignment => assignment != null);
-
-            var body = Expression.Block(assignments);
-            return Expression.Lambda<Action<TObjFrom, TObjTo>>(body, sourceParam, targetParam).Compile();
+            return new DatabaseUser
+            {
+                Id = source.Id,
+                Full_name = source.Full_name,
+                Email = source.Email,
+                CreatedAt = source.CreatedAt,
+                UpdatedAt = source.UpdatedAt,
+                LastLoginAt = source.LastLoginAt,
+                LoginFailedAt = source.LoginFailedAt,
+                LoginFailedCount = source.LoginFailedCount,
+                UnconfirmedEmail = source.UnconfirmedEmail,
+                UnconfirmedEmailCreatedAt = source.UnconfirmedEmailCreatedAt,
+                UnconfirmedEmailCode = source.UnconfirmedEmailCode,
+                UnconfirmedEmailCount = source.UnconfirmedEmailCount,
+                ResetPasswordCreatedAt = source.ResetPasswordCreatedAt,
+                ResetPasswordCount = source.ResetPasswordCount,
+                ResetPasswordCode = source.ResetPasswordCode,
+                PasswordHash = source.PasswordHash,
+                PasswordSalt = source.PasswordSalt,
+                RefreshToken = source.RefreshToken,
+                TokenCreated = source.TokenCreated,
+                TokenExpires = source.TokenExpires,
+                IsActive = source.IsActive
+            };
         }
 
-        public static Func<TObjFrom, TObjTo> GenerateMapperFunction()
+        public static void AssignPropertyValues(DatabaseUser to, User from)
         {
-            var sourceParam = Expression.Parameter(typeof(TObjFrom), "source");
-            var targetParam = Expression.New(typeof(TObjTo));
-
-            var bindings = _targetProperties
-                .Select(keyValuePair =>
-                {
-                    var key = keyValuePair.Key;
-                    var targetPropInfo = keyValuePair.Value;
-
-                    if (_sourceProperties.TryGetValue(key, out var sourcePropInfo))
-                    {
-                        var sourcePropertyAccess = Expression.Property(sourceParam, sourcePropInfo);
-                        return Expression.Bind(targetPropInfo, sourcePropertyAccess);
-                    }
-
-                    return null;
-                })
-                .Where(assignment => assignment != null);
-
-            var body = Expression.MemberInit(targetParam, bindings);
-
-            var lambda = Expression.Lambda<Func<TObjFrom, TObjTo>>(body, sourceParam);
-
-            return lambda.Compile();
-        }
-    }
-
-    public static class PropertyAssigner
-    {
-        public static void AssignPropertyValues<TObjTo, TObjFrom>(TObjTo objTo, TObjFrom objFrom)
-        {
-            PropertyAssigner<TObjTo, TObjFrom>.AssignPropertyValues(objTo, objFrom);
-        }
-
-        public static TObjTo Map <TObjTo, TObjFrom>(TObjFrom objFrom)
-        {
-            return PropertyAssigner<TObjTo, TObjFrom>.Map(objFrom);
+            to.Id = from.Id;
+            to.Full_name = from.Full_name;
+            to.Email = from.Email;
+            to.CreatedAt = from.CreatedAt;
+            to.UpdatedAt = from.UpdatedAt;
+            to.LastLoginAt = from.LastLoginAt;
+            to.LoginFailedAt = from.LoginFailedAt;
+            to.LoginFailedCount = from.LoginFailedCount;
+            to.UnconfirmedEmail = from.UnconfirmedEmail;
+            to.UnconfirmedEmailCreatedAt = from.UnconfirmedEmailCreatedAt;
+            to.UnconfirmedEmailCode = from.UnconfirmedEmailCode;
+            to.UnconfirmedEmailCount = from.UnconfirmedEmailCount;
+            to.ResetPasswordCreatedAt = from.ResetPasswordCreatedAt;
+            to.ResetPasswordCount = from.ResetPasswordCount;
+            to.ResetPasswordCode = from.ResetPasswordCode;
+            to.PasswordHash = from.PasswordHash;
+            to.PasswordSalt = from.PasswordSalt;
+            to.RefreshToken = from.RefreshToken;
+            to.TokenCreated = from.TokenCreated;
+            to.TokenExpires = from.TokenExpires;
+            to.IsActive = from.IsActive;
         }
     }
 }

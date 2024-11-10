@@ -8,6 +8,11 @@
 
   <ItemGroup>
     <None Remove="Common\EmailSender\EmailTemplates\Email_ConfirmEmail.html" />
+    <None Remove="Common\EmailSender\EmailTemplates\Email_PasswordReset.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Include="Common\EmailSender\EmailTemplates\Email_PasswordReset.html" />
   </ItemGroup>
 
   <ItemGroup>
@@ -15,7 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.10.0" />
     <PackageReference Include="MailKit" Version="4.8.0" />
@@ -27,6 +31,10 @@
   <ItemGroup>
     <ProjectReference Include="..\MerosWebApi.Core\MerosWebApi.Core.csproj" />
     <ProjectReference Include="..\MerosWebApi.Persistence\MerosWebApi.Persistence.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Common\Mapping\" />
   </ItemGroup>
 
 </Project>
