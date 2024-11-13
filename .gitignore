@@ -42,3 +42,5 @@ packages
 Backup*/
 
 /Backend/MerosWebApi/appsettings.json
+/Backend/database-data
+/.env

@@ -1,13 +1,35 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: "Inter", system-ui, sans-serif;
+  }
+}
+@layer components {
+  .main-container{
+    @apply bg-background rounded-[32px] p-12
+  }
+
+  .base-btn{
+    @apply bg-primary rounded-[12px] py-1.5 w-full text-white
+  }
+
+  .arrow-btn{
+    @apply p-1.5 bg-primary rounded-[18px]
+  }
+
+  .meta-input{
+    @apply rounded-[12px] bg-secondary-bg text-secondary-text
+  }
+
+  .base-input{
+    @apply  px-4 py-[9px] text-[16px] leading-[22px] w-full text-black;
+  }
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+*{
+  box-sizing: border-box;
 }

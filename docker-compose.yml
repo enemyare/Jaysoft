@@ -1,0 +1,59 @@
+name: meros_applicatoin
+networks:
+  rb-network:
+    driver: bridge
+
+services:
+  meroswebapi:
+    container_name: meros_web_api
+    image: ${DOCKER_REGISTRY-}meroswebapi
+    build:
+      context: ./Backend/MerosWebApi
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+      - "5001:5001"
+    networks:
+      - rb-network
+    depends_on:
+      - mongodb
+      - mailhog_server
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "27017:27017"
+    volumes: 
+      - database-data:/data/db
+      - ./data/mongodb:/data
+    networks:
+      - rb-network
+
+  mongo-express:
+    image: mongo-express:latest
+    container_name: mongo-express
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    env_file: .env
+    networks:
+      - rb-network
+
+  mailhog_server:
+    image: mailhog/mailhog:latest
+    container_name: mailhog_server
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    env_file: .env
+    networks:
+      - rb-network
+    restart: always
+
+
+volumes:
+  database-data:
+

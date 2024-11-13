@@ -274,9 +274,9 @@ namespace MerosWebApi.Application.Services
         private async Task<bool> SentResetPasswordCode(User user)
         {
             // Prepare email template.
-            var parentDir = Directory.GetParent(Directory.GetCurrentDirectory());
-            string relativePath = Path.Combine(parentDir.FullName,
-                "MerosWebApi.Application/Common/EmailSender/EmailTemplates/Email_PasswordReset.html");
+            var parentDir = Directory.GetCurrentDirectory();
+            string relativePath = Path.Combine("Resources", 
+                "EmailTemplates/Email_PasswordReset.html");
 
             await using var stream = File.OpenRead(relativePath);
             
@@ -316,9 +316,8 @@ namespace MerosWebApi.Application.Services
             user.UnconfirmedEmailCreatedAt = DateTime.UtcNow;
 
             // Prepare email template.
-            var parentDir = Directory.GetParent(Directory.GetCurrentDirectory());
-            string relativePath = Path.Combine(parentDir.FullName,
-                "MerosWebApi.Application/Common/EmailSender/EmailTemplates/Email_ConfirmEmail.html");
+            string relativePath = Path.Combine("Resources", 
+                "EmailTemplates/Email_ConfirmEmail.html");
 
             // Prepare email template.
             await using var stream = File.OpenRead(relativePath);

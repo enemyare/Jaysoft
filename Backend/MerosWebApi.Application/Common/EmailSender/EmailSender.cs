@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MimeKit;
 using MimeKit.Text;
-using MailKit.Net.Smtp;
+using System.Net.Mail;
 using MailKit.Security;
 
 namespace MerosWebApi.Application.Common.EmailSender
@@ -16,45 +16,33 @@ namespace MerosWebApi.Application.Common.EmailSender
     {
         private readonly IEmailConfiguration _configuration;
 
-        private readonly MailboxAddress myAddress;
+        private readonly MailAddress myAddress;
 
         public EmailSender(IEmailConfiguration configuration)
         {
             _configuration = configuration;
-            myAddress = MailboxAddress.Parse(configuration.EmailAddress);
+            if(!MailAddress.TryCreate(configuration.EmailAddress, out myAddress))
+               throw new ArgumentException("Not Valid EmailAddress");
         }
 
         public async Task<bool> SendAsync(string toEmail, string subject, string htmlContent)
         {
-            var email = new MimeMessage();
-            email.From.Add(myAddress);
-            email.To.Add(MailboxAddress.Parse(toEmail));
+            var email = new MailMessage();
+            email.From = myAddress;
+            email.To.Add(new MailAddress(toEmail));
             email.Subject = subject;
-            email.Body = new TextPart(TextFormat.Html) { Text = htmlContent };
+            email.Body = htmlContent;
 
-            using var smtp = new SmtpClient();
             try
             {
-                await smtp.ConnectAsync(_configuration.EmailHost, _configuration.EmailHostPort, 
-                    SecureSocketOptions.StartTls);
+                using var smtp = new SmtpClient(_configuration.EmailHost, _configuration.EmailHostPort);
 
-                await smtp.AuthenticateAsync(_configuration.EmailAddress, _configuration.Password);
-
-                var response = await smtp.SendAsync(email);
-
-                if (response == null)
-                {
-                    return false;
-                }
+                await smtp.SendMailAsync(email);
             }
             catch (Exception ex)
             {
                 // Здесь можно добавить логирование ошибки, если необходимо
                 return false; // В случае исключения возвращаем false
-            }
-            finally
-            {
-                await smtp.DisconnectAsync(true);
             }
 
             return true; // Если всё прошло успешно

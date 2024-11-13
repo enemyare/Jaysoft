@@ -6,20 +6,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="Common\EmailSender\EmailTemplates\Email_ConfirmEmail.html" />
-    <None Remove="Common\EmailSender\EmailTemplates\Email_PasswordReset.html" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Page Include="Common\EmailSender\EmailTemplates\Email_PasswordReset.html" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Page Include="Common\EmailSender\EmailTemplates\Email_ConfirmEmail.html" />
-  </ItemGroup>
-
-  <ItemGroup>
+	<ItemGroup>
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.10.0" />
     <PackageReference Include="MailKit" Version="4.8.0" />
