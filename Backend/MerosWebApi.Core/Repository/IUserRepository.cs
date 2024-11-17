@@ -11,7 +11,7 @@ namespace MerosWebApi.Core.Repository
     {
         public Task<User> GetUserByEmail(string email);
 
-        public Task<User> GetUserById(Guid id);
+        public Task<User> GetUserById(string id);
 
         public Task<User> GetUserByUnconfirmedCode(string unconfirmedCode);
 
@@ -23,6 +23,6 @@ namespace MerosWebApi.Core.Repository
 
         public Task<User> UpdateUser(User user);
 
-        public Task<bool> DeleteUser(Guid userId);
+        public Task<bool> DeleteUser(string userId);
     }
 }

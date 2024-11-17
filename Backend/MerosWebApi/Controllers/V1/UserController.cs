@@ -12,6 +12,7 @@ using System.Web;
 using Asp.Versioning;
 using FluentValidation.Results;
 using MerosWebApi.Application.Common.DTOs;
+using MongoDB.Bson;
 
 namespace MerosWebApi.Controllers.V1
 {
@@ -70,7 +71,7 @@ namespace MerosWebApi.Controllers.V1
         [ProducesResponseType(typeof(GetDetailsResDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadRequest)]
-        public async Task<ActionResult<GetDetailsResDto>> GetDetailsAsync(Guid id)
+        public async Task<ActionResult<GetDetailsResDto>> GetDetailsAsync(string id)
         {
             try
             {
@@ -181,7 +182,7 @@ namespace MerosWebApi.Controllers.V1
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.Forbidden)]
-        public async Task<ActionResult> DeleteAsync(Guid id)
+        public async Task<ActionResult> DeleteAsync(string id)
         {
             try
             {
@@ -211,7 +212,7 @@ namespace MerosWebApi.Controllers.V1
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.Forbidden)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadGateway)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] UpdateReqDto dto)
+        public async Task<IActionResult> UpdateAsync(string id, [FromBody] UpdateReqDto dto)
         {
             try
             {

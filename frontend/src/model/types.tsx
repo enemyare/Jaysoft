@@ -3,3 +3,4 @@ export default interface IInput {
   label?: string | undefined,
   onClick?: () => void,
 }
+

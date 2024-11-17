@@ -13,6 +13,7 @@ using MerosWebApi.Application.Interfaces;
 using MerosWebApi.Core.Models;
 using MerosWebApi.Core.Repository;
 using Microsoft.Extensions.FileProviders;
+using MongoDB.Bson;
 using ZstdSharp.Unsafe;
 
 namespace MerosWebApi.Application.Services
@@ -109,7 +110,7 @@ namespace MerosWebApi.Application.Services
 
             var user = new User
             {
-                Id = Guid.NewGuid(),
+                Id = ObjectId.GenerateNewId().ToString(),
                 Full_name = dto.Full_name,
                 CreatedAt = DateTime.Now,
                 PasswordHash = passwordHash,
@@ -141,7 +142,7 @@ namespace MerosWebApi.Application.Services
             return _tokenGenerator.GenerateAccessToken(user.Id.ToString());
         }
 
-        public async Task<GetDetailsResDto> GetDetailsAsync(Guid id)
+        public async Task<GetDetailsResDto> GetDetailsAsync(string id)
         {
             var user = await _repository.GetUserById(id);
 
@@ -151,7 +152,7 @@ namespace MerosWebApi.Application.Services
             return GetDetailsResDto.Map(user);
         }
 
-        public async Task<GetDetailsResDto> UpdateAsync(Guid id, Guid userId,
+        public async Task<GetDetailsResDto> UpdateAsync(string id, string userId,
             UpdateReqDto dto)
         {
             if (userId != id)
@@ -187,7 +188,7 @@ namespace MerosWebApi.Application.Services
             return GetDetailsResDto.Map(user);
         }
 
-        public async Task<bool> DeleteAsync(Guid id, Guid userId)
+        public async Task<bool> DeleteAsync(string id, string userId)
         {
             if (userId != id) throw new ForbiddenException("Доступ запрещен");
 

@@ -33,3 +33,7 @@
 *{
   box-sizing: border-box;
 }
+
+body{
+  position: relative;
+}

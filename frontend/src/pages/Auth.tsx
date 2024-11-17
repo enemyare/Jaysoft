@@ -11,7 +11,7 @@ const Auth: FC = () => {
         <div>
           {isLogin ? (
               <>
-                <h1 className={"font-semibold text-[26px] text-center"}>Вход в аккаунт</h1>
+                <h1 className={"font-semibold text-[26px] text-center spread "}>Вход в аккаунт</h1>
                 <div className={"mt-1"}>
                   <span>Впервые тут ?</span>
                   <button className={"ml-1.5 text-primary"} onClick={() => setIsLogin(!isLogin)}>Создать аккаунт</button>
@@ -19,7 +19,7 @@ const Auth: FC = () => {
               </>
             ) :
             <>
-              <h1 className={"font-semibold text-[26px] text-center"}>Создать аккаунт организатора</h1>
+              <h1 className={"font-semibold text-[26px] text-center leading-[32px]"}>Создать аккаунт организатора</h1>
               <div className={"mt-1 text-center"}>
                 <span>Уже есть аккаунт?</span>
                 <button className={"ml-1.5 text-primary"} onClick={() => setIsLogin(!isLogin)}>Войти</button>

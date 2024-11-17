@@ -9,7 +9,7 @@ namespace MerosWebApi.Application.Common.DTOs.UserService
 {
     public class AuthenticationResDto
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
 
         public string FullName { get; set; }
 

@@ -13,7 +13,6 @@ using MerosWebApi.Application.Common.SecurityHelpers;
 using System.Reflection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Security.Claims;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -96,6 +95,8 @@ namespace MerosWebApi.Application
             services.AddScoped<IEmailSender, EmailSender>();
             services.AddScoped<IAuthHelper, AuthHelper>();
 
+            services.AddScoped<IMeroService, MeroService>();
+
             return services;
         }
 
@@ -128,7 +129,7 @@ namespace MerosWebApi.Application
                                 return Task.CompletedTask;
                             }
 
-                            var user = repository.GetUserById(Guid.Parse(userId));
+                            var user = repository.GetUserById(userId);
 
                             if (user == null)
                             {

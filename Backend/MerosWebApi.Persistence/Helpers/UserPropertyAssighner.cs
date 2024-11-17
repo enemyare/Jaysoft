@@ -11,7 +11,7 @@ namespace MerosWebApi.Persistence.Helpers
     /// </summary>
     /// <typeparam name="TObjTo">Объект, которому надо присвоить значения свойств.</typeparam>
     /// <typeparam name="TObjFrom">Объект, с которого надо считать свойства.</typeparam>
-    public class PropertyAssigner 
+    public class UserPropertyAssighner 
         : IPropertyAssigner<DatabaseUser, User>,
         IPropertyAssigner<User, DatabaseUser>,
         IPropertyValuesAssigner<DatabaseUser, User>

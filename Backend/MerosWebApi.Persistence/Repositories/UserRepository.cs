@@ -1,41 +1,42 @@
 ﻿using MerosWebApi.Core.Models;
 using MerosWebApi.Core.Repository;
 using MerosWebApi.Persistence.Entites;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MerosWebApi.Persistence.Helpers;
+using MongoDB.Bson;
+using MongoDB.Driver;
 
 namespace MerosWebApi.Persistence.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        private readonly MerosDbContext _dbContext;
+        private readonly MongoDbService _dbService;
 
-        public UserRepository(MerosDbContext dbContext)
+        public UserRepository(MongoDbService dbContext)
         {
-            _dbContext = dbContext;
+            _dbService = dbContext;
         }
 
         public async Task AddUser(User user)
         {
-            var dbUser = PropertyAssigner.MapFrom(user);
+            var dbUser = UserPropertyAssighner.MapFrom(user);
 
-            await _dbContext.Users.AddAsync(dbUser);
-            await _dbContext.SaveChangesAsync();
+            await _dbService.Users.InsertOneAsync(dbUser);
         }
 
-        public async Task<bool> DeleteUser(Guid userId)
+        public async Task<bool> DeleteUser(string userId)
         {
-            var dbUser = await _dbContext.Users.FindAsync(userId);
+            var filter = Builders<DatabaseUser>.Filter.Eq( "_id", new ObjectId(userId));
+            var dbUsers = await _dbService.Users.FindAsync(filter);
+            var dbUser = dbUsers.FirstOrDefault();
 
             if (dbUser != null)
             {
-                _dbContext.Users.Remove(dbUser);
-                await _dbContext.SaveChangesAsync();
+                await _dbService.Users.DeleteOneAsync(filter);
                 return true;
             }
 
@@ -44,67 +45,83 @@ namespace MerosWebApi.Persistence.Repositories
 
         public async Task<User> GetUserByEmail(string email)
         {
-            var dbUser = await _dbContext.Users
-                .FirstOrDefaultAsync(u => u.Email == email);
+            var filter = Builders<DatabaseUser>.Filter.Eq("email", email);
+            var dbUsers = await _dbService.Users.FindAsync(filter);
+            var dbUser = dbUsers.FirstOrDefault();
             if (dbUser == null)
                 return null;
 
-            return PropertyAssigner.MapFrom(dbUser) ;
+            return UserPropertyAssighner.MapFrom(dbUser) ;
         }
 
-        public async Task<User> GetUserById(Guid id)
+        public async Task<User> GetUserById(string id)
         {
-            var dbUser = await _dbContext.Users
-                .FirstOrDefaultAsync(u => u.Id == id);
+            var filter = Builders<DatabaseUser>.Filter.Eq("_id", new ObjectId(id) );
+            var dbUsers = await _dbService.Users.FindAsync(filter);
+            var dbUser = dbUsers.FirstOrDefault();
+
             if (dbUser == null)
                 return null;
 
-            return PropertyAssigner.MapFrom(dbUser);
+            return UserPropertyAssighner.MapFrom(dbUser);
         }
 
         public async Task<User> GetUserByUnconfirmedCode(string unconfirmedCode)
         {
-            var dbUser = await _dbContext.Users
-                .FirstOrDefaultAsync(u => u.UnconfirmedEmailCode == unconfirmedCode);
+            var filter = Builders<DatabaseUser>.Filter.Eq("unconf_email_code", unconfirmedCode);
+
+            var dbUsers = await _dbService.Users.FindAsync(filter);
+            var dbUser = dbUsers.FirstOrDefault();
 
             if (dbUser == null)
                 return null;
 
-            return PropertyAssigner.MapFrom(dbUser);
+            return UserPropertyAssighner.MapFrom(dbUser);
         }
 
         public async Task<User> GetUserByResetCode(string resetCode, string email)
         {
-            var dbUser = await _dbContext.Users
-                .FirstOrDefaultAsync(u => u.ResetPasswordCode == resetCode &&
-                                          u.Email == email);
+            var builder = Builders<DatabaseUser>.Filter;
+
+            var filter = builder.Eq("reset_pwd_code", resetCode) & builder.Eq("email", email);
+
+            var dbUsers = await _dbService.Users.FindAsync(filter);
+            var dbUser = dbUsers.FirstOrDefault();
+
             if (dbUser == null)
                 return null;
 
-            return PropertyAssigner.MapFrom(dbUser);
+            return UserPropertyAssighner.MapFrom(dbUser);
         }
 
         public async Task<User> UpdateUser(User user)
         {
-            var dbUserToUpdate = await _dbContext.Users
-                .FirstOrDefaultAsync(u => u.Id == user.Id);
+            var filter = Builders<DatabaseUser>.Filter.Eq("_id", new ObjectId(user.Id));
+            var dbUsers = await _dbService.Users.FindAsync(filter);
+            var dbUser = dbUsers.FirstOrDefault();
 
-            PropertyAssigner.AssignPropertyValues(dbUserToUpdate, user);
+            UserPropertyAssighner.AssignPropertyValues(dbUser, user);
 
-            await _dbContext.SaveChangesAsync();
+            var updateResult = await _dbService.Users.ReplaceOneAsync(filter, dbUser);
+
+            if (updateResult.ModifiedCount == 0)
+            {
+                throw new Exception("User update failed");
+            }
 
             return user;
         }
 
         public async Task<User> GetUserByRefreshToken(string refreshToken)
         {
-            var user = await _dbContext.Users
-                .FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
+            var filter = Builders<DatabaseUser>.Filter.Eq("refresh_token", refreshToken);
+            var dbUsers = await _dbService.Users.FindAsync(filter);
+            var dbUser = dbUsers.FirstOrDefault();
 
-            if (user == null)
+            if (dbUser == null)
                 return default;
 
-            return PropertyAssigner.MapFrom(user);
+            return UserPropertyAssighner.MapFrom(dbUser);
         }
     }
 }

@@ -8,7 +8,7 @@ namespace MerosWebApi.Core.Models
 {
     public class User
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
 
         public string Full_name { get; set; }
 

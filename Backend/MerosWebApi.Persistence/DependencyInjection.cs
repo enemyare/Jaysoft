@@ -1,14 +1,8 @@
-﻿using MerosWebApi.Core.Repository;
-using MerosWebApi.Persistence.Repositories;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+using MerosWebApi.Core.Repository;
+using MerosWebApi.Persistence.Repositories;
 
 namespace MerosWebApi.Persistence
 {
@@ -17,19 +11,12 @@ namespace MerosWebApi.Persistence
         public static IServiceCollection AddDataAccess(this IServiceCollection services,
             IConfiguration configuration)
         {
-            var mongoSection = configuration.GetSection("MongoDB");
+            services.Configure<MongoDbSettings>(configuration.GetSection("MongoDB"));
 
-            var connectionString = mongoSection["ConnectionURI"];
-            var dbName = mongoSection["DatabaseName"];
-
-            var mongoClient = new MongoClient(connectionString);
-
-            services.AddDbContext<MerosDbContext>(options =>
-            {
-                options.UseMongoDB(mongoClient, dbName);
-            });
+            services.AddSingleton<MongoDbService>();
 
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IMeroRepository, MeroRepository>();
 
             return services;
         }

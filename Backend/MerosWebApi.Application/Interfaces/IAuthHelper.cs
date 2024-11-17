@@ -9,6 +9,6 @@ namespace MerosWebApi.Application.Interfaces
 {
     public interface IAuthHelper
     {
-        Guid GetUserId(ControllerBase controller);
+        string GetUserId(ControllerBase controller);
     }
 }

@@ -12,7 +12,7 @@ namespace MerosWebApi.Application.Common.SecurityHelpers
 {
     public class AuthHelper : IAuthHelper
     {
-        public Guid GetUserId(ControllerBase controller)
+        public string GetUserId(ControllerBase controller)
         {
             if (controller == null)
                 throw new ArgumentNullException(nameof(controller));
@@ -25,7 +25,7 @@ namespace MerosWebApi.Application.Common.SecurityHelpers
             var nameClaim = identity.FindFirst(ClaimTypes.Name);
             if (nameClaim == null) throw new ApplicationException("Cannot get claim 'Name'.");
 
-            return Guid.Parse(nameClaim.Value);
+            return nameClaim.Value;
         }
     }
 }
