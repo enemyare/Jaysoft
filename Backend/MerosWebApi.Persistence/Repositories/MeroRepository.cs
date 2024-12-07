@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -65,6 +66,20 @@ namespace MerosWebApi.Persistence.Repositories
 
             return Mero.CreateMero(mero.Id, mero.UniqueInviteCode, mero.Name, mero.CreatorId, mero.CreatorEmail,
                 mero.Description, await timePeriods, fields, mero.Files);
+        }
+
+        public async Task<List<Mero>> GetListMerosWhereCreator(int startIndex, int count, string creatorId)
+        {
+            var phormAnswers = await GetListMerosAsync(p => p.CreatorId == creatorId, startIndex, count);
+
+            return await TransformMeros(phormAnswers);
+        }
+
+
+        public async Task<List<Mero>> GetListMerosWhereUser(int startIndex, int count, string userId)
+        {
+            var phormAnswers = await GetListPhormAnswersAsync(p => p.UserId == userId, startIndex, count);
+            return await GetListMerosForPhormAnswers(phormAnswers);
         }
 
         public async Task AddMeroAsync(Mero mero)
@@ -168,27 +183,9 @@ namespace MerosWebApi.Persistence.Repositories
 
         public async Task<List<PhormAnswer>> GetListMeroPhormAnswersByMeroAsync(int startIndex, int count, string meroId)
         {
-            var phormAnswers = await _dbService.PhormAnswers
-                .Find(p => p.MeroId == meroId)
-                .Skip(startIndex)
-                .Limit(count)
-                .ToListAsync();
+            var phormAnswers = await GetListPhormAnswersAsync(p => p.MeroId == meroId, startIndex, count);
 
-            var result = new List<PhormAnswer>();
-            foreach (var phormAnswer in phormAnswers)
-            {
-                var answers = phormAnswer.Answers
-                    .Select(a => new Answer(a.QuestionText, a.QuestionAnswers))
-                    .ToList();
-
-                var timePeriods = await GetTimePeriodsAsync(new[] { phormAnswer.TimePeriodId });
-                var period = timePeriods.FirstOrDefault();
-
-                result.Add(PhormAnswer.Create(phormAnswer.Id, phormAnswer.MeroId, phormAnswer.UserId,
-                    answers, period, phormAnswer.CreatedTime));
-            }
-
-            return result;
+            return TransformPhormAnswers(phormAnswers);
         }
 
         public async Task<List<TimePeriod>> GetTimePeriodsAsync(IEnumerable<string> ids)
@@ -223,13 +220,86 @@ namespace MerosWebApi.Persistence.Repositories
             {
                 var meroDelResult = await _dbService.Meros.DeleteOneAsync(fitler);
 
-                return meroDelResult.DeletedCount == 1 ?
-                    new QuerryStatus(true, false, "Мероприятие успешно удаленно") 
+                return meroDelResult.DeletedCount == 1
+                    ? new QuerryStatus(true, false, "Мероприятие успешно удаленно")
                     : new QuerryStatus(false, false,
                         "Периоды мероприятия удалены, мероприятие не было удаленно");
             }
 
-            return new QuerryStatus(false,false, "Мероприятие найдено, удаление безуспешно.");
+            return new QuerryStatus(false, false, "Мероприятие найдено, удаление безуспешно.");
         }
+
+        #region Helpers
+
+        private async Task<List<DatabasePhormAnswer>> GetListPhormAnswersAsync(Expression<Func<DatabasePhormAnswer, bool>> filter, int startIndex, int count)
+        {
+            return await _dbService.PhormAnswers
+                .Find(filter)
+                .Skip(startIndex)
+                .Limit(count)
+                .ToListAsync();
+        }
+
+        private List<PhormAnswer> TransformPhormAnswers(List<DatabasePhormAnswer> phormAnswers)
+        {
+            var result = new List<PhormAnswer>();
+            foreach (var phormAnswer in phormAnswers)
+            {
+                var answers = phormAnswer.Answers
+                    .Select(a => new Answer(a.QuestionText, a.QuestionAnswers))
+                    .ToList();
+
+                var timePeriods = GetTimePeriodsAsync(new[] { phormAnswer.TimePeriodId }).Result;
+                var period = timePeriods.FirstOrDefault();
+
+                result.Add(PhormAnswer.Create(phormAnswer.Id, phormAnswer.MeroId, phormAnswer.UserId,
+                    answers, period, phormAnswer.CreatedTime));
+            }
+
+            return result;
+        }
+
+        private async Task<List<DatabaseMero>> GetListMerosAsync(Expression<Func<DatabaseMero, bool>> filter, int startIndex, int count)
+        {
+            return await _dbService.Meros
+                .Find(filter)
+                .Skip(startIndex)
+                .Limit(count)
+                .ToListAsync();
+        }
+
+        private async Task<List<Mero>> TransformMeros(List<DatabaseMero> dbMeros)
+        {
+            var result = new List<Mero>();
+            foreach (var dbmero in dbMeros)
+            {
+                var timePeriods = GetTimePeriodsAsync(dbmero.TimePeriods);
+
+                var fields = dbmero.Fields
+                    .Select(f => FieldPropertyAssigner.MapFrom(f))
+                    .ToList();
+
+                result.Add(Mero.CreateMero(dbmero.Id, dbmero.UniqueInviteCode, dbmero.Name, dbmero.CreatorId,
+                    dbmero.CreatorEmail, dbmero.Description, await timePeriods, fields, dbmero.Files));
+            }
+
+            return result;
+        }
+
+        private async Task<List<Mero>> GetListMerosForPhormAnswers(IEnumerable<DatabasePhormAnswer> phormAnswers)
+        {
+            var meros = new List<Mero>();
+            foreach (var phormAnswer in phormAnswers)
+            {
+                var mero = await GetMeroByIdAsync(phormAnswer.MeroId);
+                if (mero != null)
+                {
+                    meros.Add(mero);
+                }
+            }
+            return meros;
+        }
+
+        #endregion
     }
 }

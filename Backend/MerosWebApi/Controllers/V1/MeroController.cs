@@ -251,13 +251,13 @@ namespace MerosWebApi.Controllers.V1
         }
 
         [HttpGet("phorm-answer/get-list-by-mero")]
-        [ActionName(nameof(GetListMeroPhormsAnswers))]
+        [ActionName(nameof(GetListMeroPhormsAnswersForMero))]
         [Produces("application/json")]
         [ProducesResponseType(typeof(MeroResDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadGateway)]
-        public async Task<ActionResult<List<ShowWriitenPhromResDto>>> 
-            GetListMeroPhormsAnswers(int startIndex, int count, string meroId)
+        public async Task<ActionResult<List<ShowWritenPhromResDto>>> 
+            GetListMeroPhormsAnswersForMero(int startIndex, int count, string meroId)
         {
             try
             {
@@ -265,6 +265,52 @@ namespace MerosWebApi.Controllers.V1
                     .GetMeroPhormsListByMeroAsync(startIndex, count, meroId);
 
                 return Ok(phormAnswerResDtos);
+            }
+            catch (AppException ex)
+            {
+                return StatusCode((int)HttpStatusCode.BadGateway,
+                    new MeroValidationErrorDto(null, ex.Message));
+            }
+        }
+
+        [HttpGet("list-meros/for-user")]
+        [ActionName(nameof(GetListMyMerosForUser))]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(MyMeroResDto), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadGateway)]
+        public async Task<ActionResult<List<MyMeroResDto>>>
+            GetListMyMerosForUser(int startIndex, int count, string userId)
+        {
+            try
+            {
+                var myMeroList = await _meroService
+                    .GetListMyMeroListForUser(startIndex, count, userId);
+
+                return Ok(myMeroList);
+            }
+            catch (AppException ex)
+            {
+                return StatusCode((int)HttpStatusCode.BadGateway,
+                    new MeroValidationErrorDto(null, ex.Message));
+            }
+        }
+
+        [HttpGet("list-meros/for-creator")]
+        [ActionName(nameof(GetListMyMerosForCreator))]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(MyMeroResDto), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadGateway)]
+        public async Task<ActionResult<List<MyMeroResDto>>>
+            GetListMyMerosForCreator(int startIndex, int count, string userId)
+        {
+            try
+            {
+                var myMeroList = await _meroService
+                    .GetListMyMeroListForCreator(startIndex, count, userId);
+
+                return Ok(myMeroList);
             }
             catch (AppException ex)
             {

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MerosWebApi.Application.Common.DTOs.MeroService
 {
-    public class ShowWriitenPhromResDto
+    public class ShowWritenPhromResDto
     {
         public List<AnswerResDto> Answers { get; set; }
 
@@ -15,9 +15,9 @@ namespace MerosWebApi.Application.Common.DTOs.MeroService
 
         public DateTime CreatedTime { get; set; }
 
-        public static ShowWriitenPhromResDto Map(PhormAnswer phormAnswer)
+        public static ShowWritenPhromResDto Map(PhormAnswer phormAnswer)
         {
-            return new ShowWriitenPhromResDto
+            return new ShowWritenPhromResDto
             {
                 Answers = phormAnswer.Answers
                     .Select(a => AnswerResDto.Map(a))

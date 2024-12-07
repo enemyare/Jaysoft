@@ -165,13 +165,29 @@ namespace MerosWebApi.Application.Services
             return PhormAnswerResDto.Map(phormAnswer);
         }
 
-        public async Task<List<ShowWriitenPhromResDto>> GetMeroPhormsListByMeroAsync(int startIndex, int count, string meroId)
+        public async Task<List<ShowWritenPhromResDto>> GetMeroPhormsListByMeroAsync(int startIndex, int count, string meroId)
         {
             var phormAnswers = await _repository.GetListMeroPhormAnswersByMeroAsync(startIndex, count, meroId);
 
             return phormAnswers
-                .Select(p => ShowWriitenPhromResDto.Map(p))
+                .Select(p => ShowWritenPhromResDto.Map(p))
                 .ToList(); ;
+        }
+
+        public async Task<List<MyMeroResDto>> GetListMyMeroListForCreator(int startIndex, int count,
+            string creatorId)
+        {
+            var meros = await _repository.GetListMerosWhereCreator(startIndex, count, creatorId);
+
+            return meros.Select(m => MyMeroResDto.Map(m)).ToList();
+        }
+
+        public async Task<List<MyMeroResDto>> GetListMyMeroListForUser(int startIndex, int count,
+            string userId)
+        {
+            var meros = await _repository.GetListMerosWhereUser(startIndex, count, userId);
+
+            return meros.Select(m => MyMeroResDto.Map(m)).ToList();
         }
 
         #region Helpers

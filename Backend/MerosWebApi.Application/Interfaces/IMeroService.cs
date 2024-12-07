@@ -26,6 +26,10 @@ namespace MerosWebApi.Application.Interfaces
 
         public Task<PhormAnswerResDto> GetMeroPhormAnswerByIdAsync(string phormId);
 
-        public Task<List<ShowWriitenPhromResDto>> GetMeroPhormsListByMeroAsync(int startIndex, int count, string meroId);
+        public Task<List<ShowWritenPhromResDto>> GetMeroPhormsListByMeroAsync(int startIndex, int count, string meroId);
+
+        public Task<List<MyMeroResDto>> GetListMyMeroListForCreator(int startIndex, int count, string creatorId);
+
+        public Task<List<MyMeroResDto>> GetListMyMeroListForUser(int startIndex, int count, string userId);
     }
 }
