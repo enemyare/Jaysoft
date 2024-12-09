@@ -6,11 +6,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using MerosWebApi.Application.Common;
+using MerosWebApi.Application.Common.DTOs.MeroService;
 using MerosWebApi.Application.Common.DTOs.UserService;
 using MerosWebApi.Application.Common.Exceptions;
 using MerosWebApi.Application.Common.SecurityHelpers;
 using MerosWebApi.Application.Interfaces;
-using MerosWebApi.Core.Models;
+using MerosWebApi.Core.Models.User;
 using MerosWebApi.Core.Repository;
 using Microsoft.Extensions.FileProviders;
 using MongoDB.Bson;
@@ -268,6 +269,21 @@ namespace MerosWebApi.Application.Services
             dto.Password = newPassword;
 
             return dto;
+        }
+
+        public async Task<UserStatisticResDto> GetUserStatisticAsync(string userId)
+        {
+            var user = await _repository.GetUserById(userId);
+            if (user == null)
+                throw new EntityNotFoundException("User not found");
+
+            var querryResult = await _repository.GetUserStatisticById(userId);
+            return new UserStatisticResDto
+            {
+                CreatedMerosCount = querryResult.CreatedMerosCount,
+                ParticipantsCount = querryResult.ParticipantsCount,
+                UserRegistredMerosCount = querryResult.UserRegistredMerosCount,
+            };
         }
 
         #region Private helper methods

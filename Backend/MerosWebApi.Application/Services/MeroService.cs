@@ -85,7 +85,7 @@ namespace MerosWebApi.Application.Services
                 throw new MeroNotFoundException("Мероприятие не было найдено");
 
             if (meroInDb.CreatorId != userId)
-                throw new ForbiddenException("Доступ для удаления запрещен.");
+                throw new ForbiddenException("Доступ для обновления запрещен.");
 
             if (meroInDb.TimePeriods.Any(p => p.BookedPlaces > 0))
                 throw new NotPossibleUpdateException("Не возможно обновить на мероприятие уже есть записавшиеся");
@@ -174,20 +174,20 @@ namespace MerosWebApi.Application.Services
                 .ToList(); ;
         }
 
-        public async Task<List<MyMeroResDto>> GetListMyMeroListForCreator(int startIndex, int count,
+        public async Task<List<MyCreatedMerosResDto>> GetListMyMeroListForCreator(int startIndex, int count,
             string creatorId)
         {
             var meros = await _repository.GetListMerosWhereCreator(startIndex, count, creatorId);
 
-            return meros.Select(m => MyMeroResDto.Map(m)).ToList();
+            return meros.Select(m => MyCreatedMerosResDto.Map(m)).ToList();
         }
 
-        public async Task<List<MyMeroResDto>> GetListMyMeroListForUser(int startIndex, int count,
+        public async Task<List<MyRegistredMerosResDto>> GetListMyMeroListForUser(int startIndex, int count,
             string userId)
         {
             var meros = await _repository.GetListMerosWhereUser(startIndex, count, userId);
 
-            return meros.Select(m => MyMeroResDto.Map(m)).ToList();
+            return meros.Select(m => MyRegistredMerosResDto.Map(m)).ToList();
         }
 
         #region Helpers

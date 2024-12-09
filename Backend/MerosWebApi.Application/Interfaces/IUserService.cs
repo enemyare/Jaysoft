@@ -1,4 +1,5 @@
-﻿using MerosWebApi.Application.Common.DTOs.UserService;
+﻿using MerosWebApi.Application.Common.DTOs.MeroService;
+using MerosWebApi.Application.Common.DTOs.UserService;
 using MerosWebApi.Application.Common.SecurityHelpers;
 
 namespace MerosWebApi.Application.Interfaces
@@ -14,5 +15,6 @@ namespace MerosWebApi.Application.Interfaces
         public Task PasswordResetAsync(PasswordResetDto dto);
         public Task<GetDetailsResDto> RegisterAsync(RegisterReqDto dto);
         public Task<GetDetailsResDto> UpdateAsync(string id, string userId, UpdateReqDto dto);
+        public Task<UserStatisticResDto> GetUserStatisticAsync(string userId);
     }
 }

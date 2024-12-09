@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MerosWebApi.Application.Common.DTOs.MeroService
 {
-    public class MyMeroResDto
+    public class MyCreatedMerosResDto
     {
         public string Id { get; set; }
 
@@ -17,9 +17,9 @@ namespace MerosWebApi.Application.Common.DTOs.MeroService
 
         public List<TimePeriodBookedResDto> Periods { get; set; }
 
-        public static MyMeroResDto Map(Mero mero)
+        public static MyCreatedMerosResDto Map(Mero mero)
         {
-            return new MyMeroResDto
+            return new MyCreatedMerosResDto
             {
                 Id = mero.Id,
                 MeetName = mero.Name,

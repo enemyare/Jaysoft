@@ -1,4 +1,4 @@
-﻿using MerosWebApi.Core.Models;
+﻿using MerosWebApi.Core.Models.User;
 using MerosWebApi.Persistence.Entites;
 using System.Linq.Expressions;
 using System.Reflection;

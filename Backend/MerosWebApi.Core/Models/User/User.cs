@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MerosWebApi.Core.Models
+namespace MerosWebApi.Core.Models.User
 {
     public class User
     {

@@ -12,6 +12,7 @@ using System.Web;
 using Asp.Versioning;
 using FluentValidation.Results;
 using MerosWebApi.Application.Common.DTOs;
+using MerosWebApi.Application.Common.DTOs.MeroService;
 using MongoDB.Bson;
 
 namespace MerosWebApi.Controllers.V1
@@ -283,6 +284,35 @@ namespace MerosWebApi.Controllers.V1
             catch (AppException ex)
             {
                 return BadRequest(new { ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Returns a UserStatistic representing the user's statistics
+        /// </summary>
+        /// <param name="userId">User Id</param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpGet("statistic")]
+        [ActionName(nameof(GetDetailsAsync))]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(UserStatisticResDto), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadRequest)]
+        public async Task<ActionResult<UserStatisticResDto>> GetUserStatistic(string userId)
+        {
+            try
+            {
+                var statictic = await _userService.GetUserStatisticAsync(userId);
+                return Ok(statictic);
+            }
+            catch (EntityNotFoundException ex)
+            {
+                return NotFound(new MyResponseMessage(ex.Message));
+            }
+            catch (AppException ex)
+            {
+                return BadRequest(new MyResponseMessage(ex.Message));
             }
         }
 

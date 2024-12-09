@@ -45,7 +45,7 @@ namespace MerosWebApi.Core.Models.Questions
                 throw new FieldException($"Поле {nameof(SelectOneQuestion)} должено иметь один ответ");
 
             if (!PossibleAnswers.Any(ans => ans == answers[0]))
-                throw new FieldException($"В {nameof(SelectManyQuestion)} не существует такого ответа");
+                throw new FieldException($"В {nameof(SelectOneQuestion)} не существует такого ответа {answers}");
 
             return new List<string>() { answers[0] };
         }

@@ -294,6 +294,13 @@ namespace MerosWebApi.Persistence.Repositories
                 var mero = await GetMeroByIdAsync(phormAnswer.MeroId);
                 if (mero != null)
                 {
+                    var timePeriod = mero.TimePeriods
+                        .Where(p => p.Id == phormAnswer.TimePeriodId)
+                        .ToList();
+
+                    var processedMero = Mero.CreateMero(mero.Id, mero.UniqueInviteCode, mero.Name, mero.CreatorId,
+                        mero.CreatorEmail, mero.Description, mero.TimePeriods, mero.Fields, new List<MeroFile>());
+
                     meros.Add(mero);
                 }
             }

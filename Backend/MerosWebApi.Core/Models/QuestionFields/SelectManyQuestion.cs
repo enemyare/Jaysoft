@@ -48,7 +48,7 @@ namespace MerosWebApi.Core.Models.Questions
             foreach (var answer in answers)
             {
                 if(!answers.Any(ans => ans == answer))
-                    throw new FieldException($"В {nameof(SelectManyQuestion)} не существует такого ответа");
+                    throw new FieldException($"В {nameof(SelectManyQuestion)} не существует такого ответа {answer}");
             }
                 
 

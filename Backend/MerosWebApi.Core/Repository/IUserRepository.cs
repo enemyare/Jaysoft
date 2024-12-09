@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MerosWebApi.Core.Models.User;
 
 namespace MerosWebApi.Core.Repository
 {
@@ -24,5 +25,7 @@ namespace MerosWebApi.Core.Repository
         public Task<User> UpdateUser(User user);
 
         public Task<bool> DeleteUser(string userId);
+
+        public Task<UserStatistic> GetUserStatisticById(string id);
     }
 }

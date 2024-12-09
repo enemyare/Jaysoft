@@ -226,10 +226,15 @@ namespace MerosWebApi.Controllers.V1
             }
         }
 
+        /// <summary>
+        /// Returns full detailed information about the form of the completed event questionnaire
+        /// </summary>
+        /// <param name="phormId">The phormId</param>
+        /// <returns></returns>
         [HttpGet("phorm-answer/get-one/{phormId}")]
         [ActionName(nameof(GetPhormAnswerDetails))]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(MeroResDto), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(PhormAnswerResDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadGateway)]
         public async Task<ActionResult<PhormAnswerResDto>> GetPhormAnswerDetails(string phormId)
@@ -250,10 +255,18 @@ namespace MerosWebApi.Controllers.V1
             }
         }
 
+        /// <summary>
+        /// Returns all completed application forms for a certain
+        /// event belonging to a certain range
+        /// </summary>
+        /// <param name="startIndex">Index of start sequence</param>
+        /// <param name="count">Count of phorms to return</param>
+        /// <param name="meroId">The meroId what phroms searching for</param>
+        /// <returns></returns>
         [HttpGet("phorm-answer/get-list-by-mero")]
         [ActionName(nameof(GetListMeroPhormsAnswersForMero))]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(MeroResDto), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ShowWritenPhromResDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadGateway)]
         public async Task<ActionResult<List<ShowWritenPhromResDto>>> 
@@ -273,14 +286,21 @@ namespace MerosWebApi.Controllers.V1
             }
         }
 
+        /// <summary>
+        /// Returns all the events that the user is registered for
+        /// </summary>
+        /// <param name="startIndex">Index of start sequence</param>
+        /// <param name="count">Count of phorms to return</param>
+        /// <param name="userId">The meroId what phroms searching for</param>
+        /// <returns></returns>
         [HttpGet("list-meros/for-user")]
-        [ActionName(nameof(GetListMyMerosForUser))]
+        [ActionName(nameof(GetListMyRegistredMeros))]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(MyMeroResDto), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(MyRegistredMerosResDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadGateway)]
-        public async Task<ActionResult<List<MyMeroResDto>>>
-            GetListMyMerosForUser(int startIndex, int count, string userId)
+        public async Task<ActionResult<List<MyRegistredMerosResDto>>>
+            GetListMyRegistredMeros(int startIndex, int count, string userId)
         {
             try
             {
@@ -296,14 +316,21 @@ namespace MerosWebApi.Controllers.V1
             }
         }
 
+        /// <summary>
+        /// Returns all events that the user has created for
+        /// </summary>
+        /// <param name="startIndex">Index of start sequence</param>
+        /// <param name="count">Count of phorms to return</param>
+        /// <param name="userId">The meroId what phroms searching for</param>
+        /// <returns></returns>
         [HttpGet("list-meros/for-creator")]
-        [ActionName(nameof(GetListMyMerosForCreator))]
+        [ActionName(nameof(GetListMyCreatedMeros))]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(MyMeroResDto), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(MyCreatedMerosResDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadGateway)]
-        public async Task<ActionResult<List<MyMeroResDto>>>
-            GetListMyMerosForCreator(int startIndex, int count, string userId)
+        public async Task<ActionResult<List<MyCreatedMerosResDto>>>
+            GetListMyCreatedMeros(int startIndex, int count, string userId)
         {
             try
             {
