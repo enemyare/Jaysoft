@@ -2,8 +2,11 @@ import type { FC} from "react";
 import { useState } from "react"
 import logo from '../assets/logo.svg'
 import arrow from '../assets/arrow.svg'
+import { usePostRequest } from "../api/usePostRequest"
 const Auth: FC = () => {
   const [isLogin, setIsLogin] = useState<boolean>(false)
+  const {data, error, isLoading} = usePostRequest("api/User/register", {})
+ 
   return (
     <div className={"h-screen flex justify-center items-center"}>
       <div className={"main-container max-w-[440px] flex flex-col gap-6 items-center c"}>

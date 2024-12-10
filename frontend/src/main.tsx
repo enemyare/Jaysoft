@@ -4,8 +4,16 @@ import { Provider } from "react-redux"
 import { store } from "./app/store"
 import "./index.css"
 import App from "./App"
+import { SWRConfig } from "swr"
 
 
+const fetcher = async function fetcher<JSON = any>(
+  input: RequestInfo,
+  init?: RequestInit
+): Promise<JSON> {
+  const res = await fetch(input, init);
+  return res.json() as Promise<JSON>;
+}
 
 const container = document.getElementById("root")
 if (container) {
@@ -14,7 +22,9 @@ if (container) {
   root.render(
     <React.StrictMode>
       <Provider store={store}>
-        <App></App>
+        <SWRConfig value={{fetcher}}>
+          <App></App>
+        </SWRConfig>
       </Provider>
     </React.StrictMode>,
   )

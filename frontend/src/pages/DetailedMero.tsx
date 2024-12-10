@@ -39,7 +39,7 @@ const DetailedMero: FC = () => {
           Конференция особенно полезна владельцам бизнеса и менеджерам любого уровня из крупных организаций — всем, кто
           управляет портфелями, программами и проектами со стороны бизнеса или ИТ.
         </p>
-        <div className={"flex flex-col gap-[22px]"}>
+        <div className={"flex flex-col gap-4"}>
           <button className={"base-btn"} onClick={()=> setIsOpen(true)} >Поделиться мероприятием</button>
           <div className={"flex gap-4"}>
             <button className={"border border-primary-text base-btn text-black bg-background max-w-[424px]"}>
