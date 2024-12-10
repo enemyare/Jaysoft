@@ -17,20 +17,23 @@ export const router= createBrowserRouter([
         element: <Home/>
       },
       {
-        path: "/createform",
+        path: "createform",
         element: <CreateForm/>
       },
       {
-        path: "/successform",
+        path: "successform",
         element: <SuccessForm/>
       },
       {
-        path: "/profile",
-        element: <Profile/>
-      },
-      {
-        path: "/detailedmero",
-        element: <DetailedMero/>
+        path: "profile",
+        element:
+          <Profile/>,
+        children: [
+          {
+            path: "detailedmero/:id",
+            element: <DetailedMero/>
+          },
+        ]
       },
     ]
   },

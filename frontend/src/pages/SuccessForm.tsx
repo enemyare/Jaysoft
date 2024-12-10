@@ -34,7 +34,7 @@ const SuccessForm:FC = () => {
         </div>
 
         <div>
-          <Link to={"/successform"}>
+          <Link to={"/profile"}>
             <button className={"base-btn"}>
               Перейти в личный кабинет
             </button>
