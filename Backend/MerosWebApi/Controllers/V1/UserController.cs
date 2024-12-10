@@ -100,7 +100,7 @@ namespace MerosWebApi.Controllers.V1
         /// <param name="code">Confirm email code</param>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpGet("send-authcode")]
+        [HttpPost("send-authcode")]
         [ActionName(nameof(SendAuthCode))]
         [Produces("application/json")]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
