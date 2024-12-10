@@ -1,5 +1,5 @@
 import { useContext } from "react"
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { MeroInfoContext } from "./Profile"
 import type IInput from "../model/types"
 import Input from "../components/input/Input"
@@ -18,10 +18,11 @@ const mock: Array<IInput> = [
     label: "Например, «Ваш номер телефона»",
   },
 ]
-const FormPage = () => {
+const Form = () => {
   const {id} = useParams()
   const meroInfoDetails = useContext(MeroInfoContext)
   const mero = meroInfoDetails.find(event => event.meroId ===  id)
+  const navigate = useNavigate()
   return (
     <>
       <div className={"main-container flex flex-col gap-8"}>
@@ -47,11 +48,10 @@ const FormPage = () => {
         </div>
         <div>
           <h3 className={"mb-3"}>Нажмите на время, в которое хотите посетить мероприятие:</h3>
-
         </div>
         <div className={"flex flex-col gap-4"}>
-        <button className={"base-btn"}>Зарегистрироваться</button>
-          <button className={"border border-primary-text base-btn text-black bg-background"}>
+          <button className={"base-btn"} onClick={()=>{navigate(`/filledSuccess/${id}`)}} >Зарегистрироваться</button>
+          <button className={"border border-primary-text base-btn text-black bg-background"} >
             На главную
           </button>
         </div>
@@ -60,4 +60,4 @@ const FormPage = () => {
   )
 }
 
-export default FormPage
+export default Form

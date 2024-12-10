@@ -1,12 +1,12 @@
 import imgMembers from "../assets/members.svg"
 
-const FormCard  = ({title, date, time, members, description, meroId}: FormCardProps) => {
+const FormCard  = ({title, date, time, members, description, meroId, styleList}: FormCardProps) => {
 
   return (
     <>
-      <div className={"flex flex-col gap-3 p-6 bg-secondary-bg size-[266px] rounded-2xl text-base"}>
+      <div className={`${styleList} flex flex-col gap-3 p-6 bg-secondary-bg size-[266px] rounded-2xl text-base`}>
         <div>
-          <h2 className={"text-xl overflow-hidden whitespace-break-spaces text-ellipsis font-semibold h-[60px] "}>{title}</h2>
+          <h2 className={"text-xl overflow-hidden whitespace-break-spaces text-ellipsis font-semibold max-h-[60px] "}>{title}</h2>
         </div>
         <div className={"flex gap-2"}>
           <span>{date}</span>

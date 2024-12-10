@@ -4,7 +4,7 @@ import { Link } from "react-router-dom"
 import copy from '../assets/copy.svg'
 import qrcode from '../assets/qrcode.svg'
 import QrModal from "../components/QrModal"
-const SuccessForm:FC = () => {
+const FormCreated:FC = () => {
   const [isOpen, setIsOpen] = useState(false)
   return (
     <>
@@ -50,4 +50,4 @@ const SuccessForm:FC = () => {
   )
 }
 
-export default SuccessForm
+export default FormCreated

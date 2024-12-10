@@ -2,11 +2,12 @@ import { createBrowserRouter } from "react-router-dom"
 import Auth from "../pages/Auth"
 import Layout from "../pages/Layout"
 import Home from "../pages/Home"
-import CreateForm from "../pages/CreateForm"
-import SuccessForm from "../pages/SuccessForm"
+import FormCreate from "../pages/FormCreate"
+import FormCreated from "../pages/FormCreated"
 import Profile from "../pages/Profile"
 import DetailedMero from "../pages/DetailedMero"
-import FormPage from "../pages/FormPage"
+import Form from "../pages/Form"
+import FormFilledSuccess from "../pages/FormFilledSuccess"
 
 export const router= createBrowserRouter([
   {
@@ -19,11 +20,11 @@ export const router= createBrowserRouter([
       },
       {
         path: "createform",
-        element: <CreateForm/>
+        element: <FormCreate/>
       },
       {
         path: "successform",
-        element: <SuccessForm/>
+        element: <FormCreated/>
       },
       {
         path: "profile",
@@ -37,8 +38,12 @@ export const router= createBrowserRouter([
       },
       {
         path: "form/:id",
-        element: <FormPage/>
+        element: <Form/>
       },
+      {
+        path: "/filledSuccess/:id",
+        element: <FormFilledSuccess/>
+      }
     ]
   },
 

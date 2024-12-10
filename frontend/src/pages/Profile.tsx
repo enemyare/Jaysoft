@@ -21,9 +21,9 @@ const Profile: FC = () => {
               добавить имя и фамилию или управлять настройками сервиса.</p>
           </div>
           <div className={"flex flex-col gap-4"}>
-            <Input type={"text"} label={"d.ivanov@rostatom.ru"} />
-            <Input type={"text"} label={"Введите имя"} />
-            <Input type={"text"} label={"Введите фамилию"} />
+            <Input type={"text"} label={"sultanovMi@gmail.com"} value={'sultanovMi@gmail.com'}/>
+            <Input type={"text"} label={"Михаил"} value={'Михаил'}/>
+            <Input type={"text"} label={"Султанов"} value={'Султанов'} />
           </div>
           <button className={"base-btn w-[248px] bg-danger"}>
             <img src={logout} alt="" className={"inline-block mr-2.5 pb-1"} />
@@ -63,7 +63,6 @@ const Profile: FC = () => {
             </Link>
           </div>
         </div>
-        <Outlet />
       </MeroInfoContext.Provider>
     </>
   )
