@@ -6,6 +6,7 @@ import CreateForm from "../pages/CreateForm"
 import SuccessForm from "../pages/SuccessForm"
 import Profile from "../pages/Profile"
 import DetailedMero from "../pages/DetailedMero"
+import FormPage from "../pages/FormPage"
 
 export const router= createBrowserRouter([
   {
@@ -28,12 +29,15 @@ export const router= createBrowserRouter([
         path: "profile",
         element:
           <Profile/>,
-        children: [
-          {
-            path: "detailedmero/:id",
-            element: <DetailedMero/>
-          },
-        ]
+
+      },
+      {
+        path: "detailedmero/:id",
+        element: <DetailedMero/>
+      },
+      {
+        path: "form/:id",
+        element: <FormPage/>
       },
     ]
   },
