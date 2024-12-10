@@ -6,7 +6,7 @@ namespace MerosWebApi.Application.Interfaces
 {
     public interface IUserService
     {
-        public Task<AuthenticationResDto> AuthenticateAsync(string authCode);
+        public Task<LogInResult> LogInAsync(string authCode);
 
         public Task<string> RefreshAccessToken(string RefreshToken);
 

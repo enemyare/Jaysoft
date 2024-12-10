@@ -14,7 +14,6 @@ namespace MerosWebApi.Controllers.V1
     [ApiController]
     [Route("api/[controller]")]
     [ApiVersion("1.0")]
-    [Authorize]
     public class MeroController : ControllerBase
     {
         private readonly IMeroService _meroService;
@@ -33,6 +32,7 @@ namespace MerosWebApi.Controllers.V1
         /// </summary>
         /// <param name="meroReqDto">The request data</param>
         /// <returns></returns>
+        [Authorize]
         [HttpPost]
         [ActionName(nameof(CreateMeroAsync))]
         [Produces("application/json")]
@@ -59,6 +59,7 @@ namespace MerosWebApi.Controllers.V1
         /// </summary>
         /// <param name="meroReqDto">The request data</param>
         /// <returns></returns>
+        [Authorize]
         [HttpPost("update/{meroId}")]
         [ActionName(nameof(UpdateMeroAsync))]
         [Produces("application/json")]
@@ -98,6 +99,7 @@ namespace MerosWebApi.Controllers.V1
         /// </summary>
         /// <param name="meroId">Event id</param>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpGet("by-id/{meroId}")]
         [ActionName(nameof(GetMeroDetailsAsync))]
         [Produces("application/json")]
@@ -127,6 +129,7 @@ namespace MerosWebApi.Controllers.V1
         /// </summary>
         /// <param name="inviteCode">Unique invite code</param>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpGet("by-invite-code/{inviteCode}")]
         [ActionName(nameof(GetMeroDetailsByInviteCodeAsync))]
         [Produces("application/json")]
@@ -156,6 +159,7 @@ namespace MerosWebApi.Controllers.V1
         /// </summary>
         /// <param name="meroId">Event id</param>
         /// <returns></returns>
+        [Authorize]
         [HttpDelete("{meroId}")]
         [ActionName(nameof(DeleteMeroAsync))]
         [Produces("application/json")]
@@ -196,6 +200,7 @@ namespace MerosWebApi.Controllers.V1
         /// </summary>
         /// <param name="phormAnswerReqDto">Completed questionnaire response form</param>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpPost("phorm-answer/create")]
         [ActionName(nameof(CreatePhormAnswerAsync))]
         [Produces("application/json")]
@@ -231,6 +236,7 @@ namespace MerosWebApi.Controllers.V1
         /// </summary>
         /// <param name="phormId">The phormId</param>
         /// <returns></returns>
+        [Authorize]
         [HttpGet("phorm-answer/get-one/{phormId}")]
         [ActionName(nameof(GetPhormAnswerDetails))]
         [Produces("application/json")]
@@ -263,6 +269,7 @@ namespace MerosWebApi.Controllers.V1
         /// <param name="count">Count of phorms to return</param>
         /// <param name="meroId">The meroId what phroms searching for</param>
         /// <returns></returns>
+        [Authorize]
         [HttpGet("phorm-answer/get-list-by-mero")]
         [ActionName(nameof(GetListMeroPhormsAnswersForMero))]
         [Produces("application/json")]
@@ -293,6 +300,7 @@ namespace MerosWebApi.Controllers.V1
         /// <param name="count">Count of phorms to return</param>
         /// <param name="userId">The meroId what phroms searching for</param>
         /// <returns></returns>
+        [Authorize]
         [HttpGet("list-meros/for-user")]
         [ActionName(nameof(GetListMyRegistredMeros))]
         [Produces("application/json")]
@@ -323,6 +331,7 @@ namespace MerosWebApi.Controllers.V1
         /// <param name="count">Count of phorms to return</param>
         /// <param name="userId">The meroId what phroms searching for</param>
         /// <returns></returns>
+        [Authorize]
         [HttpGet("list-meros/for-creator")]
         [ActionName(nameof(GetListMyCreatedMeros))]
         [Produces("application/json")]

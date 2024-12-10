@@ -46,12 +46,12 @@ namespace MerosWebApi.Application.Services
             _tokenGenerator = generator;
         }
 
-        public async Task<AuthenticationResDto> AuthenticateAsync(string authCode)
+        public async Task<LogInResult> LogInAsync(string authCode)
         {
             var user = await _repository.GetUserByVerificationCode(authCode);
 
             if (user == null)
-                throw new AuthenticationException("Пользователем с таким кодом авторизации не найден");
+                throw new AuthenticationException("Пользователя с таким кодом авторизации не найден");
 
             if (user.LoginFailedAt != null)
             {
@@ -104,10 +104,9 @@ namespace MerosWebApi.Application.Services
 
             var responseDto = AuthenticationResDto.Map(user);
 
-            responseDto.AccessToken = _tokenGenerator.GenerateAccessToken(user.Id.ToString());
-            responseDto.RefreshToken = refreshToken.Token;
+            var accessToken = _tokenGenerator.GenerateAccessToken(user.Id.ToString());
 
-            return responseDto;
+            return new LogInResult(responseDto, accessToken, refreshToken);
         }
 
         public async Task<string> RefreshAccessToken(string refreshToken)
@@ -234,6 +233,7 @@ namespace MerosWebApi.Application.Services
                     await _repository.UpdateUser(user);
                 else
                 {
+                    user.CreatedAt = DateTime.Now;
                     await _repository.AddUser(user);
                 }
             }

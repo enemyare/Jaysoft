@@ -14,10 +14,6 @@ namespace MerosWebApi.Application.Common.DTOs.UserService
         public string FullName { get; set; }
 
         public string Email { get; set; }
-
-        public string AccessToken { get; set; }
-
-        public string RefreshToken { get; set; }
         
         public static AuthenticationResDto Map(User from)
         {

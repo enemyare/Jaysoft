@@ -147,7 +147,7 @@ namespace MerosWebApi.Application
                         },
                         OnMessageReceived = context =>
                         {
-                            context.Token = context.Request.Headers.Authorization;
+                            context.Token = context.Request.Cookies["mrsASC"];
 
                             return Task.CompletedTask;
                         }
@@ -162,7 +162,8 @@ namespace MerosWebApi.Application
                         ValidateLifetime = true,
                         ValidateAudience = false
                     };
-                });
+                })
+                .AddCookie();
 
             services.AddAuthorization();
 

@@ -26,6 +26,10 @@ namespace MerosWebApi.Controllers.V1
 
         private readonly IAuthHelper _authHelper;
 
+        private const string ACCESS_COOKIE_KEY = "mrsASC";
+
+        private const string REFRESH_COOKIE_KEY = "mrsRFR";
+
         public UserController(IUserService userService, IAuthHelper authHelper)
         {
             _userService = userService;
@@ -49,9 +53,12 @@ namespace MerosWebApi.Controllers.V1
         {
             try
             {
-                var authecateResult = await _userService.AuthenticateAsync(authCode);
+                var logInResult = await _userService.LogInAsync(authCode);
 
-                return Ok(authecateResult);
+                SetRefreshTokenToCookie(logInResult.RefreshToken);
+                Response.Cookies.Append(ACCESS_COOKIE_KEY, logInResult.AccessToken);
+
+                return Ok(logInResult.AuthenticationResDto);
             }
             catch (AppException ex)
             {
@@ -88,7 +95,7 @@ namespace MerosWebApi.Controllers.V1
         }
 
         /// <summary>
-        /// Confirm user email after registration or email update
+        /// Sends the authorization code to the user's email
         /// </summary>
         /// <param name="code">Confirm email code</param>
         /// <returns></returns>
@@ -120,16 +127,22 @@ namespace MerosWebApi.Controllers.V1
         [HttpGet("refresh-token")]
         [ActionName(nameof(RefreshToken))]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadRequest)]
-        public async Task<ActionResult<string>> RefreshToken(string token)
+        public async Task<ActionResult<string>> RefreshToken()
         {
             try
             {
-                var newToken = await _userService.RefreshAccessToken(token);
+                Request.Cookies.TryGetValue(REFRESH_COOKIE_KEY, out var refreshToken);
 
-                return Ok(newToken);
+                if (string.IsNullOrWhiteSpace(refreshToken))
+                    return BadRequest(new MyResponseMessage("Refresh token в куки отсутсвует"));
+
+                var accessToken = await _userService.RefreshAccessToken(refreshToken);
+                Response.Cookies.Append(ACCESS_COOKIE_KEY, accessToken);
+
+                return NoContent();
             }
             catch (EntityNotFoundException ex)
             {
@@ -138,6 +151,10 @@ namespace MerosWebApi.Controllers.V1
             catch (AppException ex)
             {
                 return BadRequest(new MyResponseMessage(ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new MyResponseMessage($"Произошла ошибка на сервере {ex.Message}"));
             }
         }
 
@@ -267,7 +284,7 @@ namespace MerosWebApi.Controllers.V1
                 Expires = token.Expires
             };
 
-            Response.Cookies.Append("refreshToken", token.Token, cookieOptions);
+            Response.Cookies.Append(REFRESH_COOKIE_KEY, token.Token, cookieOptions);
         }
 
         #endregion
