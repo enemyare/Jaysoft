@@ -13,10 +13,15 @@
 
   <ItemGroup>
     <None Remove="Resources\EmailTemplates\Email_ConfirmEmail.html" />
+    <None Remove="Resources\EmailTemplates\Email_GetInviteCode.html" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Resources\EmailTemplates\Email_ConfirmEmail.html">
+    <Page Include="Resources\EmailTemplates\Email_ConfirmEmail.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\EmailTemplates\Email_GetInviteCode.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

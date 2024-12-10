@@ -12,15 +12,15 @@ namespace MerosWebApi.Core.Repository
     {
         public Task<User> GetUserByEmail(string email);
 
-        public Task<User> GetUserById(string id);
+        public Task<User> GetUserByVerificationCode(string uniqCode);
 
         public Task<User> GetUserByUnconfirmedCode(string unconfirmedCode);
 
-        public Task<User> GetUserByResetCode(string resetCode, string email);
+        public Task AddUser(User user);
+
+        public Task<User> GetUserById(string id);
 
         public Task<User> GetUserByRefreshToken(string refreshToken);
-
-        public Task AddUser(User user);
 
         public Task<User> UpdateUser(User user);
 

@@ -33,15 +33,12 @@ namespace MerosWebApi.Persistence.Helpers
                 UnconfirmedEmailCreatedAt = source.UnconfirmedEmailCreatedAt,
                 UnconfirmedEmailCode = source.UnconfirmedEmailCode,
                 UnconfirmedEmailCount = source.UnconfirmedEmailCount,
-                ResetPasswordCreatedAt = source.ResetPasswordCreatedAt,
-                ResetPasswordCount = source.ResetPasswordCount,
-                ResetPasswordCode = source.ResetPasswordCode,
-                PasswordHash = source.PasswordHash,
-                PasswordSalt = source.PasswordSalt,
+                VerificationCode = source.VerificationCode,
+                VerificationCodeCreatedAt = source.VerificationCodeCreatedAt,
+                VerificationCodeCount = source.VerificationCodeCount,
                 RefreshToken = source.RefreshToken,
                 TokenCreated = source.TokenCreated,
                 TokenExpires = source.TokenExpires,
-                IsActive = source.IsActive
             };
         }
 
@@ -61,15 +58,13 @@ namespace MerosWebApi.Persistence.Helpers
                 UnconfirmedEmailCreatedAt = source.UnconfirmedEmailCreatedAt,
                 UnconfirmedEmailCode = source.UnconfirmedEmailCode,
                 UnconfirmedEmailCount = source.UnconfirmedEmailCount,
-                ResetPasswordCreatedAt = source.ResetPasswordCreatedAt,
-                ResetPasswordCount = source.ResetPasswordCount,
-                ResetPasswordCode = source.ResetPasswordCode,
-                PasswordHash = source.PasswordHash,
-                PasswordSalt = source.PasswordSalt,
+                VerificationCode = source.VerificationCode,
+                VerificationCodeCreatedAt = source.VerificationCodeCreatedAt,
+                //LastVerificationCodeCreateAt = source.LastVerificationCodeCreateAt,
+                VerificationCodeCount = source.VerificationCodeCount,
                 RefreshToken = source.RefreshToken,
                 TokenCreated = source.TokenCreated,
                 TokenExpires = source.TokenExpires,
-                IsActive = source.IsActive
             };
         }
 
@@ -87,15 +82,13 @@ namespace MerosWebApi.Persistence.Helpers
             to.UnconfirmedEmailCreatedAt = from.UnconfirmedEmailCreatedAt;
             to.UnconfirmedEmailCode = from.UnconfirmedEmailCode;
             to.UnconfirmedEmailCount = from.UnconfirmedEmailCount;
-            to.ResetPasswordCreatedAt = from.ResetPasswordCreatedAt;
-            to.ResetPasswordCount = from.ResetPasswordCount;
-            to.ResetPasswordCode = from.ResetPasswordCode;
-            to.PasswordHash = from.PasswordHash;
-            to.PasswordSalt = from.PasswordSalt;
+            to.VerificationCode = from.VerificationCode;
+            to.VerificationCodeCreatedAt = from.VerificationCodeCreatedAt;
+            to.VerificationCodeCount = from.VerificationCodeCount;
+            //to.LastVerificationCodeCreateAt = from.LastVerificationCodeCreateAt;
             to.RefreshToken = from.RefreshToken;
             to.TokenCreated = from.TokenCreated;
             to.TokenExpires = from.TokenExpires;
-            to.IsActive = from.IsActive;
         }
     }
 }

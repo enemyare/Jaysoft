@@ -113,6 +113,16 @@ namespace MerosWebApi.Persistence.Repositories
 
             return UserPropertyAssighner.MapFrom(dbUser) ;
         }
+        
+        public async Task<User> GetUserByVerificationCode(string uniqCode)
+        {
+            var dbUsers = await _dbService.Users
+                .FindAsync(u => u.VerificationCode == uniqCode);
+
+            var dbUser = dbUsers.FirstOrDefault();
+
+            return dbUser == null ? null : UserPropertyAssighner.MapFrom(dbUser);
+        }
 
         public async Task<User> GetUserById(string id)
         {
@@ -129,21 +139,6 @@ namespace MerosWebApi.Persistence.Repositories
         public async Task<User> GetUserByUnconfirmedCode(string unconfirmedCode)
         {
             var filter = Builders<DatabaseUser>.Filter.Eq("unconf_email_code", unconfirmedCode);
-
-            var dbUsers = await _dbService.Users.FindAsync(filter);
-            var dbUser = dbUsers.FirstOrDefault();
-
-            if (dbUser == null)
-                return null;
-
-            return UserPropertyAssighner.MapFrom(dbUser);
-        }
-
-        public async Task<User> GetUserByResetCode(string resetCode, string email)
-        {
-            var builder = Builders<DatabaseUser>.Filter;
-
-            var filter = builder.Eq("reset_pwd_code", resetCode) & builder.Eq("email", email);
 
             var dbUsers = await _dbService.Users.FindAsync(filter);
             var dbUser = dbUsers.FirstOrDefault();

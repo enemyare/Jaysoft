@@ -49,6 +49,21 @@ namespace MerosWebApi.Application.Common
         public int UnconfirmedEmailWaitingTime { get; set; }
 
         /// <summary>
+        /// Задает максимальное количество попыток получения кода верефикации по почте
+        /// </summary>
+        public int MaxVerificationCodeCount { get; set; }
+
+        /// <summary>
+        /// Задает время в течении которого код авторизации действителен
+        /// </summary>
+        public int VerificationCodeExpiresMinutes { get; set; }
+
+        /// <summary>
+        /// Задает время в секундах, которое пользователь должен подождать чтобы получить новый код верефикации на почту
+        /// </summary>
+        public int VerificationCodeWaitingTime { get; set; }
+
+        /// <summary>
         /// Получает или задает URL, который будет использоваться для подтверждения адреса электронной почты.
         /// </summary>
         /// <value>

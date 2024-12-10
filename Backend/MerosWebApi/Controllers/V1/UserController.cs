@@ -34,23 +34,22 @@ namespace MerosWebApi.Controllers.V1
         }
 
         /// <summary>
-        /// Authenticates the user
+        /// Login the user using AuthCode by sending by Email
         /// </summary>
-        /// <param name="reqDto">The request data</param>
-        /// <returns>The result containing user info and authorization token, if authentication was successful
-        /// </returns>
+        /// <param name="authCode">AuthCode</param>
+        /// <returns></returns>
         [AllowAnonymous]
-        [HttpPost("authenticate")]
-        [ActionName(nameof(AuthenticateAsync))]
+        [HttpPost("log-in")]
+        [ActionName(nameof(LogInAsync))]
         [Produces("application/json")]
         [ProducesResponseType(typeof(AuthenticationResDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadRequest)]
-        public async Task<ActionResult<AuthenticationResDto>> AuthenticateAsync(
-            [FromBody] AuthenticateReqDto reqDto)
+        public async Task<ActionResult<AuthenticationResDto>> LogInAsync(
+            [FromQuery] string authCode)
         {
             try
             {
-                var authecateResult = await _userService.AuthenticateAsync(reqDto);
+                var authecateResult = await _userService.AuthenticateAsync(authCode);
 
                 return Ok(authecateResult);
             }
@@ -89,6 +88,30 @@ namespace MerosWebApi.Controllers.V1
         }
 
         /// <summary>
+        /// Confirm user email after registration or email update
+        /// </summary>
+        /// <param name="code">Confirm email code</param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet("send-authcode")]
+        [ActionName(nameof(SendAuthCode))]
+        [Produces("application/json")]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadRequest)]
+        public async Task<ActionResult> SendAuthCode(string email)
+        {
+            try
+            {
+                await _userService.SendUserUniqueInviteCode(email);
+                return NoContent();
+            }
+            catch (AppException ex)
+            {
+                return BadRequest(new MyResponseMessage(ex.Message));
+            }
+        }
+
+        /// <summary>
         /// Refresh access token
         /// </summary>
         /// <param name="token">Refresh token string</param>
@@ -118,59 +141,6 @@ namespace MerosWebApi.Controllers.V1
             }
         }
 
-        /// <summary>
-        /// Registers a new user
-        /// </summary>
-        /// <param name="dto">Register DTO</param>
-        /// <returns>GetDetailsResDto information about user</returns>
-        [AllowAnonymous]
-        [HttpPost("register")]
-        [ActionName(nameof(RegisterAsync))]
-        [Produces("application/json")]
-        [ProducesResponseType(typeof(GetDetailsResDto), (int)HttpStatusCode.Created)]
-        [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadGateway)]
-        [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadRequest)]
-        public async Task<ActionResult> RegisterAsync([FromBody] RegisterReqDto dto)
-        {
-            try
-            {
-                var user = await _userService.RegisterAsync(dto);
-
-                return CreatedAtAction(nameof(GetDetailsAsync), new { id = user.Id }, user);
-            }
-            catch (EmailNotSentException ex)
-            {
-                return StatusCode((int)HttpStatusCode.BadGateway, new MyResponseMessage(ex.Message));
-            }
-            catch (AppException ex)
-            {
-                return BadRequest(new MyResponseMessage(ex.Message));
-            }
-        }
-
-        /// <summary>
-        /// Confirm user email after registration or email update
-        /// </summary>
-        /// <param name="code">Confirm email code</param>
-        /// <returns></returns>
-        [AllowAnonymous]
-        [HttpGet("confirm-email")]
-        [ActionName(nameof(ConfirmEmailAsync))]
-        [Produces("application/json")]
-        [ProducesResponseType((int)HttpStatusCode.NoContent)]
-        [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadRequest)]
-        public async Task<ActionResult> ConfirmEmailAsync(string code)
-        {
-            try
-            {
-                await _userService.ConfirmEmailAsync(code);
-                return NoContent();
-            }
-            catch (AppException ex)
-            {
-                return BadRequest(new MyResponseMessage(ex.Message));
-            }
-        }
         /// <summary>
         /// Deletes user
         /// </summary>
@@ -235,59 +205,6 @@ namespace MerosWebApi.Controllers.V1
         }
 
         /// <summary>
-        /// Reset user password and send reset password code to user email
-        /// </summary>
-        /// <param name="dto">DTO with user Email</param>
-        /// <returns></returns>
-        [AllowAnonymous]
-        [HttpPost("password-reset")]
-        [ActionName(nameof(PasswordResetAsync))]
-        [Produces("application/json")]
-        [ProducesResponseType((int)HttpStatusCode.NoContent)]
-        [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadGateway)]
-        [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadRequest)]
-        public async Task<ActionResult> PasswordResetAsync([FromBody] PasswordResetDto dto)
-        {
-            try
-            {
-                await _userService.PasswordResetAsync(dto);
-                return NoContent();
-            }
-            catch (EmailNotSentException ex)
-            {
-                return StatusCode((int)HttpStatusCode.BadGateway, new MyResponseMessage(ex.Message));
-            }
-            catch (AppException ex)
-            {
-                return BadRequest(new MyResponseMessage(ex.Message));
-            }
-        }
-
-        /// <summary>
-        /// Confirm reset password using reset password code from email
-        /// </summary>
-        /// <param name="query">reset password code</param>
-        /// <returns></returns>
-        [AllowAnonymous]
-        [HttpGet("confirm-password-reset")]
-        [ActionName(nameof(ConfirmPasswordResetAsync))]
-        [Produces("application/json")]
-        [ProducesResponseType(typeof(ConfirmResetPswdDto), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadRequest)]
-        public async Task<ActionResult> ConfirmPasswordResetAsync([FromQuery] ConfirmResetPasswordQuery query)
-        {
-            try
-            {
-                return Ok(await _userService.ConfirmResetPasswordAsync(query.Code,
-                    HttpUtility.UrlDecode(query.Email)));
-            }
-            catch (AppException ex)
-            {
-                return BadRequest(new { ex.Message });
-            }
-        }
-
-        /// <summary>
         /// Returns a UserStatistic representing the user's statistics
         /// </summary>
         /// <param name="userId">User Id</param>
@@ -309,6 +226,30 @@ namespace MerosWebApi.Controllers.V1
             catch (EntityNotFoundException ex)
             {
                 return NotFound(new MyResponseMessage(ex.Message));
+            }
+            catch (AppException ex)
+            {
+                return BadRequest(new MyResponseMessage(ex.Message));
+            }
+        }
+
+        /// <summary>
+        /// Confirm user email after registration or email update
+        /// </summary>
+        /// <param name="code">Confirm email code</param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet("confirm-email")]
+        [ActionName(nameof(ConfirmEmailAsync))]
+        [Produces("application/json")]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadRequest)]
+        public async Task<ActionResult> ConfirmEmailAsync(string code)
+        {
+            try
+            {
+                await _userService.ConfirmEmailAsync(code);
+                return NoContent();
             }
             catch (AppException ex)
             {

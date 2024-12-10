@@ -59,8 +59,11 @@ namespace MerosWebApi.Application
             var name = appSettingsSection["Name"];
             int.TryParse(appSettingsSection["MaxLoginFailedCount"], out var maxLoginFailed);
             int.TryParse(appSettingsSection["LoginFailedWaitingTime"], out var loginFailedWait);
+            int.TryParse(appSettingsSection["MaxVerificationCodeCount"], out var maxVerCount);
+            int.TryParse(appSettingsSection["VerificationCodeWaitingTime"], out var verificationWait);
             int.TryParse(appSettingsSection["MaxUnconfirmedEmailCount"], out var maxUnconfEmail);
             int.TryParse(appSettingsSection["UnconfirmedEmailWaitingTime"], out var unconfEmailWait);
+            int.TryParse(appSettingsSection["VerificationCodeExpiresMinutes"], out var verifCodeExp);
             var confEmailUrl = appSettingsSection["ConfirmEmailUrl"];
             int.TryParse(appSettingsSection["MaxResetPasswordCount"], out var maxResetPasswd);
             int.TryParse(appSettingsSection["ResetPasswordWaitingTime"], out var resetPasswdWait);
@@ -77,6 +80,9 @@ namespace MerosWebApi.Application
                 LoginFailedWaitingTime = loginFailedWait,
                 MaxUnconfirmedEmailCount = maxUnconfEmail,
                 UnconfirmedEmailWaitingTime = unconfEmailWait,
+                MaxVerificationCodeCount = maxVerCount,
+                VerificationCodeWaitingTime = verificationWait,
+                VerificationCodeExpiresMinutes = verifCodeExp,
                 ConfirmEmailUrl = confEmailUrl,
                 MaxResetPasswordCount = maxResetPasswd,
                 ResetPasswordWaitingTime = resetPasswdWait,

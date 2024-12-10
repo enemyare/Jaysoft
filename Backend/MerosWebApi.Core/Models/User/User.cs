@@ -32,22 +32,18 @@ namespace MerosWebApi.Core.Models.User
 
         public int UnconfirmedEmailCount { get; set; }
 
-        public DateTime? ResetPasswordCreatedAt { get; set; }
+        public string? VerificationCode { get; set; }
 
-        public int ResetPasswordCount { get; set; }
+        public DateTime? VerificationCodeCreatedAt { get; set; }
 
-        public string? ResetPasswordCode { get; set; }
+        //public DateTime? LastVerificationCodeCreateAt { get; set; }
 
-        public byte[] PasswordHash { get; set; }
-
-        public byte[] PasswordSalt { get; set; }
+        public int VerificationCodeCount { get; set; }
 
         public string? RefreshToken { get; set; }
 
         public DateTime TokenCreated { get; set; }
 
         public DateTime TokenExpires { get; set; }
-
-        public bool IsActive { get; set; }
     }
 }

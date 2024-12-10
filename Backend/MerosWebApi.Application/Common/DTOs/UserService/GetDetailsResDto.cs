@@ -20,8 +20,6 @@ namespace MerosWebApi.Application.Common.DTOs.UserService
 
         public DateTime? LastLoginAt { get; set; }
 
-        public bool IsActive { get; set; }
-
         public static GetDetailsResDto Map(User user)
         {
             return new GetDetailsResDto
@@ -31,8 +29,7 @@ namespace MerosWebApi.Application.Common.DTOs.UserService
                 Email = user.Email,
                 CreatedAt = user.CreatedAt,
                 UpdatedAt = user.UpdatedAt,
-                LastLoginAt = user.LastLoginAt,
-                IsActive = user.IsActive
+                LastLoginAt = user.LastLoginAt
             };
         }
     }
