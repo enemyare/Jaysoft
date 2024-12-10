@@ -5,7 +5,7 @@ import arrow from '../assets/arrow.svg'
 import { usePostRequest } from "../api/usePostRequest"
 const Auth: FC = () => {
   const [isLogin, setIsLogin] = useState<boolean>(false)
-  const {data, error, isLoading} = usePostRequest("api/User/register", {})
+  const {data, error, isLoading} = usePostRequest("api/User/send-authcode", {})
 
   return (
     <div className={"h-screen flex justify-center items-center"}>

@@ -4,7 +4,7 @@ import profile from "../assets/profile.svg"
 import { NavLink } from "react-router-dom"
 
 const Header: FC = () => {
-  const isAuth = false
+  const isAuth = true
   return (
     <header className="flex items-center text-[20px]">
       <img className="pt-1.5" src={logo} />

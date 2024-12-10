@@ -21,7 +21,7 @@ const mock: Array<IInput> = [
 const FormPage = () => {
   const {id} = useParams()
   const meroInfoDetails = useContext(MeroInfoContext)
-  const mero = meroInfoDetails.find(event => event.id === Number(id))
+  const mero = meroInfoDetails.find(event => event.meroId ===  id)
   return (
     <>
       <div className={"main-container flex flex-col gap-8"}>
@@ -31,9 +31,7 @@ const FormPage = () => {
         <div className={"flex flex-col gap-4"}>
           <div className={"flex gap-1 font-medium"}>
             <span>{mero?.date}</span>
-            <span>{mero?.time},</span>
-            <span>19.11.2024</span>
-            <span>10:00</span>
+            <span>{mero?.time}</span>
           </div>
         </div>
         <p className={""}>

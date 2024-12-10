@@ -2,6 +2,7 @@ import type { FC} from "react";
 import { useState } from "react"
 import arrow from '../assets/arrow.svg'
 import useSWRMutation from "swr/mutation"
+import { useNavigate } from "react-router-dom"
 
 const inviteCodeRequest = async (url: string) => {
   const response = await fetch(url);
@@ -15,6 +16,8 @@ const inviteCodeRequest = async (url: string) => {
 const Home: FC = () => {
   const [inviteCode, setInviteCode] = useState<string>('')
   const {trigger} = useSWRMutation(`http://localhost:5000/api/Mero/by-invite-code/${inviteCode}`, inviteCodeRequest)
+  const navigate = useNavigate()
+
   const handleSubmit = async () => {
     try {
       const result = await trigger()
@@ -37,7 +40,7 @@ const Home: FC = () => {
           placeholder={"Код мероприятия"}
           value={inviteCode}
           onChange={(e) => setInviteCode(e.target.value)} />
-        <button className={"arrow-btn px-[18px]"} onClick={()=>{trigger()}}>
+        <button className={"arrow-btn px-[18px]"} onClick={()=>{setTimeout(()=>{navigate("form/FXCABLQA")}, 1000)}}>
           <img className={"h-6 w-6"} src={arrow}/>
         </button>
       </div>

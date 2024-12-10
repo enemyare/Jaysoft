@@ -1,6 +1,6 @@
 import imgMembers from "../assets/members.svg"
 
-const FormCard  = ({title, date, time, members, description}: FormCardProps) => {
+const FormCard  = ({title, date, time, members, description, meroId}: FormCardProps) => {
 
   return (
     <>

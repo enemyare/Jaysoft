@@ -8,7 +8,7 @@ const DetailedMero = () => {
   const [isOpen, setIsOpen] = useState(false)
   const {id} = useParams()
   const meroInfoDetails = useContext(MeroInfoContext)
-  const mero = meroInfoDetails.find(event => event.id === Number(id))
+  const mero = meroInfoDetails.find(event => event.meroId === id)
   return (
     <>
       <QrModal isOpen={isOpen} isClose={()=>setIsOpen(false)} />
