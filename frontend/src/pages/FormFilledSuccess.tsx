@@ -22,15 +22,15 @@ const FormFilledSuccess: FC = () => {
         </p>
         <div className={"flex flex-col gap-8 flex-wrap"}>
           {
-            <Link to={`/detailedmero/${mero.meroId}`} key={mero.id}>
+            <Link to={`/detailedmero/${mero?.meroId}`} key={mero?.id}>
                 <FormCard
-                  id={mero.id}
-                  title={mero.title}
-                  date={mero.date}
-                  time={mero.time}
+                  id={mero!.id}
+                  title={mero!.title}
+                  date={mero!.date}
+                  time={mero!.time}
                   members={1}
-                  description={mero.description}
-                  meroId={mero.meroId}
+                  description={mero!.description}
+                  meroId={mero!.meroId}
                   styleList = {styleList}
                 />
             </Link>

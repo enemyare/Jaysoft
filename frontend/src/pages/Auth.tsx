@@ -3,9 +3,22 @@ import { useState } from "react"
 import logo from '../assets/logo.svg'
 import arrow from '../assets/arrow.svg'
 import { usePostRequest } from "../api/usePostRequest"
+import { SubmitHandler, useForm } from "react-hook-form"
+
+interface IauthForm {
+  email: string
+}
+
 const Auth: FC = () => {
   const [isLogin, setIsLogin] = useState<boolean>(false)
-  const {data, error, isLoading} = usePostRequest("api/User/send-authcode", {})
+
+  // const {data, error, isLoading} = usePostRequest("api/User/send-authcode", {})
+
+  const {register, handleSubmit, formState} = useForm<IauthForm>()
+
+  const onSumbit: SubmitHandler<IauthForm> = (data) => {
+    console.log(data)
+  }
 
   return (
     <div className={"h-screen flex justify-center items-center"}>
@@ -35,8 +48,15 @@ const Auth: FC = () => {
             <span className={"block"}>Отправим вам код для регистрации</span>
         }
         <div>
-          <input type="text" className={"meta-input px-4 py-[9px]"} placeholder={"Введите почту"} />
-          <button className={"arrow-btn px-2.5 py-3.5 rounded-[12px] ml-2"}><img src={arrow} alt="" /></button>
+          <form onSubmit={handleSubmit(onSumbit)}>
+            <input
+              type="text" className={"meta-input px-4 py-[9px]"}
+              placeholder={"Введите почту"}
+              {...register('email', {
+                required: 'Это поле является обязательным'
+              })} />
+            <button className={"arrow-btn px-2.5 py-3.5 rounded-[12px] ml-2"}><img src={arrow} alt="" /></button>
+          </form>
         </div>
       </div>
     </div>
