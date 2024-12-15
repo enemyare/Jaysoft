@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <UserSecretsId>3589d2d1-b76a-4fd8-a51f-70d9c0dda727</UserSecretsId>
+    <UserSecretsId>нщ</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
     <DockerfileContext>..\..</DockerfileContext>
@@ -13,10 +13,15 @@
 
   <ItemGroup>
     <None Remove="Resources\EmailTemplates\Email_ConfirmEmail.html" />
+    <None Remove="Resources\EmailTemplates\Email_GetInviteCode.html" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Resources\EmailTemplates\Email_ConfirmEmail.html">
+    <Page Include="Resources\EmailTemplates\Email_ConfirmEmail.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\EmailTemplates\Email_GetInviteCode.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

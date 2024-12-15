@@ -1,23 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MerosWebApi.Application.Common.DTOs.MeroService;
+﻿using MerosWebApi.Application.Common.DTOs.MeroService;
+using MerosWebApi.Application.Common.DTOs.MeroService.ResDtos;
 using MerosWebApi.Application.Common.Exceptions;
+using MerosWebApi.Application.Common.Exceptions.Common;
+using MerosWebApi.Application.Common.Exceptions.MeroLogicExceptions;
+using MerosWebApi.Application.Common.SecurityHelpers.Generators;
 using MerosWebApi.Application.Interfaces;
 using MerosWebApi.Core.Models;
 using MerosWebApi.Core.Models.Exceptions;
 using MerosWebApi.Core.Models.Mero;
+using MerosWebApi.Core.Models.PhormAnswer;
 using MerosWebApi.Core.Models.QuestionFields;
 using MerosWebApi.Core.Repository;
 using MongoDB.Bson;
-using FieldException = MerosWebApi.Application.Common.Exceptions.MeroFieldException;
 
 namespace MerosWebApi.Application.Services
 {
     public class MeroService : IMeroService
     {
+        const int INVITE_CODE_LENGTH = 8;
+
         private readonly IMeroRepository _repository;
         public MeroService(IMeroRepository repository)
         {
@@ -29,7 +30,17 @@ namespace MerosWebApi.Application.Services
             var mero = await _repository.GetMeroByIdAsync(id);
 
             if (mero == null)
-                throw new MeroNotFoundException("Мероприятие не было найдено");
+                throw new EntityNotFoundException("Мероприятие не было найдено");
+
+            return MeroResDto.Map(mero);
+        }
+
+        public async Task<MeroResDto> GetMeroByInviteCodeAsync(string inviteCode)
+        {
+            var mero = await _repository.GetMeroByInviteCodeAsync(inviteCode);
+
+            if (mero == null)
+                throw new EntityNotFoundException("Мероприятие не было найдено");
 
             return MeroResDto.Map(mero);
         }
@@ -42,7 +53,9 @@ namespace MerosWebApi.Application.Services
 
             var fields = CreateMeroFields(createReqDto);
 
-            var mero = Mero.CreateMero(meroId, createReqDto.MeetName, creatorId, createReqDto.CreatorEmail,
+            var uniqInviteCode = await CreateUniqueInviteCode();
+
+            var mero = Mero.CreateMero(meroId, uniqInviteCode, createReqDto.MeetName, creatorId, createReqDto.CreatorEmail,
                 createReqDto.Description, timePeriods, fields, null);
 
             await _repository.AddMeroAsync(mero);
@@ -54,7 +67,7 @@ namespace MerosWebApi.Application.Services
         {
             var mero = await _repository.GetMeroByIdAsync(meroId);
             if (mero == null)
-                throw new MeroNotFoundException("Мероприятие не было найдено");
+                throw new EntityNotFoundException("Мероприятие не было найдено");
 
             if (mero.CreatorId != userId)
                 throw new ForbiddenException("Доступ для удаления запрещен.");
@@ -66,10 +79,10 @@ namespace MerosWebApi.Application.Services
         {
             var meroInDb = await _repository.GetMeroByIdAsync(meroId);
             if (meroInDb == null)
-                throw new MeroNotFoundException("Мероприятие не было найдено");
+                throw new EntityNotFoundException("Мероприятие не было найдено");
 
             if (meroInDb.CreatorId != userId)
-                throw new ForbiddenException("Доступ для удаления запрещен.");
+                throw new ForbiddenException("Доступ для обновления запрещен.");
 
             if (meroInDb.TimePeriods.Any(p => p.BookedPlaces > 0))
                 throw new NotPossibleUpdateException("Не возможно обновить на мероприятие уже есть записавшиеся");
@@ -78,8 +91,8 @@ namespace MerosWebApi.Application.Services
 
             var fields = CreateMeroFields(updateMeroData);
 
-            var mero = Mero.CreateMero(meroId, updateMeroData.MeetName, userId, updateMeroData.CreatorEmail,
-                updateMeroData.Description, timePeriods, fields, null);
+            var mero = Mero.CreateMero(meroId, meroInDb.UniqueInviteCode, updateMeroData.MeetName, userId,
+                updateMeroData.CreatorEmail, updateMeroData.Description, timePeriods, fields, null);
 
             var querryStatus = await _repository.DeleteMeroByIdAsync(meroId);
             if (!querryStatus.IsSuccess)
@@ -89,6 +102,89 @@ namespace MerosWebApi.Application.Services
             await _repository.AddMeroAsync(mero);
 
             return MeroResDto.Map(mero);
+        }
+
+        public async Task<PhormAnswerResDto> CreateNewPhormAnswerAsync(string userId, PhormAnswerReqDto phormAnswerReqDto)
+        {
+            var phormMero = await _repository.GetMeroByIdAsync(phormAnswerReqDto.MeroId);
+
+            if (phormMero == null)
+                throw new EntityNotFoundException("Соответсвующее мероприятие не было найдено");
+            if (phormMero.Fields.Count != phormAnswerReqDto.Answers.Count)
+                throw new PhormAnswerFieldException(
+                    "Число полей в форме ответа должно быть равно числу полей в анкете мероприятия");
+
+            var phormMeroAnswers = new List<Answer>();
+
+            for (int i = 0; i < phormMero.Fields.Count; i++)
+            {
+                var field = phormMero.Fields[i];
+                var phormMeroFieldText = field.Text;
+                var phormAnswerFieldText = phormAnswerReqDto.Answers[i].QuestionText;
+
+                if (phormMeroFieldText != phormAnswerFieldText)
+                    throw new PhormAnswerFieldException(
+                        "Строка вопроса в анкете мероприя должна быть равна строке в форме ответа");
+
+                var fieldAnswers = phormAnswerReqDto.Answers[i].QuestionAnswers.ToArray();
+
+                var validateAnswers = field.SelectAnswer(fieldAnswers);
+
+                phormMeroAnswers.Add(new Answer(phormMeroFieldText, validateAnswers));
+            }
+
+            var timePeriod = await _repository.GetTimePeriodsAsync(
+                new List<string>() { phormAnswerReqDto.TimePeriodId });
+
+            if (timePeriod == null || timePeriod.Count != 1)
+                throw new EntityNotFoundException($"Соответсвующее время записи {phormAnswerReqDto.TimePeriodId} не найдено");
+            if (timePeriod[0].BookedPlaces >= timePeriod[0].TotalPlaces)
+                throw new TimePeriodBusyException("Все места на данное время заняты");
+
+            var phormAnswer = PhormAnswer.Create(ObjectId.GenerateNewId().ToString(), phormMero.Id, userId, phormMeroAnswers,
+                timePeriod[0], DateTime.Now);
+
+            var createIsCorrect = await _repository.AddMeroPhormAnswerAsync(phormAnswer);
+
+            if (!createIsCorrect)
+                throw new NotCreatedException("Анкета не была создана, повторите немного позже");
+
+            return PhormAnswerResDto.Map(phormAnswer);
+        }
+
+        public async Task<PhormAnswerResDto> GetMeroPhormAnswerByIdAsync(string phormId)
+        {
+            var phormAnswer = await _repository.GetMeroPhormAnswerByIdAsync(phormId);
+
+            if (phormAnswer == null)
+                throw new PhormAnswerNotFoundException("Форма ответа не найдена");
+
+            return PhormAnswerResDto.Map(phormAnswer);
+        }
+
+        public async Task<List<ShowWritenPhromResDto>> GetMeroPhormsListByMeroAsync(int startIndex, int count, string meroId)
+        {
+            var phormAnswers = await _repository.GetListMeroPhormAnswersByMeroAsync(startIndex, count, meroId);
+
+            return phormAnswers
+                .Select(p => ShowWritenPhromResDto.Map(p))
+                .ToList(); ;
+        }
+
+        public async Task<List<MyCreatedMerosResDto>> GetListMyMeroListForCreator(int startIndex, int count,
+            string creatorId)
+        {
+            var meros = await _repository.GetListMerosWhereCreator(startIndex, count, creatorId);
+
+            return meros.Select(m => MyCreatedMerosResDto.Map(m)).ToList();
+        }
+
+        public async Task<List<MyRegistredMerosResDto>> GetListMyMeroListForUser(int startIndex, int count,
+            string userId)
+        {
+            var meros = await _repository.GetListMerosWhereUser(startIndex, count, userId);
+
+            return meros.Select(m => MyRegistredMerosResDto.Map(m)).ToList();
         }
 
         #region Helpers
@@ -142,6 +238,18 @@ namespace MerosWebApi.Application.Services
             }
 
             return fields;
+        }
+
+        private async Task<string> CreateUniqueInviteCode()
+        {
+            var inviteCode = RandomStringGenerator.GenerateRandomString(INVITE_CODE_LENGTH);
+
+            while (await _repository.GetMeroByInviteCodeAsync(inviteCode) != null)
+            {
+                inviteCode = RandomStringGenerator.GenerateRandomString(INVITE_CODE_LENGTH);
+            }
+
+            return inviteCode;
         }
 
         #endregion

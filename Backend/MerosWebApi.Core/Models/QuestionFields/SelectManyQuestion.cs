@@ -1,10 +1,4 @@
 ﻿using MerosWebApi.Core.Models.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace MerosWebApi.Core.Models.Questions
 {
@@ -16,7 +10,7 @@ namespace MerosWebApi.Core.Models.Questions
             if (answers == null || answers.Count < 1)
                 throw new FieldException($"Поле {nameof(SelectManyQuestion)} должно иметь как минимум " +
                                           $"один вариант ответа");
-            
+
             PossibleAnswers = answers;
         }
 
@@ -47,12 +41,12 @@ namespace MerosWebApi.Core.Models.Questions
 
             foreach (var answer in answers)
             {
-                if(!answers.Any(ans => ans == answer))
-                    throw new FieldException($"В {nameof(SelectManyQuestion)} не существует такого ответа");
+                if (!answers.Any(ans => ans == answer))
+                    throw new FieldException($"В {nameof(SelectManyQuestion)} не существует такого ответа {answer}");
             }
-                
 
-            return new List<string>() { answers[0] };
+
+            return answers.ToList();
         }
     }
 }

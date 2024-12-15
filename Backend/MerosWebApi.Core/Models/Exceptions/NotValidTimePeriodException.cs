@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Globalization;
 
 namespace MerosWebApi.Core.Models.Exceptions
 {
-    public class NotValidTimePeriodException : Exception
+    public class NotValidTimePeriodException : CoreException
     {
         public NotValidTimePeriodException()
         {

@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MerosWebApi.Core.Models.Mero;
+﻿using MerosWebApi.Core.Models.Mero;
 using MerosWebApi.Persistence.Entites;
 
 namespace MerosWebApi.Persistence.Helpers
 {
-    public class TimePeriodPropertyAssigner 
-        : IPropertyAssigner<TimePeriod, DatabaseTimePeriod>, 
+    public class TimePeriodPropertyAssigner
+        : IPropertyAssigner<TimePeriod, DatabaseTimePeriod>,
             IPropertyAssigner<DatabaseTimePeriod, TimePeriod>,
             IPropertyValuesAssigner<DatabaseTimePeriod, TimePeriod>
     {

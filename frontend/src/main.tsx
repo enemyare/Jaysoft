@@ -5,8 +5,6 @@ import { store } from "./app/store"
 import "./index.css"
 import App from "./App"
 
-
-
 const container = document.getElementById("root")
 if (container) {
   const root = createRoot(container)
@@ -14,7 +12,8 @@ if (container) {
   root.render(
     <React.StrictMode>
       <Provider store={store}>
-        <App></App>
+          <App></App>
+
       </Provider>
     </React.StrictMode>,
   )

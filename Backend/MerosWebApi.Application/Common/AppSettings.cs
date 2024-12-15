@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MerosWebApi.Application.Common
+﻿namespace MerosWebApi.Application.Common
 {
     public class AppSettings
     {
@@ -47,6 +41,21 @@ namespace MerosWebApi.Application.Common
         /// Время ожидания (в секундах), которое пользователь должен подождать, если он превысил максимальное количество неподтвержденных адресов электронной почты, прежде чем снова попытаться изменить свой адрес электронной почты.
         /// </value>
         public int UnconfirmedEmailWaitingTime { get; set; }
+
+        /// <summary>
+        /// Задает максимальное количество попыток получения кода верефикации по почте
+        /// </summary>
+        public int MaxVerificationCodeCount { get; set; }
+
+        /// <summary>
+        /// Задает время в течении которого код авторизации действителен
+        /// </summary>
+        public int VerificationCodeExpiresMinutes { get; set; }
+
+        /// <summary>
+        /// Задает время в секундах, которое пользователь должен подождать чтобы получить новый код верефикации на почту
+        /// </summary>
+        public int VerificationCodeWaitingTime { get; set; }
 
         /// <summary>
         /// Получает или задает URL, который будет использоваться для подтверждения адреса электронной почты.

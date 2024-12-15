@@ -1,26 +1,22 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MerosWebApi.Application.Common.EmailSender;
-using MerosWebApi.Application.Interfaces;
-using MerosWebApi.Application.Common;
-using MerosWebApi.Application.Services;
-using MerosWebApi.Application.Common.SecurityHelpers;
-using System.Reflection;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
-using FluentValidation;
+﻿using FluentValidation;
 using FluentValidation.AspNetCore;
+using MerosWebApi.Application.Common;
 using MerosWebApi.Application.Common.DTOs;
+using MerosWebApi.Application.Common.EmailSender;
+using MerosWebApi.Application.Common.SecurityHelpers;
+using MerosWebApi.Application.Common.SecurityHelpers.Generators;
 using MerosWebApi.Application.Common.ValidatorOptions;
+using MerosWebApi.Application.Interfaces;
+using MerosWebApi.Application.Services;
 using MerosWebApi.Core.Repository;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using System.Reflection;
+using System.Text;
+using MerosWebApi.Application.Common.EmailSender.Configurations;
 
 namespace MerosWebApi.Application
 {
@@ -59,8 +55,11 @@ namespace MerosWebApi.Application
             var name = appSettingsSection["Name"];
             int.TryParse(appSettingsSection["MaxLoginFailedCount"], out var maxLoginFailed);
             int.TryParse(appSettingsSection["LoginFailedWaitingTime"], out var loginFailedWait);
+            int.TryParse(appSettingsSection["MaxVerificationCodeCount"], out var maxVerCount);
+            int.TryParse(appSettingsSection["VerificationCodeWaitingTime"], out var verificationWait);
             int.TryParse(appSettingsSection["MaxUnconfirmedEmailCount"], out var maxUnconfEmail);
             int.TryParse(appSettingsSection["UnconfirmedEmailWaitingTime"], out var unconfEmailWait);
+            int.TryParse(appSettingsSection["VerificationCodeExpiresMinutes"], out var verifCodeExp);
             var confEmailUrl = appSettingsSection["ConfirmEmailUrl"];
             int.TryParse(appSettingsSection["MaxResetPasswordCount"], out var maxResetPasswd);
             int.TryParse(appSettingsSection["ResetPasswordWaitingTime"], out var resetPasswdWait);
@@ -77,6 +76,9 @@ namespace MerosWebApi.Application
                 LoginFailedWaitingTime = loginFailedWait,
                 MaxUnconfirmedEmailCount = maxUnconfEmail,
                 UnconfirmedEmailWaitingTime = unconfEmailWait,
+                MaxVerificationCodeCount = maxVerCount,
+                VerificationCodeWaitingTime = verificationWait,
+                VerificationCodeExpiresMinutes = verifCodeExp,
                 ConfirmEmailUrl = confEmailUrl,
                 MaxResetPasswordCount = maxResetPasswd,
                 ResetPasswordWaitingTime = resetPasswdWait,
@@ -141,7 +143,7 @@ namespace MerosWebApi.Application
                         },
                         OnMessageReceived = context =>
                         {
-                            context.Token = context.Request.Headers.Authorization;
+                            context.Token = context.Request.Cookies["mrsASC"];
 
                             return Task.CompletedTask;
                         }
@@ -156,7 +158,8 @@ namespace MerosWebApi.Application
                         ValidateLifetime = true,
                         ValidateAudience = false
                     };
-                });
+                })
+                .AddCookie();
 
             services.AddAuthorization();
 
@@ -178,8 +181,13 @@ namespace MerosWebApi.Application
                 {
                     options.InvalidModelStateResponseFactory = context =>
                     {
+                        var errors = context.ModelState
+                            .Where(e => e.Value.Errors.Count > 0)
+                            .SelectMany(e => e.Value.Errors.Select(x => new ValidationErrorResponse(e.Key, x.ErrorMessage)))
+                            .ToList();
+
                         return new BadRequestObjectResult(
-                            new MyResponseMessage{ Message = "One or more validation errors occurred." });
+                            new MyResponseMessage("One or more validation errors occurred.", errors));
                     };
                 })
                 .AddFluentValidation(config =>

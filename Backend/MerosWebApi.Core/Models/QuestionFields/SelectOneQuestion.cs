@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MerosWebApi.Core.Models.Exceptions;
-using Microsoft.VisualBasic;
+﻿using MerosWebApi.Core.Models.Exceptions;
 
 namespace MerosWebApi.Core.Models.Questions
 {
@@ -16,7 +10,7 @@ namespace MerosWebApi.Core.Models.Questions
             if (answers == null || answers.Count < 1)
                 throw new FieldException($"Поле {nameof(SelectOneQuestion)} должно иметь как " +
                                          $"минимум один вариант ответа");
-            
+
             PossibleAnswers = answers;
         }
 
@@ -24,8 +18,8 @@ namespace MerosWebApi.Core.Models.Questions
 
         public void AddPossibleAnswer(string answer)
         {
-            if(string.IsNullOrWhiteSpace(answer))
-                throw new FieldException($"В {nameof(SelectOneQuestion) } ответ должен быть не null, или " +
+            if (string.IsNullOrWhiteSpace(answer))
+                throw new FieldException($"В {nameof(SelectOneQuestion)} ответ должен быть не null, или " +
             $"пустой строкой, или пробелом");
 
             PossibleAnswers.Add(answer);
@@ -45,7 +39,7 @@ namespace MerosWebApi.Core.Models.Questions
                 throw new FieldException($"Поле {nameof(SelectOneQuestion)} должено иметь один ответ");
 
             if (!PossibleAnswers.Any(ans => ans == answers[0]))
-                throw new FieldException($"В {nameof(SelectManyQuestion)} не существует такого ответа");
+                throw new FieldException($"В {nameof(SelectOneQuestion)} не существует такого ответа {answers}");
 
             return new List<string>() { answers[0] };
         }

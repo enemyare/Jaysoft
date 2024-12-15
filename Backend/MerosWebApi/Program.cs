@@ -33,19 +33,16 @@ namespace MerosWebApi
 
             builder.Services.AddSwaggerGen(swagger =>
             {
-                swagger.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+                swagger.AddSecurityDefinition("Cookie", new OpenApiSecurityScheme
                 {
-                    Name = "Authorization",
+                    Name = "Cookie",
                     Type = SecuritySchemeType.ApiKey,
-                    Scheme = "Bearer",
-                    BearerFormat = "JWT",
-                    In = ParameterLocation.Header,
-                    Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n " +
-                                  "Input JWT string only " +
-                                  "\r\n\r\nExample: \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Im" +
-                                  "M5Y2M1ZGM0LTg4NTktNDY4Yi04NDExLTFhZTMxYjYxODY5NyIsIm5iZiI6MTczMTA2NzIxNywiZXhwI" +
-                                  "joxNzMxMDcwODE3LCJpYXQiOjE3MzEwNjcyMTd9.Gde5aETdODmv0HYHOh1a8CiX1UjTx3gTdev_9OJf49U\"",
+                    In = ParameterLocation.Cookie,
+                    Description = "Cookie-based authentication. \r\n\r\n" +
+                                  "Ensure to include the authentication cookie in your requests. \r\n\r\n" +
+                                  "Example: \"mrsASC = ......\""
                 });
+
                 swagger.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                     {
@@ -54,7 +51,7 @@ namespace MerosWebApi
                             Reference = new OpenApiReference
                             {
                                 Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
+                                Id = "Cookie"
                             }
                         },
                         new string[] {}
@@ -92,7 +89,12 @@ namespace MerosWebApi
                 });
             }
 
-            app.UseHttpsRedirection();
+            app.UseCors(policy => 
+                policy.WithOrigins("http://localhost:5173")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader());
+
+            //app.UseHttpsRedirection();
 
             app.UseAuthentication();
             app.UseAuthorization();

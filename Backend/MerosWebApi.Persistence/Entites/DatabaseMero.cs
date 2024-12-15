@@ -1,10 +1,4 @@
 ﻿using MerosWebApi.Core.Models.Mero;
-using MerosWebApi.Core.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -16,6 +10,10 @@ namespace MerosWebApi.Persistence.Entites
         [BsonElement("_id")]
         [BsonRepresentation(BsonType.ObjectId)]
         public string? Id { get; set; }
+
+        [BsonElement("uniq_inv_code")]
+        [BsonRequired]
+        public string? UniqueInviteCode { get; set; }
 
         [BsonElement("name")]
         [BsonRequired]

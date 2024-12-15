@@ -1,11 +1,6 @@
-﻿using MerosWebApi.Core.Models;
+﻿using MerosWebApi.Core.Models.User;
 using MerosWebApi.Core.Repository;
 using MerosWebApi.Persistence.Entites;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MerosWebApi.Persistence.Helpers;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -30,7 +25,7 @@ namespace MerosWebApi.Persistence.Repositories
 
         public async Task<bool> DeleteUser(string userId)
         {
-            var filter = Builders<DatabaseUser>.Filter.Eq( "_id", new ObjectId(userId));
+            var filter = Builders<DatabaseUser>.Filter.Eq("_id", new ObjectId(userId));
             var dbUsers = await _dbService.Users.FindAsync(filter);
             var dbUser = dbUsers.FirstOrDefault();
 
@@ -43,6 +38,64 @@ namespace MerosWebApi.Persistence.Repositories
             return false;
         }
 
+        public async Task<UserStatistic> GetUserStatisticById(string userId)
+        {
+            var now = DateTime.Now;
+
+            // Считаем количество созданных пользователем мероприятий
+            var createdMeros = await GetCreatedMeros(userId);
+
+            // Найдем временные интервалы для каждого созданного мероприятия
+            var timePeriods = await GetTimePeriodsForMeros(createdMeros);
+
+            // Отфильтруем завершенные временные интервалы и посчитаем сумму забронированных мест
+            var participantsCount = CalculateParticipantsCount(timePeriods, now);
+
+            // Загрузим временные интервалы для посещённых мероприятий
+            var visitedTimePeriods = await GetCompletedVisitedTimePeriods(userId, now);
+
+            // Посчитаем количество посещённых мероприятий
+            var userRegisteredMerosCount = visitedTimePeriods.Count();
+
+            return new UserStatistic
+            {
+                CreatedMerosCount = createdMeros.Count,
+                ParticipantsCount = participantsCount,
+                UserRegistredMerosCount = userRegisteredMerosCount
+            };
+        }
+
+        private async Task<List<DatabaseMero>> GetCreatedMeros(string userId)
+        {
+            var createdMerosFilter = Builders<DatabaseMero>.Filter.Eq(m => m.CreatorId, userId);
+            return await _dbService.Meros.Find(createdMerosFilter).ToListAsync();
+        }
+
+        private async Task<List<DatabaseTimePeriod>> GetTimePeriodsForMeros(List<DatabaseMero> meros)
+        {
+            var timePeriodIds = meros.SelectMany(m => m.TimePeriods).ToArray();
+            var timePeriodsFilter = Builders<DatabaseTimePeriod>.Filter.In(tp => tp.Id, timePeriodIds);
+            return await _dbService.TimePeriods.Find(timePeriodsFilter).ToListAsync();
+        }
+
+        private int CalculateParticipantsCount(IEnumerable<DatabaseTimePeriod> timePeriods, DateTime now)
+        {
+            var completedTimePeriods = timePeriods.Where(tp => tp.EndTime < now);
+            return completedTimePeriods.Sum(tp => tp.BookedPlaces);
+        }
+
+        private async Task<List<DatabaseTimePeriod>> GetCompletedVisitedTimePeriods(string userId, DateTime now)
+        {
+            var visitedPhormAnswersFilter = Builders<DatabasePhormAnswer>.Filter.Eq(pa => pa.UserId, userId);
+            var visitedPhormAnswers = await _dbService.PhormAnswers.Find(visitedPhormAnswersFilter).ToListAsync();
+
+            var visitedTimePeriodIds = visitedPhormAnswers.Select(pa => pa.TimePeriodId).ToArray();
+            var visitedTimePeriodsFilter = Builders<DatabaseTimePeriod>.Filter.In(tp => tp.Id, visitedTimePeriodIds);
+            var visitedTimePeriods = await _dbService.TimePeriods.Find(visitedTimePeriodsFilter).ToListAsync();
+
+            return visitedTimePeriods.Where(tp => tp.EndTime < now).ToList();
+        }
+
         public async Task<User> GetUserByEmail(string email)
         {
             var filter = Builders<DatabaseUser>.Filter.Eq("email", email);
@@ -51,12 +104,22 @@ namespace MerosWebApi.Persistence.Repositories
             if (dbUser == null)
                 return null;
 
-            return UserPropertyAssighner.MapFrom(dbUser) ;
+            return UserPropertyAssighner.MapFrom(dbUser);
+        }
+
+        public async Task<User> GetUserByVerificationCode(string uniqCode)
+        {
+            var dbUsers = await _dbService.Users
+                .FindAsync(u => u.VerificationCode == uniqCode);
+
+            var dbUser = dbUsers.FirstOrDefault();
+
+            return dbUser == null ? null : UserPropertyAssighner.MapFrom(dbUser);
         }
 
         public async Task<User> GetUserById(string id)
         {
-            var filter = Builders<DatabaseUser>.Filter.Eq("_id", new ObjectId(id) );
+            var filter = Builders<DatabaseUser>.Filter.Eq("_id", new ObjectId(id));
             var dbUsers = await _dbService.Users.FindAsync(filter);
             var dbUser = dbUsers.FirstOrDefault();
 
@@ -69,21 +132,6 @@ namespace MerosWebApi.Persistence.Repositories
         public async Task<User> GetUserByUnconfirmedCode(string unconfirmedCode)
         {
             var filter = Builders<DatabaseUser>.Filter.Eq("unconf_email_code", unconfirmedCode);
-
-            var dbUsers = await _dbService.Users.FindAsync(filter);
-            var dbUser = dbUsers.FirstOrDefault();
-
-            if (dbUser == null)
-                return null;
-
-            return UserPropertyAssighner.MapFrom(dbUser);
-        }
-
-        public async Task<User> GetUserByResetCode(string resetCode, string email)
-        {
-            var builder = Builders<DatabaseUser>.Filter;
-
-            var filter = builder.Eq("reset_pwd_code", resetCode) & builder.Eq("email", email);
 
             var dbUsers = await _dbService.Users.FindAsync(filter);
             var dbUser = dbUsers.FirstOrDefault();

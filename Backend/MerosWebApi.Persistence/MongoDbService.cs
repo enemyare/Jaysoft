@@ -1,24 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using MerosWebApi.Core.Models;
-using MerosWebApi.Persistence.Entites;
+﻿using MerosWebApi.Persistence.Entites;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
-using MongoDB.Driver.Core;
 
 namespace MerosWebApi.Persistence
 {
     public class MongoDbService
     {
         private readonly IMongoDatabase _database;
-        public IMongoCollection<DatabaseUser> Users { get; set; } 
+        public IMongoCollection<DatabaseUser> Users { get; set; }
 
-        public IMongoCollection<DatabaseMero> Meros {get; set; }
+        public IMongoCollection<DatabaseMero> Meros { get; set; }
 
         public IMongoCollection<DatabaseTimePeriod> TimePeriods { get; set; }
 

@@ -1,14 +1,11 @@
-name: meros_applicatoin
-networks:
-  rb-network:
-    driver: bridge
+version: "3.7"
 
 services:
   meroswebapi:
     container_name: meros_web_api
     image: ${DOCKER_REGISTRY-}meroswebapi
     build:
-      context: ./Backend/MerosWebApi
+      context: ./Backend
       dockerfile: Dockerfile
     ports:
       - "5000:5000"
@@ -53,7 +50,10 @@ services:
       - rb-network
     restart: always
 
-
+name: meros_applicatoin
+networks:
+  rb-network:
+    driver: bridge
 volumes:
-  database-data:
+  database-data: {}
 

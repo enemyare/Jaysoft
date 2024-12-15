@@ -1,13 +1,5 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using String = System.String;
 
 namespace MerosWebApi.Persistence.Entites
 {
@@ -19,11 +11,9 @@ namespace MerosWebApi.Persistence.Entites
         public string Id { get; set; }
 
         [BsonElement("full_name")]
-        [BsonRequired]
         public string Full_name { get; set; }
 
         [BsonElement("email")]
-        [BsonRequired]
         public string? Email { get; set; }
 
         [BsonElement("created_at")]
@@ -54,20 +44,17 @@ namespace MerosWebApi.Persistence.Entites
         [BsonElement("unconf_email_count")]
         public int UnconfirmedEmailCount { get; set; }
 
-        [BsonElement("reset_pwd_cr_at")]
-        public DateTime? ResetPasswordCreatedAt { get; set; }
+        [BsonElement("verif_code")]
+        public string? VerificationCode { get; set; }
 
-        [BsonElement("reset_pwd_count")]
-        public int ResetPasswordCount { get; set; }
+        [BsonElement("verif_code_cr_at")]
+        public DateTime? VerificationCodeCreatedAt { get; set; }
 
-        [BsonElement("reset_pwd_code")]
-        public string? ResetPasswordCode { get; set; }
+        [BsonElement("verif_code_count")]
+        public int VerificationCodeCount { get; set; }
 
-        [BsonElement("pwd_hash")]
-        public byte[] PasswordHash { get; set; }
-
-        [BsonElement("pwd_salt")]
-        public byte[] PasswordSalt { get; set; }
+        //[BsonElement("last_verif_code_cr_at")]
+        //public DateTime? LastVerificationCodeCreateAt { get; set; }
 
         [BsonElement("refresh_token")]
         public string? RefreshToken { get; set; }
@@ -77,8 +64,5 @@ namespace MerosWebApi.Persistence.Entites
 
         [BsonElement("refr_token_expires")]
         public DateTime TokenExpires { get; set; }
-
-        [BsonElement("is_active")]
-        public bool IsActive { get; set; }
     }
 }

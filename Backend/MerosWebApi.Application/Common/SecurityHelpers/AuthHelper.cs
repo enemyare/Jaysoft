@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-using MerosWebApi.Application.Common.Exceptions;
+﻿using MerosWebApi.Application.Common.Exceptions;
 using MerosWebApi.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using MerosWebApi.Application.Common.Exceptions.UserExceptions;
 
 namespace MerosWebApi.Application.Common.SecurityHelpers
 {

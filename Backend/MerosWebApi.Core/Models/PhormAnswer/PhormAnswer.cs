@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
-using MerosWebApi.Core.Models.Mero;
+﻿using MerosWebApi.Core.Models.Mero;
 
 namespace MerosWebApi.Core.Models.PhormAnswer
 {
@@ -21,5 +15,22 @@ namespace MerosWebApi.Core.Models.PhormAnswer
         public TimePeriod TimePeriod { get; }
 
         public DateTime CreatedTime { get; }
+
+        private PhormAnswer(string id, string meroId, string userId, List<Answer> answers,
+            TimePeriod timePeriod, DateTime createDateTime)
+        {
+            Id = id;
+            MeroId = meroId;
+            UserId = userId;
+            Answers = answers;
+            TimePeriod = timePeriod;
+            CreatedTime = createDateTime;
+        }
+
+        public static PhormAnswer Create(string id, string meroId, string userId, List<Answer> answers,
+            TimePeriod timePeriod, DateTime createDateTime)
+        {
+            return new PhormAnswer(id, meroId, userId, answers, timePeriod, createDateTime);
+        }
     }
 }

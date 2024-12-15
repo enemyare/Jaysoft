@@ -1,12 +1,5 @@
-﻿using MerosWebApi.Core.Models.Mero;
-using MerosWebApi.Core.Models.PhormAnswer;
+﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MongoDB.Bson;
 
 namespace MerosWebApi.Persistence.Entites
 {
@@ -30,7 +23,7 @@ namespace MerosWebApi.Persistence.Entites
 
         [BsonElement("period_id")]
         [BsonRequired]
-        public string TimePeriod { get; set; }
+        public string TimePeriodId { get; set; }
 
         [BsonElement("created_at")]
         public DateTime CreatedTime { get; set; }
