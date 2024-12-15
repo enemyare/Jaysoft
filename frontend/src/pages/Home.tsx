@@ -3,6 +3,7 @@ import { useState } from "react"
 import arrow from '../assets/arrow.svg'
 import useSWRMutation from "swr/mutation"
 import { useNavigate } from "react-router-dom"
+import useSWR from "swr"
 
 const inviteCodeRequest = async (url: string) => {
   const response = await fetch(url);
@@ -15,18 +16,19 @@ const inviteCodeRequest = async (url: string) => {
 
 const Home: FC = () => {
   const [inviteCode, setInviteCode] = useState<string>('')
-  const {trigger} = useSWRMutation(`http://localhost:5000/api/Mero/by-invite-code/${inviteCode}`, inviteCodeRequest)
+  const {data, error} = useSWR('https://fakestoreapi.com/products', inviteCodeRequest)
+  // const {trigger} = useSWRMutation(`http://localhost:5000/api/Mero/by-invite-code/${inviteCode}`, inviteCodeRequest)
   const navigate = useNavigate()
-
-  const handleSubmit = async () => {
-    try {
-      const result = await trigger()
-      console.log('success', result)
-    }
-    catch (err){
-      console.log('Error', err)
-    }
-  }
+  console.log(data)
+  // const handleSubmit = async () => {
+  //   try {
+  //     const result = await trigger()
+  //     console.log('success', result)
+  //   }
+  //   catch (err){
+  //     console.log('Error', err)
+  //   }
+  // }
   return (
     <div className={"main-container p-16 text-center flex-col flex items-center gap-8  text-[20px]"}>
       <div className={"flex flex-col gap-6"}>

@@ -6,10 +6,20 @@ import FormCard from "../components/FormCard"
 import addEventCard from "../assets/addEventCard.svg"
 import { Link, Outlet } from "react-router-dom"
 import { mock } from "../mock"
-
+import type { SubmitHandler} from "react-hook-form";
+import { useFieldArray } from "react-hook-form"
+import { useForm } from "react-hook-form"
+ 
+export interface IEmail {
+  email: string
+}
 
 export const MeroInfoContext = createContext(mock)
 const Profile: FC = () => {
+  const {register, handleSubmit, formState} = useForm<IEmail>()
+  const onSubmit: SubmitHandler<IEmail> = (data) => {
+    console.log(data)
+  }
 
   return (
     <>
@@ -21,9 +31,18 @@ const Profile: FC = () => {
               добавить имя и фамилию или управлять настройками сервиса.</p>
           </div>
           <div className={"flex flex-col gap-4"}>
-            <Input type={"text"} label={"sultanovMi@gmail.com"} value={'sultanovMi@gmail.com'}/>
-            <Input type={"text"} label={"Михаил"} value={'Михаил'}/>
-            <Input type={"text"} label={"Султанов"} value={'Султанов'} />
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <Input
+                type={"text"}
+                label={"sultanovMi@gmail.com"}
+                {...register(
+                  "email",
+                  {
+                    required: "Это поле обязательное"
+                  }
+                )}
+              />
+            </form>
           </div>
           <button className={"base-btn w-[248px] bg-danger"}>
             <img src={logout} alt="" className={"inline-block mr-2.5 pb-1"} />

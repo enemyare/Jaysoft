@@ -8,6 +8,7 @@ import Profile from "../pages/Profile"
 import DetailedMero from "../pages/DetailedMero"
 import Form from "../pages/Form"
 import FormFilledSuccess from "../pages/FormFilledSuccess"
+import EditMero from "../pages/EditMero"
 
 export const router= createBrowserRouter([
   {
@@ -19,11 +20,11 @@ export const router= createBrowserRouter([
         element: <Home/>
       },
       {
-        path: "createform",
+        path: "createForm",
         element: <FormCreate/>
       },
       {
-        path: "successform",
+        path: "successForm",
         element: <FormCreated/>
       },
       {
@@ -33,7 +34,7 @@ export const router= createBrowserRouter([
 
       },
       {
-        path: "detailedmero/:id",
+        path: "detailedMero/:id",
         element: <DetailedMero/>
       },
       {
@@ -43,6 +44,10 @@ export const router= createBrowserRouter([
       {
         path: "/filledSuccess/:id",
         element: <FormFilledSuccess/>
+      },
+      {
+        path: "editMero",
+        element: <EditMero/>
       }
     ]
   },

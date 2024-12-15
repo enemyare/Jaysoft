@@ -1,5 +1,5 @@
-import type IInput from "../../model/types"
 import BaseInput from "./BaseInput/BaseInput"
+import type { IInput } from "../../model/types"
 
 const Input = ({type, label, onClick}: IInput)=> {
   switch (type) {
