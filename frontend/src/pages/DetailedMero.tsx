@@ -1,12 +1,13 @@
 import { useContext, useState } from "react"
 import QrModal from "../components/QrModal"
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { MeroInfoContext } from "./Profile"
 
 
 const DetailedMero = () => {
   const [isOpen, setIsOpen] = useState(false)
   const {id} = useParams()
+  const navigate = useNavigate()
   const meroInfoDetails = useContext(MeroInfoContext)
   const mero = meroInfoDetails.find(event => event.meroId === id)
   return (
@@ -38,7 +39,9 @@ const DetailedMero = () => {
         <div className={"flex flex-col gap-4"}>
           <button className={"base-btn"} onClick={()=> setIsOpen(true)} >Поделиться мероприятием</button>
           <div className={"flex gap-4"}>
-            <button className={"border border-primary-text base-btn text-black bg-background max-w-[424px]"}>
+            <button className={"border border-primary-text base-btn text-black bg-background max-w-[424px]"}
+                    onClick={() => {navigate('/editMero')}}
+            >
               Редактировать форму
             </button>
             <button className={"border border-primary-text bg-primary-text text-white rounded-xl max-w-[424px] w-full"}>

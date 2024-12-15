@@ -3,23 +3,33 @@ import { useState } from "react"
 import logo from '../assets/logo.svg'
 import arrow from '../assets/arrow.svg'
 import { usePostRequest } from "../api/usePostRequest"
-import { SubmitHandler, useForm } from "react-hook-form"
+import type { SubmitHandler} from "react-hook-form";
+import { useForm } from "react-hook-form"
+import type { IauthForm } from "../model/types"
+import useSWR from "swr"
+import useSWRMutation from "swr/mutation"
 
-interface IauthForm {
-  email: string
+async function sendRequest(url:string, { arg }: { arg: any }){
+  return fetch(url, {
+    method: "POST",
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({arg}),
+    credentials: 'include'
+  })
 }
 
 const Auth: FC = () => {
+
   const [isLogin, setIsLogin] = useState<boolean>(false)
 
   // const {data, error, isLoading} = usePostRequest("api/User/send-authcode", {})
 
   const {register, handleSubmit, formState} = useForm<IauthForm>()
+  const  {trigger, isMutating} = useSWRMutation('https://dummyjson.com/auth/login', sendRequest)
 
   const onSumbit: SubmitHandler<IauthForm> = (data) => {
-    console.log(data)
-  }
 
+  }
   return (
     <div className={"h-screen flex justify-center items-center"}>
       <div className={"main-container max-w-[440px] flex flex-col gap-6 items-center c"}>
@@ -55,7 +65,13 @@ const Auth: FC = () => {
               {...register('email', {
                 required: 'Это поле является обязательным'
               })} />
-            <button className={"arrow-btn px-2.5 py-3.5 rounded-[12px] ml-2"}><img src={arrow} alt="" /></button>
+            <button className={"arrow-btn px-2.5 py-3.5 rounded-[12px] ml-2"} onClick={()=>{
+              trigger({
+                username: 'emilys',
+                password: 'emilyspass',
+                expiresInMins: 30, // optional, defaults to 60
+              })
+            }}><img src={arrow} alt="" /></button>
           </form>
         </div>
       </div>
