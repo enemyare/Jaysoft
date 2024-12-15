@@ -89,6 +89,11 @@ namespace MerosWebApi
                 });
             }
 
+            app.UseCors(policy => 
+                policy.WithOrigins("http://localhost:5173")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader());
+
             //app.UseHttpsRedirection();
 
             app.UseAuthentication();
