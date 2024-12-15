@@ -164,6 +164,9 @@ namespace MerosWebApi.Application.Services
 
         public async Task<List<ShowWritenPhromResDto>> GetMeroPhormsListByMeroAsync(int startIndex, int count, string meroId)
         {
+            if (startIndex < 0 || count < 1)
+                throw new AppException("Переданные значения запроса неверны - startIndex должен быть >= 0 && count > 0");
+
             var phormAnswers = await _repository.GetListMeroPhormAnswersByMeroAsync(startIndex, count, meroId);
 
             return phormAnswers
@@ -174,6 +177,9 @@ namespace MerosWebApi.Application.Services
         public async Task<List<MyCreatedMerosResDto>> GetListMyMeroListForCreator(int startIndex, int count,
             string creatorId)
         {
+            if (startIndex < 0 || count < 1)
+                throw new AppException("Переданные значения запроса неверны - startIndex должен быть >= 0 && count > 0");
+
             var meros = await _repository.GetListMerosWhereCreator(startIndex, count, creatorId);
 
             return meros.Select(m => MyCreatedMerosResDto.Map(m)).ToList();
@@ -182,6 +188,9 @@ namespace MerosWebApi.Application.Services
         public async Task<List<MyRegistredMerosResDto>> GetListMyMeroListForUser(int startIndex, int count,
             string userId)
         {
+            if (startIndex < 0 || count < 1)
+                throw new AppException("Переданные значения запроса неверны - startIndex должен быть >= 0 && count > 0");
+
             var meros = await _repository.GetListMerosWhereUser(startIndex, count, userId);
 
             return meros.Select(m => MyRegistredMerosResDto.Map(m)).ToList();

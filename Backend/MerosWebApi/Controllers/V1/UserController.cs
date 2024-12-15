@@ -12,6 +12,7 @@ using System.Web;
 using Asp.Versioning;
 using FluentValidation.Results;
 using MerosWebApi.Application.Common.DTOs;
+using MerosWebApi.Application.Common.DTOs.CommonDtos.CommonDtoValidators;
 using MerosWebApi.Application.Common.DTOs.MeroService;
 using MerosWebApi.Application.Common.DTOs.UserService.ReqDtos;
 using MongoDB.Bson;
@@ -81,7 +82,7 @@ namespace MerosWebApi.Controllers.V1
         [ProducesResponseType(typeof(GetDetailsResDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadRequest)]
-        public async Task<ActionResult<GetDetailsResDto>> GetDetailsAsync(string id)
+        public async Task<ActionResult<GetDetailsResDto>> GetDetailsAsync([MustBeObjectId] string id)
         {
             try
             {
@@ -173,7 +174,7 @@ namespace MerosWebApi.Controllers.V1
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.Forbidden)]
-        public async Task<ActionResult> DeleteAsync(string id)
+        public async Task<ActionResult> DeleteAsync([MustBeObjectId] string id)
         {
             try
             {
@@ -203,7 +204,7 @@ namespace MerosWebApi.Controllers.V1
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.Forbidden)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadGateway)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> UpdateAsync(string id, [FromBody] UpdateReqDto dto)
+        public async Task<IActionResult> UpdateAsync([MustBeObjectId] string id, [FromBody] UpdateReqDto dto)
         {
             try
             {
@@ -236,7 +237,7 @@ namespace MerosWebApi.Controllers.V1
         [ProducesResponseType(typeof(UserStatisticResDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadRequest)]
-        public async Task<ActionResult<UserStatisticResDto>> GetUserStatistic(string userId)
+        public async Task<ActionResult<UserStatisticResDto>> GetUserStatistic([MustBeObjectId] string userId)
         {
             try
             {

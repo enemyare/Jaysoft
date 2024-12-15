@@ -46,7 +46,7 @@ namespace MerosWebApi.Application.Services
             var user = await _repository.GetUserByVerificationCode(authCode);
 
             if (user == null)
-                throw new AuthenticationException("Пользователя с таким кодом авторизации не найден");
+                throw new AuthenticationException("Пользователь с таким кодом авторизации не найден");
 
             if (user.LoginFailedAt != null)
             {

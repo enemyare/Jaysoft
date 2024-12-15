@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using MerosWebApi.Application.Common.ValidatorOptions;
+using MongoDB.Bson;
 
 namespace MerosWebApi.Application.Common
 {
