@@ -13,6 +13,7 @@ using Asp.Versioning;
 using FluentValidation.Results;
 using MerosWebApi.Application.Common.DTOs;
 using MerosWebApi.Application.Common.DTOs.MeroService;
+using MerosWebApi.Application.Common.DTOs.UserService.ReqDtos;
 using MongoDB.Bson;
 using MerosWebApi.Application.Common.Exceptions.EmailExceptions;
 using MerosWebApi.Application.Common.Exceptions.Common;
@@ -51,11 +52,11 @@ namespace MerosWebApi.Controllers.V1
         [ProducesResponseType(typeof(AuthenticationResDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadRequest)]
         public async Task<ActionResult<AuthenticationResDto>> LogInAsync(
-            [FromQuery] string authCode)
+            [FromBody] LogInReqDto logInReq)
         {
             try
             {
-                var logInResult = await _userService.LogInAsync(authCode);
+                var logInResult = await _userService.LogInAsync(logInReq.AuthCode);
 
                 SetRefreshTokenToCookie(logInResult.RefreshToken);
                 Response.Cookies.Append(ACCESS_COOKIE_KEY, logInResult.AccessToken);
@@ -107,11 +108,11 @@ namespace MerosWebApi.Controllers.V1
         [Produces("application/json")]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadRequest)]
-        public async Task<ActionResult> SendAuthCode(string email)
+        public async Task<ActionResult> SendAuthCode([FromBody] SendEmailReqDto email)
         {
             try
             {
-                await _userService.SendUserUniqueInviteCode(email);
+                await _userService.SendUserUniqueInviteCode(email.Email);
                 return NoContent();
             }
             catch (AppException ex)
@@ -258,16 +259,16 @@ namespace MerosWebApi.Controllers.V1
         /// <param name="code">Confirm email code</param>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpGet("confirm-email")]
+        [HttpPost("confirm-email")]
         [ActionName(nameof(ConfirmEmailAsync))]
         [Produces("application/json")]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadRequest)]
-        public async Task<ActionResult> ConfirmEmailAsync(string code)
+        public async Task<ActionResult> ConfirmEmailAsync([FromBody] ConfirmEmailReqDto confirmEmailReq)
         {
             try
             {
-                await _userService.ConfirmEmailAsync(code);
+                await _userService.ConfirmEmailAsync(confirmEmailReq.ConfirmEmailCode);
                 return NoContent();
             }
             catch (AppException ex)
