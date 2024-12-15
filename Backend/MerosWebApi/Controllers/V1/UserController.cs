@@ -30,7 +30,7 @@ namespace MerosWebApi.Controllers.V1
 
         private readonly IAuthHelper _authHelper;
 
-        private const string ACCESS_COOKIE_KEY = "mrsASC";
+        private const string ACCESS_COOKIE_KEY = "authToken";
 
         private const string REFRESH_COOKIE_KEY = "mrsRFR";
 
