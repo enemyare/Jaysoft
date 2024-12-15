@@ -21,7 +21,7 @@ const mock: Array<IInput> = [
   },
 ]
 
-const CreateForm: FC = () => {
+const FormCreate: FC = () => {
   const [isStepOne, setIsStepOne] = useState(true)
   const [amock, setMock] = useState(mock)
   const deleteInput = () => {
@@ -110,4 +110,4 @@ const CreateForm: FC = () => {
   )
 }
 
-export default CreateForm
+export default FormCreate

@@ -4,5 +4,6 @@ interface FormCardProps {
   date: string,
   time: string,
   members: number,
-  description: string
+  description: string,
+  meroId: string
 }
