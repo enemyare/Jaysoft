@@ -1,10 +1,4 @@
-﻿using MerosWebApi.Core.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MerosWebApi.Core.Models.User;
+﻿using MerosWebApi.Core.Models.User;
 
 namespace MerosWebApi.Core.Repository
 {

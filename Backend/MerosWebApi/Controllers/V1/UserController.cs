@@ -14,6 +14,8 @@ using FluentValidation.Results;
 using MerosWebApi.Application.Common.DTOs;
 using MerosWebApi.Application.Common.DTOs.MeroService;
 using MongoDB.Bson;
+using MerosWebApi.Application.Common.Exceptions.EmailExceptions;
+using MerosWebApi.Application.Common.Exceptions.Common;
 
 namespace MerosWebApi.Controllers.V1
 {
@@ -100,7 +102,7 @@ namespace MerosWebApi.Controllers.V1
         /// <param name="code">Confirm email code</param>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpPost("send-authcode")]
+        [HttpGet("send-authcode")]
         [ActionName(nameof(SendAuthCode))]
         [Produces("application/json")]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]

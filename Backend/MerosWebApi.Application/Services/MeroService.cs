@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MerosWebApi.Application.Common;
-using MerosWebApi.Application.Common.DTOs.MeroService;
+﻿using MerosWebApi.Application.Common.DTOs.MeroService;
+using MerosWebApi.Application.Common.DTOs.MeroService.ResDtos;
 using MerosWebApi.Application.Common.Exceptions;
+using MerosWebApi.Application.Common.Exceptions.Common;
+using MerosWebApi.Application.Common.Exceptions.MeroLogicExceptions;
+using MerosWebApi.Application.Common.SecurityHelpers.Generators;
 using MerosWebApi.Application.Interfaces;
 using MerosWebApi.Core.Models;
 using MerosWebApi.Core.Models.Exceptions;
@@ -14,7 +12,6 @@ using MerosWebApi.Core.Models.PhormAnswer;
 using MerosWebApi.Core.Models.QuestionFields;
 using MerosWebApi.Core.Repository;
 using MongoDB.Bson;
-using FieldException = MerosWebApi.Application.Common.Exceptions.MeroFieldException;
 
 namespace MerosWebApi.Application.Services
 {
@@ -33,7 +30,7 @@ namespace MerosWebApi.Application.Services
             var mero = await _repository.GetMeroByIdAsync(id);
 
             if (mero == null)
-                throw new MeroNotFoundException("Мероприятие не было найдено");
+                throw new EntityNotFoundException("Мероприятие не было найдено");
 
             return MeroResDto.Map(mero);
         }
@@ -43,7 +40,7 @@ namespace MerosWebApi.Application.Services
             var mero = await _repository.GetMeroByInviteCodeAsync(inviteCode);
 
             if (mero == null)
-                throw new MeroNotFoundException("Мероприятие не было найдено");
+                throw new EntityNotFoundException("Мероприятие не было найдено");
 
             return MeroResDto.Map(mero);
         }
@@ -70,7 +67,7 @@ namespace MerosWebApi.Application.Services
         {
             var mero = await _repository.GetMeroByIdAsync(meroId);
             if (mero == null)
-                throw new MeroNotFoundException("Мероприятие не было найдено");
+                throw new EntityNotFoundException("Мероприятие не было найдено");
 
             if (mero.CreatorId != userId)
                 throw new ForbiddenException("Доступ для удаления запрещен.");
@@ -82,7 +79,7 @@ namespace MerosWebApi.Application.Services
         {
             var meroInDb = await _repository.GetMeroByIdAsync(meroId);
             if (meroInDb == null)
-                throw new MeroNotFoundException("Мероприятие не было найдено");
+                throw new EntityNotFoundException("Мероприятие не было найдено");
 
             if (meroInDb.CreatorId != userId)
                 throw new ForbiddenException("Доступ для обновления запрещен.");
@@ -112,7 +109,7 @@ namespace MerosWebApi.Application.Services
             var phormMero = await _repository.GetMeroByIdAsync(phormAnswerReqDto.MeroId);
 
             if (phormMero == null)
-                throw new MeroNotFoundException("Соответсвующее мероприятие не было найдено");
+                throw new EntityNotFoundException("Соответсвующее мероприятие не было найдено");
             if (phormMero.Fields.Count != phormAnswerReqDto.Answers.Count)
                 throw new PhormAnswerFieldException(
                     "Число полей в форме ответа должно быть равно числу полей в анкете мероприятия");
@@ -130,7 +127,7 @@ namespace MerosWebApi.Application.Services
                         "Строка вопроса в анкете мероприя должна быть равна строке в форме ответа");
 
                 var fieldAnswers = phormAnswerReqDto.Answers[i].QuestionAnswers.ToArray();
-                
+
                 var validateAnswers = field.SelectAnswer(fieldAnswers);
 
                 phormMeroAnswers.Add(new Answer(phormMeroFieldText, validateAnswers));
@@ -140,7 +137,7 @@ namespace MerosWebApi.Application.Services
                 new List<string>() { phormAnswerReqDto.TimePeriodId });
 
             if (timePeriod == null || timePeriod.Count != 1)
-                throw new TimePeriodNotFoundException($"Соответсвующее время записи {phormAnswerReqDto.TimePeriodId} не найдено");
+                throw new EntityNotFoundException($"Соответсвующее время записи {phormAnswerReqDto.TimePeriodId} не найдено");
             if (timePeriod[0].BookedPlaces >= timePeriod[0].TotalPlaces)
                 throw new TimePeriodBusyException("Все места на данное время заняты");
 

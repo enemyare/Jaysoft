@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using MerosWebApi.Application.Interfaces;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
-using MerosWebApi.Application.Interfaces;
 
 namespace MerosWebApi.Application.Common.SecurityHelpers
 {

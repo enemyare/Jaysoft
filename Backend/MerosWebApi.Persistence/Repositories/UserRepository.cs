@@ -1,16 +1,9 @@
-﻿using MerosWebApi.Core.Repository;
+﻿using MerosWebApi.Core.Models.User;
+using MerosWebApi.Core.Repository;
 using MerosWebApi.Persistence.Entites;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MerosWebApi.Persistence.Helpers;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using MerosWebApi.Core.Models.User;
-using MerosWebApi.Core.Models.Mero;
-using MerosWebApi.Core.Models.PhormAnswer;
 
 namespace MerosWebApi.Persistence.Repositories
 {
@@ -32,7 +25,7 @@ namespace MerosWebApi.Persistence.Repositories
 
         public async Task<bool> DeleteUser(string userId)
         {
-            var filter = Builders<DatabaseUser>.Filter.Eq( "_id", new ObjectId(userId));
+            var filter = Builders<DatabaseUser>.Filter.Eq("_id", new ObjectId(userId));
             var dbUsers = await _dbService.Users.FindAsync(filter);
             var dbUser = dbUsers.FirstOrDefault();
 
@@ -111,9 +104,9 @@ namespace MerosWebApi.Persistence.Repositories
             if (dbUser == null)
                 return null;
 
-            return UserPropertyAssighner.MapFrom(dbUser) ;
+            return UserPropertyAssighner.MapFrom(dbUser);
         }
-        
+
         public async Task<User> GetUserByVerificationCode(string uniqCode)
         {
             var dbUsers = await _dbService.Users
@@ -126,7 +119,7 @@ namespace MerosWebApi.Persistence.Repositories
 
         public async Task<User> GetUserById(string id)
         {
-            var filter = Builders<DatabaseUser>.Filter.Eq("_id", new ObjectId(id) );
+            var filter = Builders<DatabaseUser>.Filter.Eq("_id", new ObjectId(id));
             var dbUsers = await _dbService.Users.FindAsync(filter);
             var dbUser = dbUsers.FirstOrDefault();
 

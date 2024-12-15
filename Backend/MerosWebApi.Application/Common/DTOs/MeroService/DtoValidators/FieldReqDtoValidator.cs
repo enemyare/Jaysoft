@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using FluentValidation;
+﻿using FluentValidation;
 using MerosWebApi.Core.Models;
 using MerosWebApi.Core.Models.Questions;
 using MongoDB.Driver;
+using System.Reflection;
 
 namespace MerosWebApi.Application.Common.DTOs.MeroService.DtoValidators
 {

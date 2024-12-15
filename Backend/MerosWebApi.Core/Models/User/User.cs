@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MerosWebApi.Core.Models.User
+﻿namespace MerosWebApi.Core.Models.User
 {
     public class User
     {
@@ -35,8 +29,6 @@ namespace MerosWebApi.Core.Models.User
         public string? VerificationCode { get; set; }
 
         public DateTime? VerificationCodeCreatedAt { get; set; }
-
-        //public DateTime? LastVerificationCodeCreateAt { get; set; }
 
         public int VerificationCodeCount { get; set; }
 

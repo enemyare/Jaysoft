@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MerosWebApi.Core.Models.User
+﻿namespace MerosWebApi.Core.Models.User
 {
     public class UserStatistic
     {
@@ -12,11 +6,15 @@ namespace MerosWebApi.Core.Models.User
         public int ParticipantsCount { get; set; }
         public int UserRegistredMerosCount { get; set; }
 
-        public UserStatistic()
+        public UserStatistic() : this(0, 0, 0)
         {
-            CreatedMerosCount = 0;
-            ParticipantsCount = 0;
-            UserRegistredMerosCount = 0;
+        }
+
+        public UserStatistic(int createdMeros, int participantsCount, int userRegistred)
+        {
+            CreatedMerosCount = createdMeros;
+            ParticipantsCount = participantsCount;
+            UserRegistredMerosCount = userRegistred;
         }
     }
 }

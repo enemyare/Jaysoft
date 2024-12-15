@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MerosWebApi.Core.Models.Mero;
+﻿using MerosWebApi.Core.Models.Mero;
 using MerosWebApi.Core.Models.PhormAnswer;
 
 namespace MerosWebApi.Core.Repository

@@ -1,14 +1,5 @@
 ﻿using MerosWebApi.Application.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using MimeKit;
-using MimeKit.Text;
 using System.Net.Mail;
-using MailKit.Security;
 
 namespace MerosWebApi.Application.Common.EmailSender
 {
@@ -21,8 +12,8 @@ namespace MerosWebApi.Application.Common.EmailSender
         public EmailSender(IEmailConfiguration configuration)
         {
             _configuration = configuration;
-            if(!MailAddress.TryCreate(configuration.EmailAddress, out myAddress))
-               throw new ArgumentException("Not Valid EmailAddress");
+            if (!MailAddress.TryCreate(configuration.EmailAddress, out myAddress))
+                throw new ArgumentException("Not Valid EmailAddress");
         }
 
         public async Task<bool> SendAsync(string toEmail, string subject, string htmlContent)

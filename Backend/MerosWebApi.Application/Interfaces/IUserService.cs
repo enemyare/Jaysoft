@@ -1,6 +1,5 @@
 ﻿using MerosWebApi.Application.Common.DTOs.MeroService;
 using MerosWebApi.Application.Common.DTOs.UserService;
-using MerosWebApi.Application.Common.SecurityHelpers;
 
 namespace MerosWebApi.Application.Interfaces
 {

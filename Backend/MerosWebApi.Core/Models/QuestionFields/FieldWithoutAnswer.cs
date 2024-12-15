@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using MerosWebApi.Core.Models.Exceptions;
-using static System.Net.Mime.MediaTypeNames;
+﻿using MerosWebApi.Core.Models.Exceptions;
 
 namespace MerosWebApi.Core.Models.Questions
 {

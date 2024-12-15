@@ -1,8 +1,10 @@
 ﻿using Asp.Versioning;
 using MerosWebApi.Application.Common.DTOs;
 using MerosWebApi.Application.Common.DTOs.MeroService;
+using MerosWebApi.Application.Common.DTOs.MeroService.ResDtos;
 using MerosWebApi.Application.Common.DTOs.UserService;
 using MerosWebApi.Application.Common.Exceptions;
+using MerosWebApi.Application.Common.Exceptions.Common;
 using MerosWebApi.Application.Interfaces;
 using MerosWebApi.Core.Models.Exceptions;
 using Microsoft.AspNetCore.Authorization;
@@ -80,7 +82,7 @@ namespace MerosWebApi.Controllers.V1
                 return StatusCode((int)HttpStatusCode.Forbidden,
                     new MyResponseMessage(ex.Message) );
             }
-            catch (MeroNotFoundException ex)
+            catch (EntityNotFoundException ex)
             {
                 return NotFound(new MyResponseMessage(ex.Message));
             }
@@ -113,7 +115,7 @@ namespace MerosWebApi.Controllers.V1
                 var meroDto = await _meroService.GetMeroByIdAsync(meroId);
                 return Ok(meroDto);
             }
-            catch (MeroNotFoundException ex)
+            catch (EntityNotFoundException ex)
             {
                 return NotFound(new MyResponseMessage(ex.Message));
             }
@@ -143,7 +145,7 @@ namespace MerosWebApi.Controllers.V1
                 var meroDto = await _meroService.GetMeroByInviteCodeAsync(inviteCode);
                 return Ok(meroDto);
             }
-            catch (MeroNotFoundException ex)
+            catch (EntityNotFoundException ex)
             {
                 return NotFound(new MyResponseMessage(ex.Message));
             }
@@ -179,7 +181,7 @@ namespace MerosWebApi.Controllers.V1
 
                 return UnprocessableEntity(new MyResponseMessage(querryResult.Message));
             }
-            catch (MeroNotFoundException ex)
+            catch (EntityNotFoundException ex)
             {
                 return NotFound(new MyResponseMessage(ex.Message));
             }
@@ -250,7 +252,7 @@ namespace MerosWebApi.Controllers.V1
                 var phormAnswerResDto = await _meroService.GetMeroPhormAnswerByIdAsync(phormId);
                 return Ok(phormAnswerResDto);
             }
-            catch (MeroNotFoundException ex)
+            catch (EntityNotFoundException ex)
             {
                 return NotFound(new MyResponseMessage(ex.Message));
             }

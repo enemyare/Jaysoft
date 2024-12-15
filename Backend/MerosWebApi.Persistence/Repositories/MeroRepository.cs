@@ -1,21 +1,12 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
-using MerosWebApi.Core.Models;
-using MerosWebApi.Core.Models.Mero;
+﻿using MerosWebApi.Core.Models.Mero;
 using MerosWebApi.Core.Models.PhormAnswer;
 using MerosWebApi.Core.Repository;
 using MerosWebApi.Persistence.Entites;
 using MerosWebApi.Persistence.Helpers;
 using MerosWebApi.Persistence.Repositories.MyDbExceptions;
 using MongoDB.Bson;
-using MongoDB.Bson.IO;
 using MongoDB.Driver;
+using System.Linq.Expressions;
 
 namespace MerosWebApi.Persistence.Repositories
 {
@@ -31,7 +22,7 @@ namespace MerosWebApi.Persistence.Repositories
         public async Task<Mero> GetMeroByIdAsync(string meroId)
         {
             var fitler = Builders<DatabaseMero>.Filter
-                .Eq( "_id", new ObjectId(meroId));
+                .Eq("_id", new ObjectId(meroId));
             var meros = await _dbService.Meros.FindAsync(fitler);
             var mero = meros.FirstOrDefault();
 
@@ -167,14 +158,14 @@ namespace MerosWebApi.Persistence.Repositories
 
             var phormAnswer = findQuerry.FirstOrDefault();
 
-            if(phormAnswer == null)
+            if (phormAnswer == null)
                 return null;
 
             var answers = phormAnswer.Answers
                 .Select(a => new Answer(a.QuestionText, a.QuestionAnswers))
                 .ToList();
 
-            var timePeriods = await GetTimePeriodsAsync(new []{ phormAnswer.TimePeriodId });
+            var timePeriods = await GetTimePeriodsAsync(new[] { phormAnswer.TimePeriodId });
             var period = timePeriods.FirstOrDefault();
 
             return PhormAnswer.Create(phormAnswer.Id, phormAnswer.MeroId, phormAnswer.UserId,

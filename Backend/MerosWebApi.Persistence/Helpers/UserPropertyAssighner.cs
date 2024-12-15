@@ -1,7 +1,5 @@
 ﻿using MerosWebApi.Core.Models.User;
 using MerosWebApi.Persistence.Entites;
-using System.Linq.Expressions;
-using System.Reflection;
 
 namespace MerosWebApi.Persistence.Helpers
 {
@@ -11,7 +9,7 @@ namespace MerosWebApi.Persistence.Helpers
     /// </summary>
     /// <typeparam name="TObjTo">Объект, которому надо присвоить значения свойств.</typeparam>
     /// <typeparam name="TObjFrom">Объект, с которого надо считать свойства.</typeparam>
-    public class UserPropertyAssighner 
+    public class UserPropertyAssighner
         : IPropertyAssigner<DatabaseUser, User>,
         IPropertyAssigner<User, DatabaseUser>,
         IPropertyValuesAssigner<DatabaseUser, User>
@@ -60,7 +58,6 @@ namespace MerosWebApi.Persistence.Helpers
                 UnconfirmedEmailCount = source.UnconfirmedEmailCount,
                 VerificationCode = source.VerificationCode,
                 VerificationCodeCreatedAt = source.VerificationCodeCreatedAt,
-                //LastVerificationCodeCreateAt = source.LastVerificationCodeCreateAt,
                 VerificationCodeCount = source.VerificationCodeCount,
                 RefreshToken = source.RefreshToken,
                 TokenCreated = source.TokenCreated,

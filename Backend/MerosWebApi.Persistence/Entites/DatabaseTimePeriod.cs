@@ -1,10 +1,5 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace MerosWebApi.Persistence.Entites
 {
@@ -25,7 +20,7 @@ namespace MerosWebApi.Persistence.Entites
         [BsonElement("total_places")]
         [BsonRequired]
         public int TotalPlaces { get; set; }
-        
+
         [BsonElement("booked_places")]
         [BsonRequired]
         public int BookedPlaces { get; set; }

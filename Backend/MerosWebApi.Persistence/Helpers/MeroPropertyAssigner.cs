@@ -1,11 +1,5 @@
-﻿using MerosWebApi.Core.Models;
+﻿using MerosWebApi.Core.Models.Mero;
 using MerosWebApi.Persistence.Entites;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MerosWebApi.Core.Models.Mero;
 
 namespace MerosWebApi.Persistence.Helpers
 {
@@ -25,7 +19,7 @@ namespace MerosWebApi.Persistence.Helpers
                 Fields = from.Fields
                     .Select(f => FieldPropertyAssigner.MapFrom(f))
                     .ToList(),
-                Files = from.Files, 
+                Files = from.Files,
                 Name = from.Name,
                 TimePeriods = from.TimePeriods
                     .Select(p => p.Id).ToList()
@@ -42,7 +36,7 @@ namespace MerosWebApi.Persistence.Helpers
             to.Fields = from.Fields
                 .Select(f => FieldPropertyAssigner.MapFrom(f))
                 .ToList();
-            to.Files = from.Files; 
+            to.Files = from.Files;
             to.Name = from.Name;
             to.TimePeriods = from.TimePeriods
                 .Select(p => p.Id).ToList();

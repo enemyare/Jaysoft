@@ -1,8 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
-
-using MerosWebApi.Core.Repository;
+﻿using MerosWebApi.Core.Repository;
 using MerosWebApi.Persistence.Repositories;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace MerosWebApi.Persistence
 {

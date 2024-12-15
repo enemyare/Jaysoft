@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices.JavaScript;
-using System.Text;
-using System.Threading.Tasks;
-using MerosWebApi.Core.Models.Exceptions;
+﻿using MerosWebApi.Core.Models.Exceptions;
 
 namespace MerosWebApi.Core.Models.Mero
 {
@@ -34,7 +28,7 @@ namespace MerosWebApi.Core.Models.Mero
 
             if (totalPlaces <= 0)
                 throw new NotValidTimePeriodException("Число мест на период мероприятия должно быть больше нуля");
-            
+
             Id = id;
             StartTime = startTime;
             EndTime = endTime;

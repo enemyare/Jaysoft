@@ -1,21 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
-using MerosWebApi.Application.Common;
+﻿using MerosWebApi.Application.Common;
 using MerosWebApi.Application.Common.DTOs.MeroService;
 using MerosWebApi.Application.Common.DTOs.UserService;
 using MerosWebApi.Application.Common.Exceptions;
-using MerosWebApi.Application.Common.SecurityHelpers;
+using MerosWebApi.Application.Common.SecurityHelpers.Generators;
 using MerosWebApi.Application.Interfaces;
 using MerosWebApi.Core.Models.User;
 using MerosWebApi.Core.Repository;
 using Microsoft.Extensions.FileProviders;
-using MongoDB.Bson;
-using ZstdSharp.Unsafe;
+using System.Reflection;
+using MerosWebApi.Application.Common.Exceptions.Common;
+using MerosWebApi.Application.Common.Exceptions.EmailExceptions;
+using MerosWebApi.Application.Common.Exceptions.UserExceptions;
 
 namespace MerosWebApi.Application.Services
 {
@@ -72,8 +67,8 @@ namespace MerosWebApi.Application.Services
                 if (isMaxCountExceeded && !isWaitingTimePassed)
                 {
                     var secondsToWait = _appSettings.LoginFailedWaitingTime - loginFailedPassed;
-                    
-                    throw new TooManyFailedLoginAttemptsException(string.Format(
+
+                    throw new TooManyAttemptsException(string.Format(
                         "You must wait for {0} seconds before you try to log in again.", secondsToWait));
                 }
             }
@@ -98,7 +93,7 @@ namespace MerosWebApi.Application.Services
             user.VerificationCode = null;
             user.VerificationCodeCount = 0;
             user.VerificationCodeCreatedAt = null;
-            
+
 
             await _repository.UpdateUser(user);
 
@@ -204,7 +199,7 @@ namespace MerosWebApi.Application.Services
             {
                 var secondsToWait = _appSettings.VerificationCodeWaitingTime - secondsPassed;
 
-                throw new TooManyChangeEmailAttemptsException(
+                throw new TooManyAttemptsException(
                     string.Format("You must wait for {0} seconds before you try to change email again.",
                     secondsToWait));
             }
@@ -271,7 +266,7 @@ namespace MerosWebApi.Application.Services
             {
                 var secondsToWait = _appSettings.UnconfirmedEmailWaitingTime - secondsPassed;
 
-                throw new TooManyChangeEmailAttemptsException(
+                throw new TooManyAttemptsException(
                     string.Format("You must wait for {0} seconds before you try to change email again."),
                     secondsToWait);
             }
