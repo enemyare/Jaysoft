@@ -143,7 +143,7 @@ namespace MerosWebApi.Application
                         },
                         OnMessageReceived = context =>
                         {
-                            context.Token = context.Request.Cookies["mrsASC"];
+                            context.Token = context.Request.Cookies["authToken"];
 
                             return Task.CompletedTask;
                         }

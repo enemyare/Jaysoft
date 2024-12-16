@@ -129,7 +129,7 @@ namespace MerosWebApi.Persistence.Repositories
             return UserPropertyAssighner.MapFrom(dbUser);
         }
 
-        public async Task<User> GetUserByUnconfirmedCode(string unconfirmedCode)
+        public async Task<User> GetUserByUnconfirmedEmailCode(string unconfirmedCode)
         {
             var filter = Builders<DatabaseUser>.Filter.Eq("unconf_email_code", unconfirmedCode);
 

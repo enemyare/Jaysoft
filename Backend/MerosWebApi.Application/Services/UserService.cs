@@ -30,6 +30,8 @@ namespace MerosWebApi.Application.Services
 
         const int AUTH_CODE_LENGTH = 7;
 
+        const int UNCONFEMAIL_CODE_LENGTH = 7;
+
         public UserService(IUserRepository repository, IPasswordHelper passwordHelper,
             IEmailSender emailSender, AppSettings appSettings, ITokenGenerator generator)
         {
@@ -48,37 +50,14 @@ namespace MerosWebApi.Application.Services
             if (user == null)
                 throw new AuthenticationException("Пользователь с таким кодом авторизации не найден");
 
-            if (user.LoginFailedAt != null)
+            var verifCodePassed = DateTime.Now.Subtract(
+                user.VerificationCodeCreatedAt.GetValueOrDefault()).Minutes;
+
+            var isVerifCodeExpires = verifCodePassed > _appSettings.VerificationCodeExpiresMinutes;
+
+            if (isVerifCodeExpires)
             {
-                var loginFailedPassed = DateTime.Now.Subtract(
-                    user.LoginFailedAt.GetValueOrDefault()).Seconds;
-
-                var verifCodePassed = DateTime.Now.Subtract(
-                    user.VerificationCodeCreatedAt.GetValueOrDefault()).Minutes;
-
-                var isMaxCountExceeded = user.LoginFailedCount >= _appSettings.MaxLoginFailedCount;
-                var isWaitingTimePassed = loginFailedPassed > _appSettings.LoginFailedWaitingTime;
-                var isVerifCodeExpires = verifCodePassed > _appSettings.VerificationCodeExpiresMinutes;
-
-                if (isVerifCodeExpires)
-                {
-                    throw new TimeExpiredException("Срок дейстия кода авторизации истек, пожалуйста получите новый");
-                }
-                if (isMaxCountExceeded && !isWaitingTimePassed)
-                {
-                    var secondsToWait = _appSettings.LoginFailedWaitingTime - loginFailedPassed;
-
-                    throw new TooManyAttemptsException(string.Format(
-                        "You must wait for {0} seconds before you try to log in again.", secondsToWait));
-                }
-            }
-
-            if (authCode != user.VerificationCode)
-            {
-                user.LoginFailedCount += 1;
-                user.LoginFailedAt = DateTime.Now;
-                await _repository.UpdateUser(user);
-                throw new AuthenticationException("The email or password is incorrect");
+                throw new TimeExpiredException("Срок дейстия кода авторизации истек, пожалуйста получите новый");
             }
 
             //Authentication successful
@@ -238,9 +217,10 @@ namespace MerosWebApi.Application.Services
 
         public async Task ConfirmEmailAsync(string code)
         {
-            var user = await _repository.GetUserByUnconfirmedCode(code);
+            var user = await _repository.GetUserByUnconfirmedEmailCode(code);
+
             if (user == null)
-                throw new EntityNotFoundException("Somethin went wrong... Please contact support");
+                throw new EntityNotFoundException("Пользователь с таким кодом подтверждения почты не найден.");
 
             user.Email = user.UnconfirmedEmail;
             user.UnconfirmedEmail = null;
@@ -272,7 +252,7 @@ namespace MerosWebApi.Application.Services
             }
 
             user.UnconfirmedEmail = newEmail;
-            user.UnconfirmedEmailCode = _passwordHelper.GenerateRandomString(30) + Guid.NewGuid();
+            user.UnconfirmedEmailCode = await CreateUniqueUnconfEmailCode();
             user.UnconfirmedEmailCount += 1;
             user.UnconfirmedEmailCreatedAt = DateTime.UtcNow;
 
@@ -297,6 +277,18 @@ namespace MerosWebApi.Application.Services
             var inviteCode = RandomStringGenerator.GenerateRandomString(AUTH_CODE_LENGTH);
 
             while (await _repository.GetUserByVerificationCode(inviteCode) != null)
+            {
+                inviteCode = RandomStringGenerator.GenerateRandomString(AUTH_CODE_LENGTH);
+            }
+
+            return inviteCode;
+        }
+
+        private async Task<string> CreateUniqueUnconfEmailCode()
+        {
+            var inviteCode = RandomStringGenerator.GenerateRandomString(UNCONFEMAIL_CODE_LENGTH);
+
+            while (await _repository.GetUserByUnconfirmedEmailCode(inviteCode) != null)
             {
                 inviteCode = RandomStringGenerator.GenerateRandomString(AUTH_CODE_LENGTH);
             }
