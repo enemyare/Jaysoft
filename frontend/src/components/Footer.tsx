@@ -1,5 +1,5 @@
 import type { FC } from "react"
-import { Link, NavLink } from "react-router-dom"
+import { Link } from "react-router-dom"
 
 
 const Footer: FC = () => {
@@ -7,19 +7,19 @@ const Footer: FC = () => {
     <footer className={"text-[20px] flex justify-between"}>
       <div className={"flex flex-col justify-between"}>
         <h2 className={"font-semibold mb-5 text-2xl"}>Мероприятия</h2>
-        <NavLink className={""} to={"/createform"}>
+        <Link className={""} to={"/createForm"}>
           <button className={"border border-primary-text bg-primary-text text-white rounded-xl px-4 py-1.5"}>Создать форму бронирования</button>
-        </NavLink>
+        </Link>
       </div>
       <div>
         <h2 className={"font-semibold mb-5 text-2xl"}>Разделы</h2>
         <nav className={"text-secondary-text"}>
           <ul className={"flex flex-col gap-2"}>
             <li>
-              <NavLink to={"/"}>Главная</NavLink>
+              <Link to={"/"}>Главная</Link>
             </li>
             <li>
-              <NavLink to={"/heq"}>Для организаторов</NavLink>
+              <Link to={"#"}>Для организаторов</Link>
             </li>
           </ul>
         </nav>

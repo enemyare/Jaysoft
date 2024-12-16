@@ -7,9 +7,8 @@ import addEventCard from "../assets/addEventCard.svg"
 import { Link, useNavigate } from "react-router-dom"
 import { mock } from "../mock"
 import type { SubmitHandler} from "react-hook-form";
-import { useFieldArray } from "react-hook-form"
 import { useForm } from "react-hook-form"
-import Cookies from "js-cookie";
+import Cookies from "js-cookie"
 
 export interface IEmail {
   email: string
@@ -23,7 +22,7 @@ const Profile: FC = () => {
     console.log(data)
   }
   const onLogout = () => {
-    //Cookies.remove('mrsASC', { path: '/' })
+    //Cookies.remove('authToken', { path: '/' })
     navigate('/')
   }
 

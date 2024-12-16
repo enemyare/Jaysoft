@@ -11,23 +11,18 @@ import FormFilledSuccess from "../pages/FormFilledSuccess"
 import EditMero from "../pages/EditMero"
 import AuthConfirm from "../pages/AuthConfirm"
 import { Navigate } from "react-router-dom";
-import type { ReactNode } from "react";
+import type { FC, ReactNode } from "react"
+import Cookies from "js-cookie"
 
 interface PrivateRouteProps {
   children: ReactNode;
 }
 
-const getCookie = (name: string): string | null => {
-  const match = document.cookie.match(new RegExp(`(^| )${name}=([^;]+)`));
-  return match ? decodeURIComponent(match[2]) : null;
-};
-
 const isAuthenticated = (): boolean => {
-  return !!getCookie("mrsASC");
+  return !!Cookies.get("authToken");
 };
 
-
-const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
+const PrivateRoute: FC<PrivateRouteProps> = ({ children }) => {
   return isAuthenticated() ? children : <Navigate to="/auth" replace />;
 };
 

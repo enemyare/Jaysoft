@@ -16,7 +16,7 @@ const inviteCodeRequest = async (url: string) => {
 
 const Home: FC = () => {
   const [inviteCode, setInviteCode] = useState<string>('')
-  const {data, error} = useSWR('http://localhost:5000/api/Mero/by-invite-code/9WQLLSFW', inviteCodeRequest)
+  // const {data, error} = useSWR('http://localhost:5000/api/Mero/by-invite-code/9WQLLSFW', inviteCodeRequest)
   // const {trigger} = useSWRMutation(`http://localhost:5000/api/Mero/by-invite-code/${inviteCode}`, inviteCodeRequest)
 
   // const handleSubmit = async () => {
