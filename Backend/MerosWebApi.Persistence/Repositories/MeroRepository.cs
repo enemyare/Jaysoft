@@ -123,7 +123,7 @@ namespace MerosWebApi.Persistence.Repositories
                         })
                         .ToList(),
                         TimePeriodId = phormAnswer.TimePeriod.Id,
-                        CreatedTime = DateTime.UtcNow
+                        CreatedTime = DateTime.Now
                     };
 
                     // Добавляем новый ответ в коллекцию

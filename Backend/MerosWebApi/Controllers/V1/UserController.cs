@@ -59,8 +59,9 @@ namespace MerosWebApi.Controllers.V1
             {
                 var logInResult = await _userService.LogInAsync(logInReq.AuthCode);
 
-                SetRefreshTokenToCookie(logInResult.RefreshToken);
-                Response.Cookies.Append(ACCESS_COOKIE_KEY, logInResult.AccessToken);
+                SetTokenToCookie(logInResult.RefreshToken, REFRESH_COOKIE_KEY);
+
+                SetTokenToCookie(logInResult.AccessToken, ACCESS_COOKIE_KEY);
 
                 return Ok(logInResult.AuthenticationResDto);
             }
@@ -144,7 +145,7 @@ namespace MerosWebApi.Controllers.V1
                     return BadRequest(new MyResponseMessage("Refresh token в куки отсутсвует"));
 
                 var accessToken = await _userService.RefreshAccessToken(refreshToken);
-                Response.Cookies.Append(ACCESS_COOKIE_KEY, accessToken);
+                SetTokenToCookie(accessToken, ACCESS_COOKIE_KEY);
 
                 return NoContent();
             }
@@ -280,7 +281,7 @@ namespace MerosWebApi.Controllers.V1
 
         #region Private Helpers Methods
 
-        private void SetRefreshTokenToCookie(RefreshToken token)
+        private void SetTokenToCookie(MyToken token, string key)
         {
             var cookieOptions = new CookieOptions
             {
@@ -288,7 +289,7 @@ namespace MerosWebApi.Controllers.V1
                 Expires = token.Expires
             };
 
-            Response.Cookies.Append(REFRESH_COOKIE_KEY, token.Token, cookieOptions);
+            Response.Cookies.Append(key, token.Token, cookieOptions);
         }
 
         #endregion

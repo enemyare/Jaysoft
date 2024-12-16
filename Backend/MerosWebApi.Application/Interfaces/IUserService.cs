@@ -1,5 +1,6 @@
 ﻿using MerosWebApi.Application.Common.DTOs.MeroService;
 using MerosWebApi.Application.Common.DTOs.UserService;
+using MerosWebApi.Application.Common.SecurityHelpers;
 
 namespace MerosWebApi.Application.Interfaces
 {
@@ -7,7 +8,7 @@ namespace MerosWebApi.Application.Interfaces
     {
         public Task<LogInResult> LogInAsync(string authCode);
 
-        public Task<string> RefreshAccessToken(string RefreshToken);
+        public Task<MyToken> RefreshAccessToken(string RefreshToken);
 
         public Task<bool> DeleteAsync(string id, string userId);
 

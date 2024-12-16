@@ -11,6 +11,7 @@ using System.Reflection;
 using MerosWebApi.Application.Common.Exceptions.Common;
 using MerosWebApi.Application.Common.Exceptions.EmailExceptions;
 using MerosWebApi.Application.Common.Exceptions.UserExceptions;
+using MerosWebApi.Application.Common.SecurityHelpers;
 
 namespace MerosWebApi.Application.Services
 {
@@ -83,7 +84,7 @@ namespace MerosWebApi.Application.Services
             return new LogInResult(responseDto, accessToken, refreshToken);
         }
 
-        public async Task<string> RefreshAccessToken(string refreshToken)
+        public async Task<MyToken> RefreshAccessToken(string refreshToken)
         {
             var user = await _repository.GetUserByRefreshToken(refreshToken);
 
@@ -254,7 +255,7 @@ namespace MerosWebApi.Application.Services
             user.UnconfirmedEmail = newEmail;
             user.UnconfirmedEmailCode = await CreateUniqueUnconfEmailCode();
             user.UnconfirmedEmailCount += 1;
-            user.UnconfirmedEmailCreatedAt = DateTime.UtcNow;
+            user.UnconfirmedEmailCreatedAt = DateTime.Now;
 
             // Prepare email template.
             string relativePath = Path.Combine("Resources",

@@ -4,8 +4,8 @@ namespace MerosWebApi.Application.Interfaces
 {
     public interface ITokenGenerator
     {
-        public string GenerateAccessToken(string userId);
+        public MyToken GenerateAccessToken(string userId);
 
-        public RefreshToken GenerateRefreshToken();
+        public MyToken GenerateRefreshToken();
     }
 }
