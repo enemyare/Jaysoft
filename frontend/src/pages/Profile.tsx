@@ -4,21 +4,27 @@ import Input from "../components/input/Input"
 import logout from "../assets/logout.svg"
 import FormCard from "../components/FormCard"
 import addEventCard from "../assets/addEventCard.svg"
-import { Link, Outlet } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { mock } from "../mock"
 import type { SubmitHandler} from "react-hook-form";
 import { useFieldArray } from "react-hook-form"
 import { useForm } from "react-hook-form"
- 
+import Cookies from "js-cookie";
+
 export interface IEmail {
   email: string
 }
 
 export const MeroInfoContext = createContext(mock)
 const Profile: FC = () => {
+  const navigate = useNavigate()
   const {register, handleSubmit, formState} = useForm<IEmail>()
   const onSubmit: SubmitHandler<IEmail> = (data) => {
     console.log(data)
+  }
+  const onLogout = () => {
+    //Cookies.remove('mrsASC', { path: '/' })
+    navigate('/')
   }
 
   return (
@@ -44,7 +50,7 @@ const Profile: FC = () => {
               />
             </form>
           </div>
-          <button className={"base-btn w-[248px] bg-danger"}>
+          <button className={"base-btn w-[248px] bg-danger"} onClick={()=>{onLogout()}}>
             <img src={logout} alt="" className={"inline-block mr-2.5 pb-1"} />
             Выйти из аккаунта
           </button>

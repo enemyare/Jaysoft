@@ -9,6 +9,27 @@ import DetailedMero from "../pages/DetailedMero"
 import Form from "../pages/Form"
 import FormFilledSuccess from "../pages/FormFilledSuccess"
 import EditMero from "../pages/EditMero"
+import AuthConfirm from "../pages/AuthConfirm"
+import { Navigate } from "react-router-dom";
+import type { ReactNode } from "react";
+
+interface PrivateRouteProps {
+  children: ReactNode;
+}
+
+const getCookie = (name: string): string | null => {
+  const match = document.cookie.match(new RegExp(`(^| )${name}=([^;]+)`));
+  return match ? decodeURIComponent(match[2]) : null;
+};
+
+const isAuthenticated = (): boolean => {
+  return !!getCookie("mrsASC");
+};
+
+
+const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
+  return isAuthenticated() ? children : <Navigate to="/auth" replace />;
+};
 
 export const router= createBrowserRouter([
   {
@@ -21,21 +42,29 @@ export const router= createBrowserRouter([
       },
       {
         path: "createForm",
-        element: <FormCreate/>
+        element:
+          <PrivateRoute>
+            <FormCreate/>
+          </PrivateRoute>
       },
       {
         path: "successForm",
-        element: <FormCreated/>
+        element:
+          <PrivateRoute>
+            <FormCreated/>
+          </PrivateRoute>
       },
       {
         path: "profile",
         element:
-          <Profile/>,
-
+          <PrivateRoute>
+            <Profile/>
+          </PrivateRoute>
       },
       {
         path: "detailedMero/:id",
-        element: <DetailedMero/>
+        element:
+            <DetailedMero/>
       },
       {
         path: "form/:id",
@@ -56,5 +85,9 @@ export const router= createBrowserRouter([
     path: "/auth",
     element: <Auth />
   },
+  {
+    path: "/authConfirm",
+    element: <AuthConfirm/>
+  }
 
 ])

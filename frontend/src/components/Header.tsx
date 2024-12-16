@@ -2,9 +2,10 @@ import type { FC } from "react"
 import logo from "../assets/logo.svg"
 import profile from "../assets/profile.svg"
 import { NavLink } from "react-router-dom"
+import Cookies from "js-cookie"
 
 const Header: FC = () => {
-  const isAuth = false
+  const isAuth = Cookies.get("mrsASC")
   return (
     <header className="flex items-center text-[20px]">
       <img className="pt-1.5" src={logo} />
