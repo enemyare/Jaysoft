@@ -20,3 +20,7 @@ export interface ICreateForm {
 export interface IauthForm {
   email: string
 }
+
+export interface IauthCodeForm {
+  authCode: string
+}

@@ -16,10 +16,9 @@ const inviteCodeRequest = async (url: string) => {
 
 const Home: FC = () => {
   const [inviteCode, setInviteCode] = useState<string>('')
-  const {data, error} = useSWR('https://fakestoreapi.com/products', inviteCodeRequest)
+  const {data, error} = useSWR('http://localhost:5000/api/Mero/by-invite-code/9WQLLSFW', inviteCodeRequest)
   // const {trigger} = useSWRMutation(`http://localhost:5000/api/Mero/by-invite-code/${inviteCode}`, inviteCodeRequest)
-  const navigate = useNavigate()
-  console.log(data)
+
   // const handleSubmit = async () => {
   //   try {
   //     const result = await trigger()
@@ -42,7 +41,7 @@ const Home: FC = () => {
           placeholder={"Код мероприятия"}
           value={inviteCode}
           onChange={(e) => setInviteCode(e.target.value)} />
-        <button className={"arrow-btn px-[18px]"} onClick={()=>{setTimeout(()=>{navigate("form/FXCABLQA")}, 1000)}}>
+        <button className={"arrow-btn px-[18px]"} >
           <img className={"h-6 w-6"} src={arrow}/>
         </button>
       </div>
