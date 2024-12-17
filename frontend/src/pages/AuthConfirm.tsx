@@ -15,13 +15,12 @@ const AuthConfirm: FC = () => {
   const {register, handleSubmit, formState} = useForm<IauthCodeForm>()
   const  {data, trigger, isMutating, error} = useSWRMutation(
     'http://localhost:5000/api/User/log-in',
-    sendRequest,
-    {}
+    sendRequest
   )
 
-  if (data?.ok === true){
-    navigate('/')
-  }
+  // if (data?.ok === true){
+  //   navigate('/')
+  // }
 
   const onSumbit: SubmitHandler<IauthCodeForm> = (data) => {
     trigger(data)
@@ -35,7 +34,7 @@ const AuthConfirm: FC = () => {
           <h1 className={"font-semibold text-[26px] text-center spread "}>Почти всёт</h1>
         </div>
         <h3 className={"text-center"}>
-          Мы отправили код на почту {email}
+          Мы отправили код на почту {email}
         </h3>
         <div>
           <form onSubmit={handleSubmit(onSumbit)}>
