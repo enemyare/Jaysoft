@@ -1,14 +1,15 @@
 ﻿using MerosWebApi.Core.Models.Exceptions;
+using MerosWebApi.Core.Models.Questions;
 
-namespace MerosWebApi.Core.Models.Questions
+namespace MerosWebApi.Core.Models.QuestionFields.HavePossibleAnswers
 {
     public class SelectOneQuestion : Field, IHavePossibleAnswers
     {
         public SelectOneQuestion(string questionText, bool required, List<string> answers)
-            : base(questionText, nameof(SelectOneQuestion), required)
+            : base(questionText, "radiobutton", required)
         {
             if (answers == null || answers.Count < 1)
-                throw new FieldException($"Поле {nameof(SelectOneQuestion)} должно иметь как " +
+                throw new FieldException($"Поле {Type} должно иметь как " +
                                          $"минимум один вариант ответа");
 
             PossibleAnswers = answers;
@@ -19,7 +20,7 @@ namespace MerosWebApi.Core.Models.Questions
         public void AddPossibleAnswer(string answer)
         {
             if (string.IsNullOrWhiteSpace(answer))
-                throw new FieldException($"В {nameof(SelectOneQuestion)} ответ должен быть не null, или " +
+                throw new FieldException($"В {Type} ответ должен быть не null, или " +
             $"пустой строкой, или пробелом");
 
             PossibleAnswers.Add(answer);
@@ -36,10 +37,10 @@ namespace MerosWebApi.Core.Models.Questions
                 return answers.ToList();
 
             if (answers.Length != 1)
-                throw new FieldException($"Поле {nameof(SelectOneQuestion)} должено иметь один ответ");
+                throw new FieldException($"Поле {Type} должено иметь один ответ");
 
             if (!PossibleAnswers.Any(ans => ans == answers[0]))
-                throw new FieldException($"В {nameof(SelectOneQuestion)} не существует такого ответа {answers}");
+                throw new FieldException($"В {Type} не существует такого ответа {answers}");
 
             return new List<string>() { answers[0] };
         }

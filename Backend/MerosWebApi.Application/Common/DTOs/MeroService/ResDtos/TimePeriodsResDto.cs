@@ -10,6 +10,10 @@ namespace MerosWebApi.Application.Common.DTOs.MeroService
 
         public DateTime EndTime { get; set; }
 
+        public int TotalPlaces { get; set; }
+
+        public int TotalBookedPlaces { get; set; }
+
         public static TimePeriodsResDto Map(TimePeriod timePeriod)
         {
             return new TimePeriodsResDto
@@ -17,6 +21,8 @@ namespace MerosWebApi.Application.Common.DTOs.MeroService
                 Id = timePeriod.Id,
                 StartTime = timePeriod.StartTime,
                 EndTime = timePeriod.EndTime,
+                TotalPlaces = timePeriod.TotalPlaces,
+                TotalBookedPlaces = timePeriod.BookedPlaces
             };
         }
     }

@@ -4,7 +4,7 @@ namespace MerosWebApi.Application.Common.DTOs.MeroService.ResDtos
 {
     public class FieldResDto
     {
-        public string Text { get; set; }
+        public string Label { get; set; }
 
         public string Type { get; set; }
 
@@ -16,7 +16,7 @@ namespace MerosWebApi.Application.Common.DTOs.MeroService.ResDtos
         {
             return new FieldResDto
             {
-                Text = field.Text,
+                Label = field.Text,
                 Type = field.Type,
                 Required = field.Required,
                 Answers = field.Answers,

@@ -19,6 +19,7 @@ namespace MerosWebApi.Application.Common.DTOs.MeroService
                     .Select(a => AnswerResDto.Map(a))
                     .ToList(),
                 TimePeriod = TimePeriodShortResDto.Map(phormAnswer.TimePeriod),
+                CreatedTime = phormAnswer.CreatedTime,
             };
         }
     }

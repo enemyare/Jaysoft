@@ -231,7 +231,7 @@ namespace MerosWebApi.Application.Services
             {
                 try
                 {
-                    var field = FieldFactoryMethod.CreateField(fieldReqDto.Text, fieldReqDto.Type, fieldReqDto.Required,
+                    var field = FieldFactoryMethod.CreateField(fieldReqDto.Label, fieldReqDto.Type, fieldReqDto.Required,
                         fieldReqDto.Answers);
 
                     fields.Add(field);
