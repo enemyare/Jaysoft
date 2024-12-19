@@ -35,7 +35,7 @@ namespace MerosWebApi.Controllers.V1
         /// </summary>
         /// <param name="meroReqDto">The request data</param>
         /// <returns></returns>
-        [Authorize]
+        [AllowAnonymous]
         [HttpPost]
         [ActionName(nameof(CreateMeroAsync))]
         [Produces("application/json")]
@@ -62,7 +62,7 @@ namespace MerosWebApi.Controllers.V1
         /// </summary>
         /// <param name="meroReqDto">The request data</param>
         /// <returns></returns>
-        [Authorize]
+        [AllowAnonymous]
         [HttpPost("update/{meroId}")]
         [ActionName(nameof(UpdateMeroAsync))]
         [Produces("application/json")]
@@ -162,7 +162,7 @@ namespace MerosWebApi.Controllers.V1
         /// </summary>
         /// <param name="meroId">Event id</param>
         /// <returns></returns>
-        [Authorize]
+        [AllowAnonymous]
         [HttpDelete("{meroId}")]
         [ActionName(nameof(DeleteMeroAsync))]
         [Produces("application/json")]
@@ -239,7 +239,7 @@ namespace MerosWebApi.Controllers.V1
         /// </summary>
         /// <param name="phormId">The phormId</param>
         /// <returns></returns>
-        [Authorize]
+        [AllowAnonymous]
         [HttpGet("phorm-answer/get-one/{phormId}")]
         [ActionName(nameof(GetPhormAnswerDetails))]
         [Produces("application/json")]
@@ -272,7 +272,7 @@ namespace MerosWebApi.Controllers.V1
         /// <param name="count">Count of phorms to return</param>
         /// <param name="meroId">The meroId what phroms searching for</param>
         /// <returns></returns>
-        [Authorize]
+        [AllowAnonymous]
         [HttpGet("phorm-answer/get-list-by-mero")]
         [ActionName(nameof(GetListMeroPhormsAnswersForMero))]
         [Produces("application/json")]
@@ -303,7 +303,7 @@ namespace MerosWebApi.Controllers.V1
         /// <param name="count">Count of phorms to return</param>
         /// <param name="userId">The meroId what phroms searching for</param>
         /// <returns></returns>
-        [Authorize]
+        [AllowAnonymous]
         [HttpGet("list-meros/for-user")]
         [ActionName(nameof(GetListMyRegistredMeros))]
         [Produces("application/json")]
@@ -334,7 +334,7 @@ namespace MerosWebApi.Controllers.V1
         /// <param name="count">Count of phorms to return</param>
         /// <param name="userId">The meroId what phroms searching for</param>
         /// <returns></returns>
-        [Authorize]
+        [AllowAnonymous]
         [HttpGet("list-meros/for-creator")]
         [ActionName(nameof(GetListMyCreatedMeros))]
         [Produces("application/json")]
