@@ -3,12 +3,10 @@ import { useContext } from "react"
 import { Link, useParams } from "react-router-dom"
 import FormCard from "../components/FormCard"
 import addEventCard from "../assets/addEventCard.svg"
-import { MeroInfoContext } from "./Profile"
 import { mock } from "../mock"
 
 const FormFilledSuccess: FC = () => {
   const {id} = useParams()
-  const meroInfoDetails = useContext(MeroInfoContext)
   const mero = mock.find(event => event.meroId === id)
   const styleList = 'w-full'
   return (

@@ -6,10 +6,11 @@ import { NavLink } from "react-router-dom"
 import Cookies from "js-cookie"
 
 const Header: FC = () => {
-  const [isAuth, setIsAuth] = useState<boolean>(false)
+  const [isAuth, setIsAuth] = useState<boolean>(true)
   useEffect(() => {
-    setIsAuth(!!Cookies.get("authToken")) 
+    setIsAuth(Boolean(Cookies.get("authToken")))
   })
+  console.log(Boolean(Cookies.get("authToken")))
   return (
     <header className="flex items-center text-[20px]">
       <img className="pt-1.5" src={logo} />

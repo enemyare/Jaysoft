@@ -6,16 +6,18 @@ export  interface IInput {
 
 export interface IPeriods {
   startTime: string,
-  totalPlaces: number
+  bookedPlaces: string,
+  endTime?: string,
+  totalPlaces?: number
 }
 
 export interface ICreateForm {
-  id: string,
+  id?: string,
   meetName: string,
-  creatorEmail: string,
+  creatorEmail?: string,
   description: string,
   periods: Array<IPeriods>,
-  fields: Array<IInput>
+  fields?: Array<IInput>
 }
 
 export interface IauthForm {
@@ -25,3 +27,4 @@ export interface IauthForm {
 export interface IauthCodeForm {
   authCode: string
 }
+

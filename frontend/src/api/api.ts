@@ -6,7 +6,7 @@ export async function getRequest(path: string) {
   return fetch(url, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' }
-  })
+  }).then(res => res.json())
 }
 
 export async function sendRequest(path:string, {arg}: {arg: any}){
