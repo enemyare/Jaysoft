@@ -1,13 +1,14 @@
-import { FC, useEffect } from "react"
+import { FC, useState } from "react"
+import { useEffect } from "react"
 import logo from "../assets/logo.svg"
 import profile from "../assets/profile.svg"
 import { NavLink } from "react-router-dom"
 import Cookies from "js-cookie"
 
 const Header: FC = () => {
-  let isAuth = null
+  const [isAuth, setIsAuth] = useState<boolean>(false)
   useEffect(() => {
-    isAuth= Cookies.get("authToken")
+    setIsAuth(!!Cookies.get("authToken")) 
   })
   return (
     <header className="flex items-center text-[20px]">
