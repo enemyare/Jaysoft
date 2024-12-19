@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form"
 import type { IauthCodeForm } from "../model/types"
 import useSWRMutation from "swr/mutation"
 import { useLocation, useNavigate } from "react-router-dom"
-import { sendRequest } from "../api/usePostRequest"
+import { sendRequest } from "../api/api"
 
 const AuthConfirm: FC = () => {
   const location = useLocation()
@@ -14,13 +14,13 @@ const AuthConfirm: FC = () => {
   const navigate = useNavigate()
   const {register, handleSubmit, formState} = useForm<IauthCodeForm>()
   const  {data, trigger, isMutating, error} = useSWRMutation(
-    'http://localhost:5000/api/User/log-in',
+    '/api/User/log-in',
     sendRequest
   )
 
-  // if (data?.ok === true){
-  //   navigate('/')
-  // }
+  if (data?.ok === true){
+    navigate('/')
+  }
 
   const onSumbit: SubmitHandler<IauthCodeForm> = (data) => {
     trigger(data)

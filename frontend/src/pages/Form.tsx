@@ -1,48 +1,32 @@
-import { useContext } from "react"
-import { useNavigate, useParams } from "react-router-dom"
-import { MeroInfoContext } from "./Profile"
-import type IInput from "../model/types"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
 import Input from "../components/input/Input"
 
-const mock: Array<IInput> = [
-  {
-    type: "text",
-    label: "Например, «Ваше ФИО»",
-  },
-  {
-    type: "text",
-    label: "Например, «Ваш возраст»",
-  },
-  {
-    type: "text",
-    label: "Например, «Ваш номер телефона»",
-  },
-]
+
 const Form = () => {
+  const location = useLocation()
   const {id} = useParams()
-  const meroInfoDetails = useContext(MeroInfoContext)
-  const mero = meroInfoDetails.find(event => event.meroId ===  id)
   const navigate = useNavigate()
+  const mero = location.state
   return (
     <>
       <div className={"main-container flex flex-col gap-8"}>
         <div className={"flex justify-between"}>
-          <h1 className={"font-semibold text-[32px]"}>{mero?.title}</h1>
+          <h1 className={"font-semibold text-[32px]"}>{mero.meetName}</h1>
+          {mero.id}
         </div>
         <div className={"flex flex-col gap-4"}>
           <div className={"flex gap-1 font-medium"}>
-            <span>{mero?.date}</span>
-            <span>{mero?.time}</span>
+            <span>{mero.periods[0].startTime}</span>
           </div>
         </div>
         <p className={""}>
-          {mero?.description}
+          {mero.description}
         </p>
         <div>
           <h3 className={"mb-3"}>Введите необходимую информацию в поля ниже:</h3>
           <div className={"flex flex-col gap-4"}>
-            {mock.map((item) =>
-              <Input key={item.label} type={item.type} label={item.label}></Input>
+            {mero.fields.map((item: any) =>
+              <Input key={item.text} type={"text"} label={item.text}></Input>
             )}
           </div>
         </div>

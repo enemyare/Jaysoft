@@ -6,13 +6,13 @@ import { useForm } from "react-hook-form"
 import type { IauthForm } from "../model/types"
 import useSWRMutation from "swr/mutation"
 import { useNavigate } from "react-router-dom"
-import { sendRequest } from "../api/usePostRequest"
+import { sendRequest } from "../api/api"
 
 const Auth: FC = () => {
   const navigate = useNavigate()
   const {register, handleSubmit, formState, getValues} = useForm<IauthForm>()
   const  {data, trigger, isMutating, error} = useSWRMutation(
-      'http://localhost:5000/api/User/send-authcode',
+      '/api/User/send-authcode',
       sendRequest,
       {}
     )

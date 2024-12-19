@@ -14,7 +14,7 @@ const mock: Array<IInput> = [
     label: "Например, «Ваше ФИО»",
   },
   {
-    type: "text",
+    type: "date",
     label: "Например, «Ваш возраст»",
   },
   {
@@ -68,7 +68,7 @@ const FormCreate = () => {
                     }
                   />
                   <Input
-                    type={"text"}
+                    type={"time"}
                     label={"Название мероприятия"}
                     {
                       ...register(

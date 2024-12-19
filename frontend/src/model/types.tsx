@@ -1,5 +1,5 @@
 export  interface IInput {
-  type: "text" | "textarea" | "date" | "time" | "checkbox",
+  type: "text" | "textarea" | "date" | "time",
   label?: string | undefined,
   onClick?: () => void,
 }
@@ -10,6 +10,7 @@ export interface IPeriods {
 }
 
 export interface ICreateForm {
+  id: string,
   meetName: string,
   creatorEmail: string,
   description: string,
