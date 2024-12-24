@@ -1,25 +1,28 @@
 ﻿using MerosWebApi.Core.Models.Exceptions;
 using System.Linq.Expressions;
 using System.Reflection;
+using MerosWebApi.Core.Models.QuestionFields.HavePossibleAnswers;
+using MerosWebApi.Core.Models.QuestionFields.WithoutPossibleAnswers;
+using MerosWebApi.Core.Models.Questions;
 
 namespace MerosWebApi.Core.Models.QuestionFields
 {
     public static class FieldFactoryMethod
     {
-        private static readonly Dictionary<string, Func<string, bool, List<string>, Field>> constructorInfos;
+        private static readonly Dictionary<string, Func<string, bool, List<string>, Field>> constructorInfos = new();
+
+        public static readonly HashSet<string> FieldTypes = new();
+
+        public static readonly HashSet<string> FieldWithPossibleTypes = new();
 
         static FieldFactoryMethod()
         {
-            constructorInfos = new Dictionary<string, Func<string, bool, List<string>, Field>>();
-
             Type baseType = typeof(Field);
             var derivedTypes = Assembly.GetExecutingAssembly().GetTypes()
-                .Where(t => t.IsSubclassOf(baseType));
+                .Where(t => t.IsSubclassOf(baseType) && t != typeof(WithoutPossibleAnswerQuestion));
 
             foreach (var type in derivedTypes)
             {
-                var className = type.Name;
-
                 var constructor = type.GetConstructors()[0];
                 var parameters = constructor.GetParameters();
 
@@ -38,7 +41,16 @@ namespace MerosWebApi.Core.Models.QuestionFields
                 var lambda = Expression.Lambda<Func<string, bool, List<string>, Field>>
                     (newExpression, textParam, requiredParam, answersParam);
 
-                constructorInfos.Add(className, lambda.Compile());
+                var fieldTypeString = MatchFieldByType(type);
+
+                FieldTypes.Add(fieldTypeString);
+
+                if (typeof(IHavePossibleAnswers).IsAssignableFrom(type))
+                {
+                    FieldWithPossibleTypes.Add(fieldTypeString);
+                }
+
+                constructorInfos.Add(fieldTypeString, lambda.Compile());
             }
         }
 
@@ -48,6 +60,20 @@ namespace MerosWebApi.Core.Models.QuestionFields
                 throw new FieldTypeException($"Передан несуществующий тип для создания поля  - {type}");
 
             return constructor(text, required, answers);
+        }
+
+        public static string MatchFieldByType(Type type)
+        {
+            return type switch
+            {
+                var t when t == typeof(SelectOneQuestion) => "radiobutton",
+                var t when t == typeof(SelectManyQuestion) => "checkbox",
+                var t when t == typeof(TextQuestion) => "text",
+                var t when t == typeof(TimeQuestion) => "time",
+                var t when t == typeof(DateQuestion) => "date",
+                var t when t == typeof(FieldWithoutAnswer) => "labelOnly",
+                _ => throw new FieldTypeException($"Передан несуществующий тип для создания поля  - {type}")
+            };
         }
     }
 }

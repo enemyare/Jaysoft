@@ -24,6 +24,9 @@
     <Content Include="Resources\EmailTemplates\Email_GetInviteCode.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+	  <Content Include="Resources\EmailTemplates\Email_ConfirmEmail.html">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
   </ItemGroup>
 
   <ItemGroup>

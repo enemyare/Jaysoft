@@ -40,7 +40,7 @@ namespace MerosWebApi
                     In = ParameterLocation.Cookie,
                     Description = "Cookie-based authentication. \r\n\r\n" +
                                   "Ensure to include the authentication cookie in your requests. \r\n\r\n" +
-                                  "Example: \"mrsASC = ......\""
+                                  "Example: \"authToken = ......\""
                 });
 
                 swagger.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -92,7 +92,9 @@ namespace MerosWebApi
             app.UseCors(policy => 
                 policy.WithOrigins("http://localhost:5173")
                     .AllowAnyMethod()
-                    .AllowAnyHeader());
+                    .AllowAnyHeader()
+                    .AllowCredentials()
+                );
 
             //app.UseHttpsRedirection();
 

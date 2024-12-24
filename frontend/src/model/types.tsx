@@ -1,22 +1,30 @@
 export  interface IInput {
-  type: "text" | "textarea" | "date" | "time" | "checkbox",
-  label?: string | undefined,
+  text?: string;
+  type: "text" | "textarea" | "date" | "time",
   onClick?: () => void,
 }
 
 export interface IPeriods {
   startTime: string,
-  totalPlaces: number
+  bookedPlaces?: string,
+  endTime?: string,
+  totalPlaces?: number
 }
 
 export interface ICreateForm {
+  id?: string,
   meetName: string,
-  creatorEmail: string,
+  creatorEmail?: string,
   description: string,
   periods: Array<IPeriods>,
-  fields: Array<IInput>
+  fields?: Array<IInput>
 }
 
 export interface IauthForm {
   email: string
 }
+
+export interface IauthCodeForm {
+  authCode: string
+}
+

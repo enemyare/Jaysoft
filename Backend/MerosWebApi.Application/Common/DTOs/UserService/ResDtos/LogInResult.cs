@@ -6,11 +6,11 @@ namespace MerosWebApi.Application.Common.DTOs.UserService
     {
         public AuthenticationResDto AuthenticationResDto { get; }
 
-        public string AccessToken { get; }
+        public MyToken AccessToken { get; }
 
-        public RefreshToken RefreshToken { get; }
+        public MyToken RefreshToken { get; }
 
-        public LogInResult(AuthenticationResDto resDto, string accessToken, RefreshToken refreshToken)
+        public LogInResult(AuthenticationResDto resDto, MyToken accessToken, MyToken refreshToken)
         {
             AuthenticationResDto = resDto;
             AccessToken = accessToken;

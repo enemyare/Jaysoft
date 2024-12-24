@@ -1,10 +1,17 @@
-import type { FC } from "react"
+import type { FC} from "react";
+import { useState } from "react"
+import { useEffect } from "react"
 import logo from "../assets/logo.svg"
 import profile from "../assets/profile.svg"
 import { NavLink } from "react-router-dom"
+import Cookies from "js-cookie"
 
 const Header: FC = () => {
-  const isAuth = false
+  const [isAuth, setIsAuth] = useState<boolean>(false)
+  useEffect(() => {
+    setIsAuth(Boolean(Cookies.get("authToken")))
+  })
+  console.log(Boolean(Cookies.get("authToken")))
   return (
     <header className="flex items-center text-[20px]">
       <img className="pt-1.5" src={logo} />
@@ -14,7 +21,7 @@ const Header: FC = () => {
             <NavLink to={"/"}>Главная</NavLink>
           </li>
           <li>
-            <NavLink to={"/heq"}>Для организаторов</NavLink>
+            <NavLink to={"#"}>Для организаторов</NavLink>
           </li>
         </ul>
       </nav>

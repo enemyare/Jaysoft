@@ -12,7 +12,9 @@ using System.Web;
 using Asp.Versioning;
 using FluentValidation.Results;
 using MerosWebApi.Application.Common.DTOs;
+using MerosWebApi.Application.Common.DTOs.CommonDtos.CommonDtoValidators;
 using MerosWebApi.Application.Common.DTOs.MeroService;
+using MerosWebApi.Application.Common.DTOs.UserService.ReqDtos;
 using MongoDB.Bson;
 using MerosWebApi.Application.Common.Exceptions.EmailExceptions;
 using MerosWebApi.Application.Common.Exceptions.Common;
@@ -28,7 +30,7 @@ namespace MerosWebApi.Controllers.V1
 
         private readonly IAuthHelper _authHelper;
 
-        private const string ACCESS_COOKIE_KEY = "mrsASC";
+        private const string ACCESS_COOKIE_KEY = "authToken";
 
         private const string REFRESH_COOKIE_KEY = "mrsRFR";
 
@@ -51,14 +53,15 @@ namespace MerosWebApi.Controllers.V1
         [ProducesResponseType(typeof(AuthenticationResDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadRequest)]
         public async Task<ActionResult<AuthenticationResDto>> LogInAsync(
-            [FromQuery] string authCode)
+            [FromBody] LogInReqDto logInReq)
         {
             try
             {
-                var logInResult = await _userService.LogInAsync(authCode);
+                var logInResult = await _userService.LogInAsync(logInReq.AuthCode);
 
-                SetRefreshTokenToCookie(logInResult.RefreshToken);
-                Response.Cookies.Append(ACCESS_COOKIE_KEY, logInResult.AccessToken);
+                SetTokenToCookie(logInResult.RefreshToken, REFRESH_COOKIE_KEY);
+
+                SetTokenToCookie(logInResult.AccessToken, ACCESS_COOKIE_KEY);
 
                 return Ok(logInResult.AuthenticationResDto);
             }
@@ -73,14 +76,14 @@ namespace MerosWebApi.Controllers.V1
         /// </summary>
         /// <param name="id">User Id</param>
         /// <returns></returns>
-        [Authorize]
+        [AllowAnonymous]
         [HttpGet("{id}")]
         [ActionName(nameof(GetDetailsAsync))]
         [Produces("application/json")]
         [ProducesResponseType(typeof(GetDetailsResDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadRequest)]
-        public async Task<ActionResult<GetDetailsResDto>> GetDetailsAsync(string id)
+        public async Task<ActionResult<GetDetailsResDto>> GetDetailsAsync([MustBeObjectId] string id)
         {
             try
             {
@@ -102,16 +105,16 @@ namespace MerosWebApi.Controllers.V1
         /// <param name="code">Confirm email code</param>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpGet("send-authcode")]
+        [HttpPost("send-authcode")]
         [ActionName(nameof(SendAuthCode))]
         [Produces("application/json")]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadRequest)]
-        public async Task<ActionResult> SendAuthCode(string email)
+        public async Task<ActionResult> SendAuthCode([FromBody] SendEmailReqDto email)
         {
             try
             {
-                await _userService.SendUserUniqueInviteCode(email);
+                await _userService.SendUserUniqueInviteCode(email.Email);
                 return NoContent();
             }
             catch (AppException ex)
@@ -142,7 +145,7 @@ namespace MerosWebApi.Controllers.V1
                     return BadRequest(new MyResponseMessage("Refresh token в куки отсутсвует"));
 
                 var accessToken = await _userService.RefreshAccessToken(refreshToken);
-                Response.Cookies.Append(ACCESS_COOKIE_KEY, accessToken);
+                SetTokenToCookie(accessToken, ACCESS_COOKIE_KEY);
 
                 return NoContent();
             }
@@ -165,14 +168,14 @@ namespace MerosWebApi.Controllers.V1
         /// </summary>
         /// <param name="id">User id</param>
         /// <returns></returns>
-        [Authorize]
+        [AllowAnonymous]
         [HttpDelete("{id}")]
         [ActionName(nameof(DeleteAsync))]
         [Produces("application/json")]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.Forbidden)]
-        public async Task<ActionResult> DeleteAsync(string id)
+        public async Task<ActionResult> DeleteAsync([MustBeObjectId] string id)
         {
             try
             {
@@ -194,7 +197,7 @@ namespace MerosWebApi.Controllers.V1
         /// <param name="id">User id</param>
         /// <param name="dto">DTO with update information</param>
         /// <returns></returns>
-        [Authorize]
+        [AllowAnonymous]
         [HttpPatch("{id}")]
         [ActionName(nameof(UpdateAsync))]
         [Produces("application/json")]
@@ -202,7 +205,7 @@ namespace MerosWebApi.Controllers.V1
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.Forbidden)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadGateway)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> UpdateAsync(string id, [FromBody] UpdateReqDto dto)
+        public async Task<IActionResult> UpdateAsync([MustBeObjectId] string id, [FromBody] UpdateReqDto dto)
         {
             try
             {
@@ -228,14 +231,14 @@ namespace MerosWebApi.Controllers.V1
         /// </summary>
         /// <param name="userId">User Id</param>
         /// <returns></returns>
-        [Authorize]
+        [AllowAnonymous]
         [HttpGet("statistic")]
         [ActionName(nameof(GetDetailsAsync))]
         [Produces("application/json")]
         [ProducesResponseType(typeof(UserStatisticResDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadRequest)]
-        public async Task<ActionResult<UserStatisticResDto>> GetUserStatistic(string userId)
+        public async Task<ActionResult<UserStatisticResDto>> GetUserStatistic([MustBeObjectId] string userId)
         {
             try
             {
@@ -258,16 +261,16 @@ namespace MerosWebApi.Controllers.V1
         /// <param name="code">Confirm email code</param>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpGet("confirm-email")]
+        [HttpPost("confirm-email")]
         [ActionName(nameof(ConfirmEmailAsync))]
         [Produces("application/json")]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadRequest)]
-        public async Task<ActionResult> ConfirmEmailAsync(string code)
+        public async Task<ActionResult> ConfirmEmailAsync([FromBody] ConfirmEmailReqDto confirmEmailReq)
         {
             try
             {
-                await _userService.ConfirmEmailAsync(code);
+                await _userService.ConfirmEmailAsync(confirmEmailReq.ConfirmEmailCode);
                 return NoContent();
             }
             catch (AppException ex)
@@ -278,7 +281,7 @@ namespace MerosWebApi.Controllers.V1
 
         #region Private Helpers Methods
 
-        private void SetRefreshTokenToCookie(RefreshToken token)
+        private void SetTokenToCookie(MyToken token, string key)
         {
             var cookieOptions = new CookieOptions
             {
@@ -286,7 +289,7 @@ namespace MerosWebApi.Controllers.V1
                 Expires = token.Expires
             };
 
-            Response.Cookies.Append(REFRESH_COOKIE_KEY, token.Token, cookieOptions);
+            Response.Cookies.Append(key, token.Token, cookieOptions);
         }
 
         #endregion

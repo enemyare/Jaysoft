@@ -8,7 +8,7 @@ namespace MerosWebApi.Core.Repository
 
         public Task<User> GetUserByVerificationCode(string uniqCode);
 
-        public Task<User> GetUserByUnconfirmedCode(string unconfirmedCode);
+        public Task<User> GetUserByUnconfirmedEmailCode(string unconfirmedCode);
 
         public Task AddUser(User user);
 

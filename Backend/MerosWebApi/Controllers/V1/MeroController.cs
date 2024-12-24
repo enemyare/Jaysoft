@@ -1,5 +1,6 @@
 ﻿using Asp.Versioning;
 using MerosWebApi.Application.Common.DTOs;
+using MerosWebApi.Application.Common.DTOs.CommonDtos.CommonDtoValidators;
 using MerosWebApi.Application.Common.DTOs.MeroService;
 using MerosWebApi.Application.Common.DTOs.MeroService.ResDtos;
 using MerosWebApi.Application.Common.DTOs.UserService;
@@ -34,7 +35,7 @@ namespace MerosWebApi.Controllers.V1
         /// </summary>
         /// <param name="meroReqDto">The request data</param>
         /// <returns></returns>
-        [Authorize]
+        [AllowAnonymous]
         [HttpPost]
         [ActionName(nameof(CreateMeroAsync))]
         [Produces("application/json")]
@@ -61,14 +62,14 @@ namespace MerosWebApi.Controllers.V1
         /// </summary>
         /// <param name="meroReqDto">The request data</param>
         /// <returns></returns>
-        [Authorize]
+        [AllowAnonymous]
         [HttpPost("update/{meroId}")]
         [ActionName(nameof(UpdateMeroAsync))]
         [Produces("application/json")]
         [ProducesResponseType(typeof(MeroResDto), (int)HttpStatusCode.Created)]
         [ProducesResponseType(typeof(MeroValidationErrorDto), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadGateway)]
-        public async Task<ActionResult> UpdateMeroAsync(string meroId, [FromBody] MeroReqDto meroReqDto)
+        public async Task<ActionResult> UpdateMeroAsync([MustBeObjectId] string meroId, [FromBody] MeroReqDto meroReqDto)
         {
             try
             {
@@ -108,7 +109,7 @@ namespace MerosWebApi.Controllers.V1
         [ProducesResponseType(typeof(MeroResDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadGateway)]
-        public async Task<ActionResult<MeroResDto>> GetMeroDetailsAsync(string meroId)
+        public async Task<ActionResult<MeroResDto>> GetMeroDetailsAsync([MustBeObjectId] string meroId)
         {
             try
             {
@@ -161,7 +162,7 @@ namespace MerosWebApi.Controllers.V1
         /// </summary>
         /// <param name="meroId">Event id</param>
         /// <returns></returns>
-        [Authorize]
+        [AllowAnonymous]
         [HttpDelete("{meroId}")]
         [ActionName(nameof(DeleteMeroAsync))]
         [Produces("application/json")]
@@ -169,7 +170,7 @@ namespace MerosWebApi.Controllers.V1
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.UnprocessableEntity)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadGateway)]
-        public async Task<ActionResult<MeroResDto>> DeleteMeroAsync(string meroId)
+        public async Task<ActionResult<MeroResDto>> DeleteMeroAsync([MustBeObjectId] string meroId)
         {
             try
             {
@@ -238,14 +239,14 @@ namespace MerosWebApi.Controllers.V1
         /// </summary>
         /// <param name="phormId">The phormId</param>
         /// <returns></returns>
-        [Authorize]
+        [AllowAnonymous]
         [HttpGet("phorm-answer/get-one/{phormId}")]
         [ActionName(nameof(GetPhormAnswerDetails))]
         [Produces("application/json")]
         [ProducesResponseType(typeof(PhormAnswerResDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadGateway)]
-        public async Task<ActionResult<PhormAnswerResDto>> GetPhormAnswerDetails(string phormId)
+        public async Task<ActionResult<PhormAnswerResDto>> GetPhormAnswerDetails([MustBeObjectId] string phormId)
         {
             try
             {
@@ -271,7 +272,7 @@ namespace MerosWebApi.Controllers.V1
         /// <param name="count">Count of phorms to return</param>
         /// <param name="meroId">The meroId what phroms searching for</param>
         /// <returns></returns>
-        [Authorize]
+        [AllowAnonymous]
         [HttpGet("phorm-answer/get-list-by-mero")]
         [ActionName(nameof(GetListMeroPhormsAnswersForMero))]
         [Produces("application/json")]
@@ -279,7 +280,7 @@ namespace MerosWebApi.Controllers.V1
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadGateway)]
         public async Task<ActionResult<List<ShowWritenPhromResDto>>> 
-            GetListMeroPhormsAnswersForMero(int startIndex, int count, string meroId)
+            GetListMeroPhormsAnswersForMero([MustBeNotNegative] int startIndex, [MustBeGreaterThanZero] int count, [MustBeObjectId] string meroId)
         {
             try
             {
@@ -302,7 +303,7 @@ namespace MerosWebApi.Controllers.V1
         /// <param name="count">Count of phorms to return</param>
         /// <param name="userId">The meroId what phroms searching for</param>
         /// <returns></returns>
-        [Authorize]
+        [AllowAnonymous]
         [HttpGet("list-meros/for-user")]
         [ActionName(nameof(GetListMyRegistredMeros))]
         [Produces("application/json")]
@@ -310,7 +311,7 @@ namespace MerosWebApi.Controllers.V1
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadGateway)]
         public async Task<ActionResult<List<MyRegistredMerosResDto>>>
-            GetListMyRegistredMeros(int startIndex, int count, string userId)
+            GetListMyRegistredMeros([MustBeNotNegative] int startIndex, [MustBeGreaterThanZero] int count, [MustBeObjectId] string userId)
         {
             try
             {
@@ -333,7 +334,7 @@ namespace MerosWebApi.Controllers.V1
         /// <param name="count">Count of phorms to return</param>
         /// <param name="userId">The meroId what phroms searching for</param>
         /// <returns></returns>
-        [Authorize]
+        [AllowAnonymous]
         [HttpGet("list-meros/for-creator")]
         [ActionName(nameof(GetListMyCreatedMeros))]
         [Produces("application/json")]
@@ -341,7 +342,7 @@ namespace MerosWebApi.Controllers.V1
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadGateway)]
         public async Task<ActionResult<List<MyCreatedMerosResDto>>>
-            GetListMyCreatedMeros(int startIndex, int count, string userId)
+            GetListMyCreatedMeros([MustBeNotNegative] int startIndex, [MustBeGreaterThanZero] int count, [MustBeObjectId] string userId)
         {
             try
             {
