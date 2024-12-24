@@ -1,12 +1,12 @@
 export  interface IInput {
+  text?: string;
   type: "text" | "textarea" | "date" | "time",
-  label?: string | undefined,
   onClick?: () => void,
 }
 
 export interface IPeriods {
   startTime: string,
-  bookedPlaces: string,
+  bookedPlaces?: string,
   endTime?: string,
   totalPlaces?: number
 }

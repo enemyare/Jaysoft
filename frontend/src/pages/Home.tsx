@@ -16,11 +16,11 @@ const Home: FC = () => {
   )
 
   const handleSubmit =  async () => {
+    const result = await trigger()
+    navigate(`/form/${data.id}`, { state: data})
     try {
-      const result = await trigger()
       if (result.ok){
-        const data = await result.json()
-        navigate(`/form/${data.id}`, { state: data})
+        const data = await result
       }
     } catch (e) {
       console.error(e)

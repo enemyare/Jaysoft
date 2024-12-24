@@ -14,9 +14,9 @@ const FormFilledSuccess: FC = () => {
       <div className={"main-container flex flex-col gap-8"}>
         <h1 className={"font-semibold text-[32px]"}>Регистрация прошла успешно</h1>
         <p className={"mt-3"}>
-          Вы успешно зарегистрировались на мероприятие «{mero?.title}»,
-          которое пройдёт 18.11.2024 в 10:00. Подробнее о мероприятии по карточке ниже.
-          Нажмите, чтобы перейти на страницу события.
+          Вы успешно зарегистрировались на мероприятие «{mero?.title}»,
+          которое пройдёт 18.11.2024 в 10:00. Подробнее о мероприятии по карточке ниже.
+          Нажмите, чтобы перейти на страницу события.
         </p>
         <div className={"flex flex-col gap-8 flex-wrap"}>
           {
@@ -33,6 +33,7 @@ const FormFilledSuccess: FC = () => {
                 />
             </Link>
           }
+
           <Link to={"/"}>
             <button className={"base-btn"}>
               На главную

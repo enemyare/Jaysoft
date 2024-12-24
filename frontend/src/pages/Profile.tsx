@@ -1,10 +1,8 @@
 import type { FC } from "react";
-import Input from "../components/input/Input"
 import logout from "../assets/logout.svg"
 import FormCard from "../components/FormCard"
 import addEventCard from "../assets/addEventCard.svg"
 import { Link, useNavigate } from "react-router-dom"
-import { mock } from "../mock"
 import type { SubmitHandler} from "react-hook-form";
 import { useForm } from "react-hook-form"
 import useSWR from "swr"
@@ -48,9 +46,10 @@ const Profile: FC = () => {
         </div>
         <div className={"flex flex-col gap-4"}>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <Input
+            <input
               type={"text"}
-              label={"sultanovMi@gmail.com"}
+              placeholder={"sultanovMi@gmail.com"}
+              className={"base-input meta-input"}
               {...register(
                 "email",
                 {
