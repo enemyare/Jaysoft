@@ -157,7 +157,7 @@ namespace MerosWebApi.Application.Services
             var phormAnswer = await _repository.GetMeroPhormAnswerByIdAsync(phormId);
 
             if (phormAnswer == null)
-                throw new PhormAnswerNotFoundException("Форма ответа не найдена");
+                throw new EntityNotFoundException("Форма ответа не найдена");
 
             return PhormAnswerResDto.Map(phormAnswer);
         }
