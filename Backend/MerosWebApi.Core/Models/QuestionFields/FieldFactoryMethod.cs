@@ -1,19 +1,15 @@
-﻿using MerosWebApi.Core.Models.Exceptions;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using System.Reflection;
-using MerosWebApi.Core.Models.QuestionFields.HavePossibleAnswers;
+using MerosWebApi.Core.Models.Exceptions;
 using MerosWebApi.Core.Models.QuestionFields.WithoutPossibleAnswers;
-using MerosWebApi.Core.Models.Questions;
 
 namespace MerosWebApi.Core.Models.QuestionFields
 {
     public static class FieldFactoryMethod
     {
-        private static readonly Dictionary<string, Func<string, List<string>, Field>> constructorInfos = new();
+        private static readonly Dictionary<string, Func<string, Field>> constructorInfos = new();
 
         public static readonly HashSet<string> FieldTypes = new();
-
-        public static readonly HashSet<string> FieldWithPossibleTypes = new();
 
         static FieldFactoryMethod()
         {
@@ -25,46 +21,37 @@ namespace MerosWebApi.Core.Models.QuestionFields
             {
                 var constructor = type.GetConstructors()[0];
 
-                var textParam = Expression.Parameter(typeof(string), "text");
-                var answersParam = Expression.Parameter(typeof(List<string>), "answers");
+                var titleParam = Expression.Parameter(typeof(string), "title");
 
                 var args = new List<Expression>
                 {
-                    textParam,
-                    answersParam
+                    titleParam
                 };
 
                 var newExpression = Expression.New(constructor, args);
-                var lambda = Expression.Lambda<Func<string, List<string>, Field>>
-                    (newExpression, textParam, answersParam);
+                var lambda = Expression.Lambda<Func<string, Field>>
+                    (newExpression, titleParam);
 
                 var fieldTypeString = MatchFieldByType(type);
 
                 FieldTypes.Add(fieldTypeString);
 
-                if (typeof(IHavePossibleAnswers).IsAssignableFrom(type))
-                {
-                    FieldWithPossibleTypes.Add(fieldTypeString);
-                }
-
                 constructorInfos.Add(fieldTypeString, lambda.Compile());
             }
         }
 
-        public static Field CreateField(string text, string type, List<string> answers)
+        public static Field CreateField(string title, string type)
         {
             if (!constructorInfos.TryGetValue(type, out var constructor))
                 throw new FieldTypeException($"Передан несуществующий тип для создания поля  - {type}");
 
-            return constructor(text, answers);
+            return constructor(title);
         }
 
         public static string MatchFieldByType(Type type)
         {
             return type switch
             {
-                var t when t == typeof(SelectOneQuestion) => "radiobutton",
-                var t when t == typeof(SelectManyQuestion) => "checkbox",
                 var t when t == typeof(TextQuestion) => "text",
                 var t when t == typeof(TimeQuestion) => "time",
                 var t when t == typeof(DateQuestion) => "date",

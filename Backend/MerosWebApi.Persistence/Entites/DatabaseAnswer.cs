@@ -4,6 +4,6 @@
     {
         public string QuestionText { get; set; }
 
-        public List<string> QuestionAnswers { get; set; }
+        public string QuestionAnswer { get; set; }
     }
 }

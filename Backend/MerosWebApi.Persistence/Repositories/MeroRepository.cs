@@ -119,7 +119,7 @@ namespace MerosWebApi.Persistence.Repositories
                         UserId = phormAnswer.UserId,
                         Answers = phormAnswer.Answers.Select(a => new DatabaseAnswer
                         {
-                            QuestionAnswers = a.QuestionAnswers,
+                            QuestionAnswer = a.QuestionAnswer,
                             QuestionText = a.QuestionText
                         })
                         .ToList(),
@@ -163,7 +163,7 @@ namespace MerosWebApi.Persistence.Repositories
                 return null;
 
             var answers = phormAnswer.Answers
-                .Select(a => new Answer(a.QuestionText, a.QuestionAnswers))
+                .Select(a => new Answer(a.QuestionText, a.QuestionAnswer))
                 .ToList();
 
             var timePeriods = await GetTimePeriodsAsync(new[] { phormAnswer.TimePeriodId });
@@ -238,7 +238,7 @@ namespace MerosWebApi.Persistence.Repositories
             foreach (var phormAnswer in phormAnswers)
             {
                 var answers = phormAnswer.Answers
-                    .Select(a => new Answer(a.QuestionText, a.QuestionAnswers))
+                    .Select(a => new Answer(a.QuestionText, a.QuestionAnswer))
                     .ToList();
 
                 var timePeriods = GetTimePeriodsAsync(new[] { phormAnswer.TimePeriodId }).Result;

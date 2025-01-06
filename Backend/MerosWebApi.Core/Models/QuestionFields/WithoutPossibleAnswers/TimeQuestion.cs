@@ -9,17 +9,17 @@ namespace MerosWebApi.Core.Models.QuestionFields.WithoutPossibleAnswers
 {
     public class TimeQuestion : WithoutPossibleAnswerQuestion
     {
-        public TimeQuestion(string title, List<string> answers) : base(title, "time", answers)
+        public TimeQuestion(string title) : base(title, "time")
         {
         }
 
-        public override List<string> SelectAnswer(params string[] answers)
+        public override string SelectAnswer(string answer)
         {
-            var oneAnswer = base.SelectAnswer(answers);
+            var oneAnswer = base.SelectAnswer(answer);
 
-            if (!TimeOnly.TryParse(oneAnswer[0], out var date))
+            if (!TimeOnly.TryParse(oneAnswer, out var date))
             {
-                throw new FieldException($"Поле \"{Type}\" должно иметь ответ представляющий тип time");
+                throw new FieldException($"Поле '{Title}' должно иметь ответ представляющий тип time");
             }
 
             return oneAnswer;

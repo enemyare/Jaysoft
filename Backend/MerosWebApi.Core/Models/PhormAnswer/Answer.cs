@@ -4,12 +4,12 @@
     {
         public string QuestionText { get; }
 
-        public List<string> QuestionAnswers { get; }
+        public string? QuestionAnswer { get; }
 
-        public Answer(string text, List<string> answers)
+        public Answer(string text, string answers)
         {
             QuestionText = text;
-            QuestionAnswers = answers;
+            QuestionAnswer = answers;
         }
     }
 }

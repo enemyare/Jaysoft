@@ -126,9 +126,9 @@ namespace MerosWebApi.Application.Services
                     throw new PhormAnswerFieldException(
                         "Строка вопроса в анкете мероприя должна быть равна строке в форме ответа");
 
-                var fieldAnswers = phormAnswerReqDto.Answers[i].QuestionAnswers.ToArray();
+                var fieldAnswer = phormAnswerReqDto.Answers[i].QuestionAnswer;
 
-                var validateAnswers = field.SelectAnswer(fieldAnswers);
+                var validateAnswers = field.SelectAnswer(fieldAnswer);
 
                 phormMeroAnswers.Add(new Answer(phormMeroFieldText, validateAnswers));
             }
@@ -231,15 +231,11 @@ namespace MerosWebApi.Application.Services
             {
                 try
                 {
-                    var field = FieldFactoryMethod.CreateField(fieldReqDto.Title, fieldReqDto.Type, fieldReqDto.Answers);
+                    var field = FieldFactoryMethod.CreateField(fieldReqDto.Title, fieldReqDto.Type);
 
                     fields.Add(field);
                 }
-                catch (FieldTypeException ex)
-                {
-                    throw new MeroFieldException(fieldReqDto, ex.Message);
-                }
-                catch (MerosWebApi.Core.Models.Exceptions.FieldException ex)
+                catch (FieldException ex)
                 {
                     throw new MeroFieldException(fieldReqDto, ex.Message);
                 }

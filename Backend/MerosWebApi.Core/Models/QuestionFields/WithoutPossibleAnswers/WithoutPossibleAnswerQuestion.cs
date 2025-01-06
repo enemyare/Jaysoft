@@ -10,20 +10,16 @@ namespace MerosWebApi.Core.Models.QuestionFields.WithoutPossibleAnswers
 {
     public class WithoutPossibleAnswerQuestion : Field
     {
-        public WithoutPossibleAnswerQuestion(string title, string type, List<string> answers) : base(title, type)
+        public WithoutPossibleAnswerQuestion(string title, string type) : base(title, type)
         {
-            if (answers != null)
-                throw new FieldException($"{Type} не должно иметь варианты ответов");
         }
 
-        public override List<string> SelectAnswer(params string[] answers)
+        public override string SelectAnswer(string answer)
         {
-            if (answers.Length != 1)
-                throw new FieldException($"Поле {Type} должено иметь один ответ");
+            if (string.IsNullOrWhiteSpace(answer))
+                throw new FieldException($"Ответ должен быть не пустой строкой, null, или пробелом");
 
-            return new List<string>() { answers[0] };
+            return answer;
         }
-
-        public override List<string> Answers => null;
     }
 }

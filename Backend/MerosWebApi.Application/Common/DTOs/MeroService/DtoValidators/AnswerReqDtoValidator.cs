@@ -10,19 +10,17 @@ namespace MerosWebApi.Application.Common.DTOs.MeroService.DtoValidators
             RuleFor(answer => answer.QuestionTitle)
                 .NotEmpty().WithMessage("Поле вопроса должно иметь содержимое");
 
-            RuleFor(answer => answer.QuestionAnswers)
+            RuleFor(answer => answer.QuestionAnswer)
                 .Must((answer) => ValidateQuestionAnswer(answer))
                 .WithMessage("Ответ вопроса должен быть либо null, либо содержать список не пустых строк");
         }
 
-        private bool ValidateQuestionAnswer(List<string> answer)
+        private bool ValidateQuestionAnswer(string answer)
         {
-            if (answer == null)
-                return true;
-            if (answer.All(a => !string.IsNullOrWhiteSpace(a)))
-                return true;
+            //if (string.IsNullOrWhiteSpace(answer))
+            //    return false;
 
-            return false;
+            return true;
         }
     }
 }

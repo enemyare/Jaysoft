@@ -6,13 +6,13 @@ namespace MerosWebApi.Application.Common.DTOs.MeroService.ResDtos
     {
         public string QuestionTitle { get; set; }
 
-        public List<string> QuestionAnswers { get; set; }
+        public string? QuestionAnswer { get; set; }
 
         public static AnswerResDto Map(Answer answer)
         {
             return new AnswerResDto
             {
-                QuestionAnswers = answer.QuestionAnswers,
+                QuestionAnswer = answer.QuestionAnswer,
                 QuestionTitle = answer.QuestionText
             };
         }

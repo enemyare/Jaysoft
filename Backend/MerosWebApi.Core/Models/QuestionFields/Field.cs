@@ -20,10 +20,6 @@ namespace MerosWebApi.Core.Models
 
         public string Type { get; protected set; }
 
-        protected List<string> PossibleAnswers { get; set; }
-
-        public abstract List<string> SelectAnswer(params string[] answers);
-
-        public abstract List<string> Answers { get; }
+        public abstract string SelectAnswer(string answer);
     }
 }

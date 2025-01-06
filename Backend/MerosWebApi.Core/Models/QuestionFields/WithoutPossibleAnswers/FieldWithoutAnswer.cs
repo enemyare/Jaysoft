@@ -4,21 +4,17 @@ namespace MerosWebApi.Core.Models.QuestionFields.WithoutPossibleAnswers
 {
     public class FieldWithoutAnswer : Field
     {
-        public FieldWithoutAnswer(string title, List<string> answers)
+        public FieldWithoutAnswer(string title)
             : base(title, "labelOnly")
         {
-            if (answers != null)
-                throw new FieldException($"{Type} не должно иметь варианты ответов");
         }
 
-        public override List<string> SelectAnswer(params string[] answers)
+        public override string SelectAnswer(string answer)
         {
-            if (answers.Length > 0)
-                throw new FieldException($"{Type} не должно присваивать ответ(ы)");
+            if (!string.IsNullOrWhiteSpace(answer))
+                throw new FieldException($"{Type} не должно присваивать ответ(ы) (должно быть null)");
 
             return null;
         }
-
-        public override List<string> Answers => null;
     }
 }

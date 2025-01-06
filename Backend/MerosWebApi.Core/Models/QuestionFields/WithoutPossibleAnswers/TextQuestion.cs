@@ -4,8 +4,8 @@ namespace MerosWebApi.Core.Models.QuestionFields.WithoutPossibleAnswers
 {
     public class TextQuestion : WithoutPossibleAnswerQuestion
     {
-        public TextQuestion(string title, List<string> answers)
-            : base(title, "text", answers)
+        public TextQuestion(string title)
+            : base(title, "text")
         {
         }
     }

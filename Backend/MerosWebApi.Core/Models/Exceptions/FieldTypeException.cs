@@ -2,7 +2,7 @@
 
 namespace MerosWebApi.Core.Models.Exceptions
 {
-    public class FieldTypeException : CoreException
+    public class FieldTypeException : FieldException
     {
         public FieldTypeException()
         {
