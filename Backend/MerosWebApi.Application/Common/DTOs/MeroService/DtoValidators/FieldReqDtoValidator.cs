@@ -33,10 +33,12 @@ namespace MerosWebApi.Application.Common.DTOs.MeroService.DtoValidators
         {
             if (FieldFactoryMethod.FieldWithPossibleTypes.Contains(field.Type))
             {
-                if (field.Answers.Count < 0)
-                    return (false, $"Число заданых возможных ответов вопроса \"{field.Title}\" должно быть > 0");
+                if (field.Answers == null)
+                    return (false, $"Список возможных ответов на вопрос '{field.Title}' должен быть not null");
+                if (field.Answers.Count < 1)
+                    return (false, $"Число возможных ответов вопроса '{field.Title}' должно быть > 0");
                 if (field.Answers.Any(a => string.IsNullOrWhiteSpace(a)))
-                    return (false, $"Текст ответа на вопрос \"{field.Title}\" должен быть не пустой строкой");
+                    return (false, $"Текст ответа на вопрос '{field.Title}' должен быть не пустой строкой");
             }
             else if (field.Answers != null && FieldFactoryMethod.FieldTypes.Contains(field.Type))
                 return (false, $"Вопрос '{field.Title}' должен иметь значение возможных ответов = null");
