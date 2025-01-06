@@ -2,7 +2,7 @@
 {
     public class AnswerReqDto
     {
-        public string QuestionText { get; set; }
+        public string QuestionTitle { get; set; }
 
         public List<string> QuestionAnswers { get; set; }
     }

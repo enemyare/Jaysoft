@@ -5,8 +5,8 @@ namespace MerosWebApi.Core.Models.QuestionFields.HavePossibleAnswers
 {
     public class SelectOneQuestion : Field, IHavePossibleAnswers
     {
-        public SelectOneQuestion(string questionText, bool required, List<string> answers)
-            : base(questionText, "radiobutton", required)
+        public SelectOneQuestion(string questionTitle, List<string> answers)
+            : base(questionTitle, "radiobutton")
         {
             if (answers == null || answers.Count < 1)
                 throw new FieldException($"Поле {Type} должно иметь как " +
@@ -33,9 +33,6 @@ namespace MerosWebApi.Core.Models.QuestionFields.HavePossibleAnswers
 
         public override List<string> SelectAnswer(params string[] answers)
         {
-            if (!Required && answers.Length == 0)
-                return answers.ToList();
-
             if (answers.Length != 1)
                 throw new FieldException($"Поле {Type} должено иметь один ответ");
 

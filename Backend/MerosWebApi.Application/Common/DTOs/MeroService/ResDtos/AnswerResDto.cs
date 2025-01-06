@@ -4,7 +4,7 @@ namespace MerosWebApi.Application.Common.DTOs.MeroService.ResDtos
 {
     public class AnswerResDto
     {
-        public string QuestionText { get; set; }
+        public string QuestionTitle { get; set; }
 
         public List<string> QuestionAnswers { get; set; }
 
@@ -13,7 +13,7 @@ namespace MerosWebApi.Application.Common.DTOs.MeroService.ResDtos
             return new AnswerResDto
             {
                 QuestionAnswers = answer.QuestionAnswers,
-                QuestionText = answer.QuestionText
+                QuestionTitle = answer.QuestionText
             };
         }
     }

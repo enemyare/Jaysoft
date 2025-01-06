@@ -4,8 +4,8 @@ namespace MerosWebApi.Core.Models.QuestionFields.WithoutPossibleAnswers
 {
     public class FieldWithoutAnswer : Field
     {
-        public FieldWithoutAnswer(string text, bool required, List<string> answers)
-            : base(text, "labelOnly", required)
+        public FieldWithoutAnswer(string title, List<string> answers)
+            : base(title, "labelOnly")
         {
             if (answers != null)
                 throw new FieldException($"{Type} не должно иметь варианты ответов");

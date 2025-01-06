@@ -5,8 +5,8 @@ namespace MerosWebApi.Core.Models.QuestionFields.HavePossibleAnswers
 {
     internal class SelectManyQuestion : Field, IHavePossibleAnswers
     {
-        public SelectManyQuestion(string questionText, bool required, List<string> answers)
-            : base(questionText, "checkbox", required)
+        public SelectManyQuestion(string questionTitle, List<string> answers)
+            : base(questionTitle, "checkbox")
         {
             if (answers == null || answers.Count < 1)
                 throw new FieldException($"Поле {Type} должно иметь как минимум " +
@@ -33,9 +33,6 @@ namespace MerosWebApi.Core.Models.QuestionFields.HavePossibleAnswers
 
         public override List<string> SelectAnswer(params string[] answers)
         {
-            if (answers.Length == 0 && !Required)
-                return answers.ToList();
-
             if (answers.Length == 0)
                 throw new FieldException($"Поле {Type} должено иметь минимум" +
                                          $" один ответа");

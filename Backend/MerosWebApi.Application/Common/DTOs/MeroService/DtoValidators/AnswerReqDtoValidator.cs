@@ -7,7 +7,7 @@ namespace MerosWebApi.Application.Common.DTOs.MeroService.DtoValidators
     {
         public AnswerReqDtoValidator()
         {
-            RuleFor(answer => answer.QuestionText)
+            RuleFor(answer => answer.QuestionTitle)
                 .NotEmpty().WithMessage("Поле вопроса должно иметь содержимое");
 
             RuleFor(answer => answer.QuestionAnswers)

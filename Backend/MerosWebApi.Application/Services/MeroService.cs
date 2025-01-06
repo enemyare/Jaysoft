@@ -119,8 +119,8 @@ namespace MerosWebApi.Application.Services
             for (int i = 0; i < phormMero.Fields.Count; i++)
             {
                 var field = phormMero.Fields[i];
-                var phormMeroFieldText = field.Text;
-                var phormAnswerFieldText = phormAnswerReqDto.Answers[i].QuestionText;
+                var phormMeroFieldText = field.Title;
+                var phormAnswerFieldText = phormAnswerReqDto.Answers[i].QuestionTitle;
 
                 if (phormMeroFieldText != phormAnswerFieldText)
                     throw new PhormAnswerFieldException(
@@ -231,8 +231,7 @@ namespace MerosWebApi.Application.Services
             {
                 try
                 {
-                    var field = FieldFactoryMethod.CreateField(fieldReqDto.Label, fieldReqDto.Type, fieldReqDto.Required,
-                        fieldReqDto.Answers);
+                    var field = FieldFactoryMethod.CreateField(fieldReqDto.Title, fieldReqDto.Type, fieldReqDto.Answers);
 
                     fields.Add(field);
                 }

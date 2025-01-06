@@ -4,24 +4,21 @@ namespace MerosWebApi.Core.Models
 {
     public abstract class Field
     {
-        public Field(string text, string type, bool required)
+        public Field(string title, string type)
         {
-            if (string.IsNullOrWhiteSpace(text))
+            if (string.IsNullOrWhiteSpace(title))
                 throw new FieldException("Вопрос обязательно должен содержать текст");
 
             if (string.IsNullOrWhiteSpace(type))
                 throw new FieldException("Тип вопроса должен содержать текст");
 
-            Text = text;
+            Title = title;
             Type = type;
-            Required = required;
         }
 
-        public string Text { get; protected set; }
+        public string Title { get; protected set; }
 
         public string Type { get; protected set; }
-
-        public bool Required { get; protected set; }
 
         protected List<string> PossibleAnswers { get; set; }
 

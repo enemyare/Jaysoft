@@ -114,6 +114,7 @@ namespace MerosWebApi.Persistence.Repositories
                     // Создаем новый ответ
                     var newAnswer = new DatabasePhormAnswer
                     {
+                        Id = phormAnswer.Id,
                         MeroId = phormAnswer.MeroId,
                         UserId = phormAnswer.UserId,
                         Answers = phormAnswer.Answers.Select(a => new DatabaseAnswer

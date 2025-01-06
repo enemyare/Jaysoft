@@ -13,23 +13,21 @@ namespace MerosWebApi.Persistence.Helpers
         {
             return new DatabaseField
             {
-                Text = source.Text,
+                Title = source.Title,
                 PossibleAnswers = source.Answers,
-                Required = source.Required,
                 Type = source.Type,
             };
         }
 
         public static Field MapFrom(DatabaseField source)
         {
-            return FieldFactoryMethod.CreateField(source.Text, source.Type, source.Required, source.PossibleAnswers);
+            return FieldFactoryMethod.CreateField(source.Title, source.Type, source.PossibleAnswers);
         }
 
         public static void AssignPropertyValues(DatabaseField to, Field from)
         {
-            to.Text = from.Text;
+            to.Title = from.Title;
             to.Type = from.Type;
-            to.Required = from.Required;
             to.PossibleAnswers = from.Answers;
         }
     }

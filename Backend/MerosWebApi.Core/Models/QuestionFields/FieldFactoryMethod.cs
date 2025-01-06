@@ -9,7 +9,7 @@ namespace MerosWebApi.Core.Models.QuestionFields
 {
     public static class FieldFactoryMethod
     {
-        private static readonly Dictionary<string, Func<string, bool, List<string>, Field>> constructorInfos = new();
+        private static readonly Dictionary<string, Func<string, List<string>, Field>> constructorInfos = new();
 
         public static readonly HashSet<string> FieldTypes = new();
 
@@ -24,22 +24,19 @@ namespace MerosWebApi.Core.Models.QuestionFields
             foreach (var type in derivedTypes)
             {
                 var constructor = type.GetConstructors()[0];
-                var parameters = constructor.GetParameters();
 
                 var textParam = Expression.Parameter(typeof(string), "text");
-                var requiredParam = Expression.Parameter(typeof(bool), "required");
                 var answersParam = Expression.Parameter(typeof(List<string>), "answers");
 
                 var args = new List<Expression>
                 {
                     textParam,
-                    requiredParam,
                     answersParam
                 };
 
                 var newExpression = Expression.New(constructor, args);
-                var lambda = Expression.Lambda<Func<string, bool, List<string>, Field>>
-                    (newExpression, textParam, requiredParam, answersParam);
+                var lambda = Expression.Lambda<Func<string, List<string>, Field>>
+                    (newExpression, textParam, answersParam);
 
                 var fieldTypeString = MatchFieldByType(type);
 
@@ -54,12 +51,12 @@ namespace MerosWebApi.Core.Models.QuestionFields
             }
         }
 
-        public static Field CreateField(string text, string type, bool required, List<string> answers)
+        public static Field CreateField(string text, string type, List<string> answers)
         {
             if (!constructorInfos.TryGetValue(type, out var constructor))
                 throw new FieldTypeException($"Передан несуществующий тип для создания поля  - {type}");
 
-            return constructor(text, required, answers);
+            return constructor(text, answers);
         }
 
         public static string MatchFieldByType(Type type)

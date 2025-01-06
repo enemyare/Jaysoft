@@ -11,7 +11,7 @@ namespace MerosWebApi.Application.Common.DTOs.MeroService.DtoValidators
     {
         public FieldReqDtoValidator()
         {
-            RuleFor(field => field.Label)
+            RuleFor(field => field.Title)
                 .NotEmpty().WithMessage("Поле вопроса должно иметь содержимое");
 
             RuleFor(field => field.Type)
@@ -34,12 +34,12 @@ namespace MerosWebApi.Application.Common.DTOs.MeroService.DtoValidators
             if (FieldFactoryMethod.FieldWithPossibleTypes.Contains(field.Type))
             {
                 if (field.Answers.Count < 0)
-                    return (false, $"Число заданых возможных ответов вопроса \"{field.Label}\" должно быть > 0");
+                    return (false, $"Число заданых возможных ответов вопроса \"{field.Title}\" должно быть > 0");
                 if (field.Answers.Any(a => string.IsNullOrWhiteSpace(a)))
-                    return (false, $"Текст ответа на вопрос \"{field.Label}\" должен быть не пустой строкой");
+                    return (false, $"Текст ответа на вопрос \"{field.Title}\" должен быть не пустой строкой");
             }
             else if (field.Answers != null && FieldFactoryMethod.FieldTypes.Contains(field.Type))
-                return (false, $"Вопрос '{field.Label}' должен иметь значение возможных ответов = null");
+                return (false, $"Вопрос '{field.Title}' должен иметь значение возможных ответов = null");
 
             return (true, $"Возможные ответы для типа '{field.Type}' - валидны");
         }

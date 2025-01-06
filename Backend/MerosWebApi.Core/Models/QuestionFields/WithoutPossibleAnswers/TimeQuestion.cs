@@ -9,7 +9,7 @@ namespace MerosWebApi.Core.Models.QuestionFields.WithoutPossibleAnswers
 {
     public class TimeQuestion : WithoutPossibleAnswerQuestion
     {
-        public TimeQuestion(string label,  bool required, List<string> answers) : base(label, "time", required, answers)
+        public TimeQuestion(string title, List<string> answers) : base(title, "time", answers)
         {
         }
 
