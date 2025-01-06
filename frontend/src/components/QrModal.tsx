@@ -2,10 +2,10 @@ import { createPortal } from "react-dom"
 import QRCode from "react-qr-code"
 interface ModalProps{
   isOpen: boolean,
+  url: string,
   isClose: () => void
 }
-const QrModal = ({isOpen, isClose}: ModalProps) => {
-  const qr: string = "https://excalidraw.com/"
+const QrModal = ({isOpen, isClose, url}: ModalProps) => {
 
   if (!isOpen) return null
 
@@ -17,7 +17,7 @@ const QrModal = ({isOpen, isClose}: ModalProps) => {
           <QRCode
             size={240}
             style={{ height: "auto", maxWidth: "", width: "" }}
-            value={qr}
+            value={url}
             viewBox={`0 0 240 240`}
           />
         <button className={"base-btn"} onClick={isClose}>Закрыть</button>

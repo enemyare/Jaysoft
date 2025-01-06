@@ -22,7 +22,7 @@ const FormCreated:FC = () => {
             <img src={qrcode} alt="qrcode" className={"inline-block"} />
             Открыть QR-код
           </button>
-          <QrModal isOpen={isOpen} isClose={()=>setIsOpen(false)} />
+          <QrModal url={"dsada"} isOpen={isOpen} isClose={()=>setIsOpen(false)} />
           <span className={"before:content-[''] before:border-black before:mr-4 before:w-full block text-center text-secondary-text"}>
             Или поделитесь текстовым кодом
           </span>
