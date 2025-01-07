@@ -10,9 +10,6 @@ namespace MerosWebApi.Persistence.Entites
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
 
-        [BsonElement("full_name")]
-        public string Full_name { get; set; }
-
         [BsonElement("email")]
         public string? Email { get; set; }
 

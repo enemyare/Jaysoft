@@ -20,7 +20,6 @@ namespace MerosWebApi.Persistence.Helpers
             return new User
             {
                 Id = source.Id,
-                Full_name = source.Full_name,
                 Email = source.Email,
                 CreatedAt = source.CreatedAt,
                 UpdatedAt = source.UpdatedAt,
@@ -45,7 +44,6 @@ namespace MerosWebApi.Persistence.Helpers
             return new DatabaseUser
             {
                 Id = source.Id,
-                Full_name = source.Full_name,
                 Email = source.Email,
                 CreatedAt = source.CreatedAt,
                 UpdatedAt = source.UpdatedAt,
@@ -68,7 +66,6 @@ namespace MerosWebApi.Persistence.Helpers
         public static void AssignPropertyValues(DatabaseUser to, User from)
         {
             to.Id = from.Id;
-            to.Full_name = from.Full_name;
             to.Email = from.Email;
             to.CreatedAt = from.CreatedAt;
             to.UpdatedAt = from.UpdatedAt;

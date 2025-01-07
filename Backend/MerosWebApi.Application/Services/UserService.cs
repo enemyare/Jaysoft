@@ -118,9 +118,6 @@ namespace MerosWebApi.Application.Services
             if (user == null)
                 throw new EntityNotFoundException("User not found");
 
-            if (dto.Full_name != null && dto.Full_name != user.Full_name)
-                user.Full_name = dto.Full_name;
-
             if (dto.Email != null)
             {
                 var emailSuccess = await ChangeEmailAsync(user, dto.Email);
