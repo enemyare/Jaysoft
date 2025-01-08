@@ -1,11 +1,14 @@
 import type { FC} from "react";
 import { useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 import copy from '../assets/copy.svg'
 import qrcode from '../assets/qrcode.svg'
 import QrModal from "../components/QrModal"
 const FormCreated:FC = () => {
   const [isOpen, setIsOpen] = useState(false)
+  const location = useLocation()
+  const uniqueInviteCode: string = location.state.uniqueInviteCode
+  const meroId: string = location.state.id
   return (
     <>
       <div className={"main-container flex flex-col gap-8"}>
@@ -22,13 +25,13 @@ const FormCreated:FC = () => {
             <img src={qrcode} alt="qrcode" className={"inline-block"} />
             Открыть QR-код
           </button>
-          <QrModal url={"dsada"} isOpen={isOpen} isClose={()=>setIsOpen(false)} />
+          <QrModal url={`http://localhost:5173/form/${meroId}`} isOpen={isOpen} isClose={()=>setIsOpen(false)} />
           <span className={"before:content-[''] before:border-black before:mr-4 before:w-full block text-center text-secondary-text"}>
             Или поделитесь текстовым кодом
           </span>
           <button className={"meta-input base-input rounded-[32px] text-xl text-center select-none"}
-               onClick={() =>  navigator.clipboard.writeText('RWNIBNEK')}>
-            RWNIBNEK
+               onClick={() =>  navigator.clipboard.writeText(uniqueInviteCode)}>
+            {uniqueInviteCode}
             <img src={copy} alt="" className={"inline-block ml-2.5"}/>
           </button>
         </div>

@@ -1,7 +1,6 @@
 export  interface IInput {
-  text?: string;
+  title?: string;
   type: "text" | "textarea" | "date" | "time",
-  onClick?: () => void,
 }
 
 export interface IPeriods {
@@ -18,6 +17,7 @@ export interface ICreateForm {
   description: string,
   periods: Array<IPeriods>,
   fields?: Array<IInput>
+  uniqueInviteCode?: string
 }
 
 export interface IauthForm {
@@ -28,3 +28,13 @@ export interface IauthCodeForm {
   authCode: string
 }
 
+export interface Ianswers {
+  "questionTitle": string,
+  "questionAnswer": string
+}
+
+export interface IPhormAnswer {
+  "meroId": string,
+  "answers": Array<Ianswers>,
+  "timePeriodId": string
+}

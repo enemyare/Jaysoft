@@ -11,8 +11,7 @@ import FormFilledSuccess from "../pages/FormFilledSuccess"
 import EditMero from "../pages/EditMero"
 import AuthConfirm from "../pages/AuthConfirm"
 import { Navigate } from "react-router-dom";
-import type { FC, ReactNode } from "react"
-import Cookies from "js-cookie"
+import type { FC, ReactNode } from "react" 
 
 interface PrivateRouteProps {
   children: ReactNode;

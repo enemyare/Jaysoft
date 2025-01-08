@@ -6,19 +6,27 @@ import { getRequest } from "../api/api"
 import type { ICreateForm, IPeriods } from "../model/types"
 import useFormattedDate from "../hooks/useFormattedDate"
 
+async function getProfileRequest(path: string) {
+  const url =  "http://localhost:5000" + path;
+  return await fetch(url, {
+    method: 'GET',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' }
+  }).then(res => res.json())
+}
 
 const DetailedMero = () => {
   const [isOpen, setIsOpen] = useState(false)
   const navigate = useNavigate()
   const {id} = useParams()
-  const {data, error} = useSWR(`/api/Mero/by-id/${id}`, getRequest)
+  const {data, error} = useSWR(`/api/Mero/by-id/${id}`, getProfileRequest)
   const mero: ICreateForm  = data
   const periods:  IPeriods = mero?.periods[0]
   const {date, time} = useFormattedDate(periods?.startTime)
 
   return (
     <>
-      <QrModal url={`http://localhost:5173/form/${mero?.id}`} isOpen={isOpen} isClose={()=>setIsOpen(false)} />
+      <QrModal url={`http://localhost:5173/form/${mero?.id}`} uniqueInviteCode={mero?.uniqueInviteCode} isOpen={isOpen} isClose={()=>setIsOpen(false)} />
       <div className={"main-container flex flex-col gap-8"}>
         <div className={"flex justify-between"}>
           <h1 className={"font-semibold text-[32px]"}>{ mero?.meetName }</h1>

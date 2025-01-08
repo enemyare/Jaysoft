@@ -3,9 +3,10 @@ import QRCode from "react-qr-code"
 interface ModalProps{
   isOpen: boolean,
   url: string,
-  isClose: () => void
+  isClose: () => void,
+  uniqueInviteCode? : string
 }
-const QrModal = ({isOpen, isClose, url}: ModalProps) => {
+const QrModal = ({isOpen, isClose, url, uniqueInviteCode}: ModalProps) => {
 
   if (!isOpen) return null
 
@@ -20,6 +21,14 @@ const QrModal = ({isOpen, isClose, url}: ModalProps) => {
             value={url}
             viewBox={`0 0 240 240`}
           />
+        {
+          uniqueInviteCode ?
+            <div className={"meta-input base-input rounded-[32px] text-xl text-center select-none"}
+                                  onClick={() =>  navigator.clipboard.writeText(uniqueInviteCode)}>
+              {uniqueInviteCode}
+            </div>:
+            <></>
+        }
         <button className={"base-btn"} onClick={isClose}>Закрыть</button>
       </div>
     </div>,

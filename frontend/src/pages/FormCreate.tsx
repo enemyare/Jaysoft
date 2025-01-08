@@ -5,12 +5,15 @@ import dump from "../assets/dump.svg"
 import type { SubmitHandler } from "react-hook-form"
 import { useFieldArray, useForm } from "react-hook-form"
 import type { ICreateForm } from "../model/types"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import useSWRMutation from "swr/mutation"
+import { sendRequest } from "../api/api"
 
 
 const FormCreate: FC = () => {
+  const navigate = useNavigate()
   const [isStepOne, setIsStepOne] = useState(true)
-
+  // Форма
   const {
     control,
     register,
@@ -19,40 +22,59 @@ const FormCreate: FC = () => {
     defaultValues: {
       periods: [
         {
-          startTime: "2024-12-29T21:05:21.370Z",
+          startTime: "2025-01-29T21:05:21.370Z",
           endTime: "2025-12-19T21:05:21.370Z",
-          totalPlaces: 0,
         },
       ],
       fields: [
         {
-          text: "Например, «Ваше ФИО»",
+          title: "Например, «Ваше ФИО»",
           type: "text",
         },
         {
-          text: "Например, «Ваш возраст»",
+          title: "Например, «Ваш возраст»",
           type: "text",
         },
         {
-          text: "Например, «Ваш номер телефона»",
+          title: "Например, «Ваш номер телефона»",
           type: "text",
         },
       ],
     },
   })
+
   const {fields: periodFields, append: appendPeriods, remove: removePeriods} = useFieldArray({
     control,
     name: "periods"
   })
+
   const {fields, append , remove } = useFieldArray({
     control,
     name: "fields",
 
   })
+  // POST-запрос
+  const {data, trigger, isMutating} = useSWRMutation(
+    '/api/Mero',
+    sendRequest
+  )
 
+  const meroMapper  = (data:ICreateForm)=>{
 
-  const onSubmit:SubmitHandler<ICreateForm> = (data) => {
-    console.log(data)
+    return data
+  }
+
+  // Обработчик для отправки формы
+  const onSubmit:SubmitHandler<ICreateForm> = async (data) => {
+    try {
+      const response = await trigger(data)
+      const responseData = await response.json()
+      if (response?.ok){
+        navigate('/successForm', {state: responseData})
+      }
+    }catch (e){
+      console.log(e)
+    }
   }
   return (
     <>
@@ -163,9 +185,9 @@ const FormCreate: FC = () => {
                           <div key={inputObject.id}>
                             <input
                               type={inputObject.type}
-                              placeholder={inputObject.text}
+                              placeholder={inputObject.title}
                               className={"base-input meta-input"}
-                              {...register(`fields.${index}.text`)}
+                              {...register(`fields.${index}.title`)}
                             />
                           </div>
                         ))
@@ -176,7 +198,7 @@ const FormCreate: FC = () => {
                         onClick={() => {
                           append({
                             type: "text",
-                            text: "Введите название поля"
+                            title: "Введите название поля"
                           })
                         }}>
                         <img src={addField} alt="" className={"inline mr-1.5 pb-0.5"} />
@@ -198,18 +220,16 @@ const FormCreate: FC = () => {
                             }>Назад
                     </button>
                   </div>
-                  <Link to={"/successForm"}>
+                  {/*<Link to={"/successForm"}>*/}
                     <button className={"base-btn"} type={"submit"} onClick={() => {
                       console.log(register.arguments)
                     }}>Создать форму
                     </button>
-                  </Link>
+                  {/*</Link>*/}
                 </div>
               </>
             )
         )}
-
-
       </form>
     </>
   )

@@ -1,11 +1,10 @@
 import type { IInput } from "../../../model/types"
-import { forwardRef } from "react"
 
 
-const BaseInput  = forwardRef(({type, label, onClick}: IInput) => {
+const BaseInput  =  (({type }: IInput) => {
   return (
     <>
-      <input className={"base-input meta-input"} type={type} placeholder={label} onClick={onClick} />
+      <input className={"base-input meta-input"} type={type}  />
     </>
   )
 })
