@@ -254,7 +254,6 @@ namespace MerosWebApi.Persistence.Repositories
             {
                 Id = t.Id,
                 StartTime = t.StartTime,
-                EndTime = t.EndTime,
                 BookedPlaces = t.BookedPlaces,
                 TotalPlaces = t.TotalPlaces
             }).ToList();

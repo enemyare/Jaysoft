@@ -13,10 +13,6 @@ namespace MerosWebApi.Persistence.Entites
         [BsonRequired]
         public DateTime StartTime { get; set; }
 
-        [BsonElement("end_time")]
-        [BsonRequired]
-        public DateTime EndTime { get; set; }
-
         [BsonElement("total_places")]
         [BsonRequired]
         public int TotalPlaces { get; set; }

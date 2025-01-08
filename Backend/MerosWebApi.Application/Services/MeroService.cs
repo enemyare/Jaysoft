@@ -214,7 +214,7 @@ namespace MerosWebApi.Application.Services
                 {
                     var periodId = ObjectId.GenerateNewId().ToString();
 
-                    var timePeriod = TimePeriod.CreateTimePeriod(periodId, periodDto.StartTime, periodDto.EndTime,
+                    var timePeriod = TimePeriod.CreateTimePeriod(periodId, periodDto.StartTime,
                         periodDto.TotalPlaces, 0);
 
                     _repository.AddTimePeriodAsync(timePeriod);

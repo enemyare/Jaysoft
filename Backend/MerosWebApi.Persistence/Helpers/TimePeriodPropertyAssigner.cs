@@ -14,7 +14,6 @@ namespace MerosWebApi.Persistence.Helpers
             {
                 Id = source.Id,
                 StartTime = source.StartTime,
-                EndTime = source.EndTime,
                 BookedPlaces = source.BookedPlaces,
                 TotalPlaces = source.TotalPlaces
             };
@@ -22,7 +21,7 @@ namespace MerosWebApi.Persistence.Helpers
 
         public static TimePeriod MapFrom(DatabaseTimePeriod source)
         {
-            return TimePeriod.CreateTimePeriod(source.Id, source.StartTime, source.EndTime,
+            return TimePeriod.CreateTimePeriod(source.Id, source.StartTime,
                 source.TotalPlaces, source.BookedPlaces);
         }
 
@@ -30,7 +29,6 @@ namespace MerosWebApi.Persistence.Helpers
         {
             to.Id = from.Id;
             to.StartTime = from.StartTime;
-            to.EndTime = from.EndTime;
             to.TotalPlaces = from.TotalPlaces;
             to.BookedPlaces = from.BookedPlaces;
         }
