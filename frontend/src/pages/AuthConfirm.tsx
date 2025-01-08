@@ -7,8 +7,13 @@ import type { IauthCodeForm } from "../model/types"
 import useSWRMutation from "swr/mutation"
 import { useLocation, useNavigate } from "react-router-dom"
 import { sendRequest } from "../api/api"
+import { useAppDispatch, useAppSelector } from "../app/hooks"
+import { userAuth } from "../app/slices/slices"
+
 
 const AuthConfirm: FC = () => {
+  const state = useAppSelector((state) => state.user)
+  const dispatch = useAppDispatch()
   const location = useLocation()
   const {email} = location.state || {}
   const navigate = useNavigate()
@@ -18,12 +23,23 @@ const AuthConfirm: FC = () => {
     sendRequest
   )
 
-  if (data?.ok === true){
-    navigate('/')
-  }
-
-  const onSumbit: SubmitHandler<IauthCodeForm> = (data) => {
-    trigger(data)
+  // обработчик для отправки кода
+  const onSumbit: SubmitHandler<IauthCodeForm> = async (data) => {
+    try {
+      const response = await trigger(data)
+      if (response.ok ) {
+        response.json().then(res => {
+          localStorage.setItem("userId", res.id)
+          localStorage.setItem("userEmail", res.email)
+        })
+        // navigate('/')
+      } else {
+        console.error('Ошибка:', response);
+      }
+    }
+    catch (err){
+        console.error('Произошла ошибка:', err);
+      }
   }
 
   return (
@@ -31,10 +47,10 @@ const AuthConfirm: FC = () => {
       <div className={"main-container max-w-[440px] flex flex-col gap-6 items-center c"}>
         <img src={logo} className={"object-cover"} />
         <div>
-          <h1 className={"font-semibold text-[26px] text-center spread "}>Почти всёт</h1>
+          <h1 className={"font-semibold text-[26px] text-center spread "}>Почти всё</h1>
         </div>
         <h3 className={"text-center"}>
-          Мы отправили код на почту {email}
+          Мы отправили код на почту {state.userEmail}
         </h3>
         <div>
           <form onSubmit={handleSubmit(onSumbit)}>

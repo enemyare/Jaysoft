@@ -11,19 +11,25 @@ import { sendRequest } from "../api/api"
 const Auth: FC = () => {
   const navigate = useNavigate()
   const {register, handleSubmit, formState, getValues} = useForm<IauthForm>()
-  const  {data, trigger, isMutating, error} = useSWRMutation(
+  const  {trigger, isMutating} = useSWRMutation(
       '/api/User/send-authcode',
       sendRequest,
       {}
     )
-  if (data?.ok === true){
-    navigate('/authConfirm', {state: {email: getValues('email')}})
-  }
 
 
-  const onSumbit: SubmitHandler<IauthForm> = (data) => {
-    trigger(data)
+  const onSumbit: SubmitHandler<IauthForm> = async (body) => {
+    try {
+      const response = await trigger(body)
+      if (response?.ok){
+        navigate('/authConfirm')
+      }
+    }catch (e){
+      console.log(e)
+    }
   }
+
+  if (isMutating) return <>загрузка...</>
 
   return (
     <div className={"h-screen flex justify-center items-center"}>

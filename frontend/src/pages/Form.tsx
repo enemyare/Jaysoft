@@ -1,6 +1,6 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 import Input from "../components/input/Input"
-import type { ICreateForm, IPeriods } from "../model/types"
+import type { ICreateForm, IInput, IPeriods } from "../model/types"
 import useFormattedDate from "../hooks/useFormattedDate"
 import { useForm } from "react-hook-form"
 
@@ -10,7 +10,7 @@ const Form = () => {
   const {id} = useParams()
   const navigate = useNavigate()
   const mero: ICreateForm = location.state
-  const fields: any = mero.fields
+  console.log(mero)
   const {register, handleSubmit, formState} = useForm(
     {
 
@@ -35,11 +35,12 @@ const Form = () => {
         <div>
           <h3 className={"mb-3"}>Введите необходимую информацию в поля ниже:</h3>
           <div className={"flex flex-col gap-4"}>
-            {fields.map((item: any) =>
-              <Input
+            {mero.fields?.map((item: IInput) =>
+              <input
+                className={"base-input meta-input"}
                 key={mero.id}
                 type={"text"}
-                label={item.label}
+                placeholder={item.title}
               />
             )}
           </div>

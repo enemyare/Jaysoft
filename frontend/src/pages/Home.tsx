@@ -12,15 +12,14 @@ const Home: FC = () => {
   const {data, error, trigger, isMutating} = useSWRMutation(
     `/api/Mero/by-invite-code/${inviteCode}`,
     getRequest,
-
   )
 
   const handleSubmit =  async () => {
-    const result = await trigger()
-    navigate(`/form/${data.id}`, { state: data})
     try {
-      if (result.ok){
-        const data = await result
+      let response = await trigger()
+      if (response.ok){
+        const responseData = await response.json();
+        navigate(`/form/${responseData.id}`, { state: responseData})
       }
     } catch (e) {
       console.error(e)
