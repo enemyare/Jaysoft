@@ -1,13 +1,14 @@
 import type { FC} from "react";
 import { useContext } from "react" 
-import { Link, useParams } from "react-router-dom"
+import { Link, useLocation, useParams } from "react-router-dom"
 import FormCard from "../components/FormCard"
 import addEventCard from "../assets/addEventCard.svg"
 import { mock } from "../mock"
 
 const FormFilledSuccess: FC = () => {
   const {id} = useParams()
-  const mero = mock.find(event => event.meroId === id)
+  const location = useLocation()
+  const mero = location.state
   const styleList = 'w-full'
   return (
     <>
@@ -23,13 +24,9 @@ const FormFilledSuccess: FC = () => {
             <Link to={`/detailedmero/${mero?.meroId}`} key={mero?.id}>
                 <FormCard
                   id={mero!.id}
-                  title={mero!.title}
-                  date={mero!.date}
-                  time={mero!.time}
-                  members={1}
+                  meetName={mero.meetName}
+                  periods={mero.periods}
                   description={mero!.description}
-                  meroId={mero!.meroId}
-                  styleList = {styleList}
                 />
             </Link>
           }

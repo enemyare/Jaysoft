@@ -32,7 +32,7 @@ const AuthConfirm: FC = () => {
           localStorage.setItem("userId", res.id)
           localStorage.setItem("userEmail", res.email)
         })
-        // navigate('/')
+        navigate('/')
       } else {
         console.error('Ошибка:', response);
       }

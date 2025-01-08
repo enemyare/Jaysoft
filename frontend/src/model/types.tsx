@@ -27,3 +27,14 @@ export interface IauthForm {
 export interface IauthCodeForm {
   authCode: string
 }
+
+export interface Ianswers {
+  "questionTitle": string,
+  "questionAnswer": string
+}
+
+export interface IPhormAnswer {
+  "meroId": string,
+  "answers": Array<Ianswers>,
+  "timePeriodId": string
+}
