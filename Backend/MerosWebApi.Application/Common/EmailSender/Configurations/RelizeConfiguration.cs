@@ -1,8 +1,14 @@
 ﻿using MailKit.Security;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Mail;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace MerosWebApi.Application.Common.EmailSender.Configurations
 {
-    public class DevelopmentConfiguration : IEmailConfiguration
+    internal class RelizeConfiguration : IEmailConfiguration
     {
         private readonly string _emailAddress;
         public string EmailAddress => _emailAddress;
@@ -19,7 +25,7 @@ namespace MerosWebApi.Application.Common.EmailSender.Configurations
         private readonly SecureSocketOptions _secureOptions;
         public SecureSocketOptions SecureSocketOptions => _secureOptions;
 
-        public DevelopmentConfiguration(string emailAddress, string password,
+        public RelizeConfiguration(string emailAddress, string password,
             string host, int port, SecureSocketOptions secureOptions)
         {
             _emailAddress = emailAddress;
