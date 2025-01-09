@@ -1,13 +1,23 @@
 import imgMembers from "../assets/members.svg"
-import type { ICreateForm } from "../model/types"
+import type { IPeriods } from "../model/types";
 import useFormattedDate from "../hooks/useFormattedDate"
 
-const FormCard  = ({meetName, periods, description}: ICreateForm) => {
+type Props = {
+  cardData: {
+    meetName: string,
+    periods: Array<IPeriods>,
+    description: string
+  },
+  styleList?: string
+}
+
+const FormCard  = ({cardData, styleList}: Props) => {
+  const {meetName, periods, description} = cardData
   const {date, time} = useFormattedDate(periods[0].startTime)
 
   return (
     <>
-      <div className={`${""} flex flex-col gap-3 p-6 bg-secondary-bg size-[266px] rounded-2xl text-base`}>
+      <div className={`${styleList} flex flex-col gap-3 p-6 bg-secondary-bg size-[266px] rounded-2xl text-base`}>
         <div>
           <h2 className={"text-xl overflow-hidden whitespace-break-spaces text-ellipsis font-semibold max-h-[60px] "}>{meetName}</h2>
         </div>

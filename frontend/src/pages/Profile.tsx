@@ -28,14 +28,12 @@ const Profile: FC = () => {
       email: localStorage.getItem("userEmail")
     }
   })
-  //
+  // Параметры для запроса и запрос
   let params = new URLSearchParams({
     startIndex: "0",
     count: "8"
   })
 
-
-  // Параметры для запроса и запрос
   const {data, error, isLoading} = useSWR(
     `/api/Mero/list-meros/for-creator?${params.toString()}&userId=${localStorage.getItem("userId")}`,
     getProfileRequest
@@ -46,8 +44,9 @@ const Profile: FC = () => {
   }
 
   const onLogout = () => {
-    Cookies.remove('authToken', { path: '/' })
+    localStorage.clear()
     navigate('/')
+    window.location.reload()
   }
 
   if (error) return <>Ошибка</>
@@ -94,9 +93,7 @@ const Profile: FC = () => {
                 <Link to={`/detailedmero/${card.id}`} key={card.id} >
                   <div key={card.id}>
                     <FormCard
-                      meetName = {card.meetName}
-                      description = {card.description}
-                      periods = {card.periods}
+                      cardData={card}
                     />
                   </div>
                 </Link>

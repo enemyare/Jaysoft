@@ -69,7 +69,7 @@ export const router= createBrowserRouter([
         element: <FormFilledSuccess/>
       },
       {
-        path: "editMero",
+        path: "editMero/:id",
         element: <EditMero/>
       }
     ]

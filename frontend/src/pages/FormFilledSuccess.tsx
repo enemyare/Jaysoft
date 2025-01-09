@@ -9,7 +9,6 @@ const FormFilledSuccess: FC = () => {
   const {id} = useParams()
   const location = useLocation()
   const mero = location.state
-  const styleList = 'w-full'
   return (
     <>
       <div className={"main-container flex flex-col gap-8"}>
@@ -23,10 +22,8 @@ const FormFilledSuccess: FC = () => {
           {
             <Link to={`/detailedmero/${mero?.meroId}`} key={mero?.id}>
                 <FormCard
-                  id={mero!.id}
-                  meetName={mero.meetName}
-                  periods={mero.periods}
-                  description={mero!.description}
+                  cardData={mero}
+                  styleList = {"w-full"}
                 />
             </Link>
           }
