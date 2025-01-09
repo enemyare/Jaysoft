@@ -17,13 +17,22 @@ services:
       - mailhog_server
 
   mongodb:
-    image: mongo:latest
+    build:
+      context: ./mongo
+      dockerfile: Dockerfile
     container_name: mongodb
     restart: unless-stopped
-    env_file: .env
+    env_file: .env   
     ports:
-      - "27017:27017"
-    volumes: 
+      - 27017:27017
+    command: --replSet rs0 --keyFile /etc/mongo-keyfile --bind_ip_all --port 27017
+    healthcheck:
+      test: echo "try { rs.status() } catch (err) { rs.initiate({_id:'rs0',members:[{_id:0,host:'host.docker.internal:27017'}]}) }" | mongosh --port 27017 -u root -p root --authenticationDatabase admin
+      interval: 5s
+      timeout: 5s
+      start_period: 15s
+      retries: 4
+    volumes:
       - database-data:/data/db
       - ./data/mongodb:/data
     networks:

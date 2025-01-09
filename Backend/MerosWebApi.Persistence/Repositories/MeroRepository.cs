@@ -89,29 +89,22 @@ namespace MerosWebApi.Persistence.Repositories
 
         public async Task<bool> AddMeroPhormAnswerAsync(PhormAnswer phormAnswer)
         {
-            using (var session = await _dbService.PhormAnswers.Database.Client.StartSessionAsync())
+            using (var session = await _dbService.Client.StartSessionAsync())
             {
-                //session.StartTransaction();
+                session.StartTransaction();
 
                 try
                 {
-                    // Получаем информацию о периоде времени
                     var timePeriod = await _dbService.TimePeriods
                         .Find(session, tp => tp.Id == phormAnswer.TimePeriod.Id)
                         .FirstOrDefaultAsync();
 
                     if (timePeriod == null)
-                    {
-                        throw new TransactionLogicException("Time period not found.");
-                    }
+                        throw new TransactionLogicException("Период записи не найден");
 
-                    // Проверяем доступные места
                     if (timePeriod.BookedPlaces >= timePeriod.TotalPlaces)
-                    {
-                        throw new TransactionLogicException("No available places.");
-                    }
+                        throw new TransactionLogicException("Нет доступных мест");
 
-                    // Создаем новый ответ
                     var newAnswer = new DatabasePhormAnswer
                     {
                         Id = phormAnswer.Id,
@@ -121,31 +114,29 @@ namespace MerosWebApi.Persistence.Repositories
                         {
                             QuestionAnswer = a.QuestionAnswer,
                             QuestionText = a.QuestionText
-                        })
-                        .ToList(),
+                        }).ToList(),
                         TimePeriodId = phormAnswer.TimePeriod.Id,
                         CreatedTime = DateTime.Now
                     };
 
-                    // Добавляем новый ответ в коллекцию
                     await _dbService.PhormAnswers.InsertOneAsync(session, newAnswer);
-
-                    // Увеличиваем количество забронированных мест
                     var updateDefinition = Builders<DatabaseTimePeriod>
                         .Update.Inc(tp => tp.BookedPlaces, 1);
 
-                    await _dbService.TimePeriods
-                        .UpdateOneAsync(session, tp => tp.Id == phormAnswer.TimePeriod.Id, updateDefinition);
+                    var updateResult = await _dbService.TimePeriods
+                        .UpdateOneAsync(session, tp => tp.Id == phormAnswer.TimePeriod.Id && tp.BookedPlaces < tp.TotalPlaces, updateDefinition);
 
-                    // Завершаем транзакцию
-                    //await session.CommitTransactionAsync();
+                    if (updateResult.ModifiedCount == 0)
+                        throw new TransactionLogicException("Ошибка бронирования, возможно, место уже забронировано другим");
+
+                    await session.CommitTransactionAsync();
                 }
                 catch (Exception ex)
                 {
                     // Откатываем транзакцию в случае ошибки
-                    //await session.AbortTransactionAsync();
+                    await session.AbortTransactionAsync();
                     Console.WriteLine($"Transaction aborted: {ex.Message}");
-                    return false; // Неудача
+                    return false;
                 }
             }
 
@@ -196,26 +187,42 @@ namespace MerosWebApi.Persistence.Repositories
 
         public async Task<QuerryStatus> DeleteMeroAsync(Mero mero)
         {
-            var fitler = Builders<DatabaseMero>.Filter
-                .Eq("_id", new ObjectId(mero.Id));
-
-            //Удалить все периоды и мероприятие mero.TimePeriods
-            var timePeriodsFilter = Builders<DatabaseTimePeriod>.Filter
-                .In("_id", mero.TimePeriods.Select(t => new ObjectId(t.Id)));
-
-            var periodsDelResult = await _dbService.TimePeriods.DeleteManyAsync(timePeriodsFilter);
-
-            if (periodsDelResult.DeletedCount > 0)
+            using (var session = await _dbService.Client.StartSessionAsync())
             {
-                var meroDelResult = await _dbService.Meros.DeleteOneAsync(fitler);
+                session.StartTransaction();
 
-                return meroDelResult.DeletedCount == 1
-                    ? new QuerryStatus(true, false, "Мероприятие успешно удаленно")
-                    : new QuerryStatus(false, false,
-                        "Периоды мероприятия удалены, мероприятие не было удаленно1");
+                try
+                {
+                    var filter = Builders<DatabaseMero>.Filter
+                        .Eq("_id", new ObjectId(mero.Id));
+
+                    var timePeriodsFilter = Builders<DatabaseTimePeriod>.Filter
+                        .In("_id", mero.TimePeriods.Select(t => new ObjectId(t.Id)));
+
+                    var periodsCount = await _dbService.TimePeriods.CountDocumentsAsync(timePeriodsFilter);
+                    var meroDelResult = await _dbService.Meros.DeleteOneAsync(filter);
+
+                    if (meroDelResult.DeletedCount == 1)
+                    {
+                        var periodsDelResult = await _dbService.TimePeriods.DeleteManyAsync(timePeriodsFilter);
+
+                        if (periodsDelResult.DeletedCount == periodsCount)
+                        {
+                            await session.CommitTransactionAsync();
+                            return new QuerryStatus(true, false, "Все мероприятия успешно удалены");
+                        }
+                        await session.AbortTransactionAsync();
+                        return new QuerryStatus(false, false, "Мероприятие удалено, но не все периоды.");
+                    }
+                    await session.AbortTransactionAsync();
+                    return new QuerryStatus(false, false, "Мероприятие не найдено для удаления.");
+                }
+                catch (Exception ex)
+                {
+                    await session.AbortTransactionAsync();
+                    return new QuerryStatus(false, true, $"Ошибка при удалении: {ex.Message}");
+                }
             }
-
-            return new QuerryStatus(false, false, "Мероприятие найдено, удаление безуспешно.");
         }
 
         #region Helpers
@@ -248,7 +255,7 @@ namespace MerosWebApi.Persistence.Repositories
             return result;
         }
 
-        private List<DatabaseTimePeriod> transformTimePeriods(List<TimePeriod> timePeriods)
+        private List<DatabaseTimePeriod> TransformTimePeriods(List<TimePeriod> timePeriods)
         {
             return timePeriods.Select(t => new DatabaseTimePeriod
             {

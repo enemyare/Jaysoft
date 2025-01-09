@@ -15,10 +15,12 @@ namespace MerosWebApi.Persistence
 
         public IMongoCollection<DatabasePhormAnswer> PhormAnswers { get; set; }
 
+        public IMongoClient Client { get; set; }
+
         public MongoDbService(IOptions<MongoDbSettings> mongoDbSettings)
         {
-            MongoClient client = new MongoClient(mongoDbSettings.Value.ConnectionURI);
-            var _database = client.GetDatabase(mongoDbSettings.Value.DatabaseName);
+            Client = new MongoClient(mongoDbSettings.Value.ConnectionURI);
+            var _database = Client.GetDatabase(mongoDbSettings.Value.DatabaseName);
 
             Meros = _database.GetCollection<DatabaseMero>("meros");
             Users = _database.GetCollection<DatabaseUser>("users");
