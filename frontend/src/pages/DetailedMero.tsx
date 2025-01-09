@@ -52,7 +52,7 @@ const DetailedMero = () => {
           <button className={"base-btn"} onClick={()=> setIsOpen(true)} >Поделиться мероприятием</button>
           <div className={"flex gap-4"}>
             <button className={"border border-primary-text base-btn text-black bg-background max-w-[424px]"}
-                    onClick={() => {navigate('/editMero')}}
+                    onClick={() => {navigate(`/editMero/${id}`)}}
             >
               Редактировать форму
             </button>

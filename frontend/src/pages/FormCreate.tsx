@@ -140,7 +140,7 @@ const FormCreate: FC = () => {
                         onClick={() => {
                           appendPeriods({
                             startTime: "",
-                            totalPlaces: 40
+                            totalPlaces: 10
                           })
                         }}>
                         <img
@@ -221,9 +221,7 @@ const FormCreate: FC = () => {
                     </button>
                   </div>
                   {/*<Link to={"/successForm"}>*/}
-                    <button className={"base-btn"} type={"submit"} onClick={() => {
-                      console.log(register.arguments)
-                    }}>Создать форму
+                    <button className={"base-btn"} type="submit">Создать форму
                     </button>
                   {/*</Link>*/}
                 </div>
