@@ -100,10 +100,10 @@ namespace MerosWebApi.Application.Services
             var mero = Mero.CreateMero(meroId, meroInDb.UniqueInviteCode, updateMeroData.MeetName, userId,
                 updateMeroData.CreatorEmail, updateMeroData.Description, timePeriods, fields, null);
 
-            var querryStatus = await _repository.DeleteMeroAsync(mero);
+            var querryStatus = await _repository.DeleteMeroAsync(meroInDb);
+
             if (!querryStatus.IsSuccess)
                 throw new NotPossibleUpdateException($"Не возможно обновить - {querryStatus.Message}");
-
 
             await _repository.AddMeroAsync(mero);
 
