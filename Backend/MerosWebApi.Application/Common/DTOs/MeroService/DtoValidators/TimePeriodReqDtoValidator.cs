@@ -13,10 +13,6 @@ namespace MerosWebApi.Application.Common.DTOs.MeroService.DtoValidators
             RuleFor(period => period.StartTime)
                 .GreaterThan(DateTime.Now)
                 .WithMessage("Дата начала проведения мероприятия должна быть позже чем настоящее время");
-
-            RuleFor(period => period.EndTime)
-                .GreaterThan(period => period.StartTime)
-                .WithMessage("Время конца мероприятия должно быть позже чем время начала мероприятия");
         }
     }
 }

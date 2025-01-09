@@ -66,13 +66,19 @@ namespace MerosWebApi.Application.Services
         public async Task<QuerryStatus> DelereMeroByIdAsync(string userId, string meroId)
         {
             var mero = await _repository.GetMeroByIdAsync(meroId);
+
             if (mero == null)
                 throw new EntityNotFoundException("Мероприятие не было найдено");
 
             if (mero.CreatorId != userId)
                 throw new ForbiddenException("Доступ для удаления запрещен.");
 
-            return await _repository.DeleteMeroByIdAsync(meroId);
+            var meroHaveFilledPhorms = mero.TimePeriods.Any(t => t.BookedPlaces > 0);
+
+            if (meroHaveFilledPhorms)
+                return new QuerryStatus(false, false, "Удаление не возможно, есть записи на мероприятие");
+
+            return await _repository.DeleteMeroAsync(mero);
         }
 
         public async Task<MeroResDto> FullMeroUpdateAsync(string userId, string meroId, MeroReqDto updateMeroData)
@@ -94,7 +100,7 @@ namespace MerosWebApi.Application.Services
             var mero = Mero.CreateMero(meroId, meroInDb.UniqueInviteCode, updateMeroData.MeetName, userId,
                 updateMeroData.CreatorEmail, updateMeroData.Description, timePeriods, fields, null);
 
-            var querryStatus = await _repository.DeleteMeroByIdAsync(meroId);
+            var querryStatus = await _repository.DeleteMeroAsync(mero);
             if (!querryStatus.IsSuccess)
                 throw new NotPossibleUpdateException($"Не возможно обновить - {querryStatus.Message}");
 
@@ -208,7 +214,7 @@ namespace MerosWebApi.Application.Services
                 {
                     var periodId = ObjectId.GenerateNewId().ToString();
 
-                    var timePeriod = TimePeriod.CreateTimePeriod(periodId, periodDto.StartTime, periodDto.EndTime,
+                    var timePeriod = TimePeriod.CreateTimePeriod(periodId, periodDto.StartTime,
                         periodDto.TotalPlaces, 0);
 
                     _repository.AddTimePeriodAsync(timePeriod);

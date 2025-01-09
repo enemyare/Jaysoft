@@ -194,17 +194,14 @@ namespace MerosWebApi.Persistence.Repositories
             return timePeriods;
         }
 
-        public async Task<QuerryStatus> DeleteMeroByIdAsync(string meroId)
+        public async Task<QuerryStatus> DeleteMeroAsync(Mero mero)
         {
             var fitler = Builders<DatabaseMero>.Filter
-                .Eq("_id", new ObjectId(meroId));
-
-            var meros = await _dbService.Meros.FindAsync(fitler);
-            var mero = meros.FirstOrDefault();
+                .Eq("_id", new ObjectId(mero.Id));
 
             //Удалить все периоды и мероприятие mero.TimePeriods
             var timePeriodsFilter = Builders<DatabaseTimePeriod>.Filter
-                .In(doc => doc.Id, mero.TimePeriods);
+                .In("_id", mero.TimePeriods.Select(t => new ObjectId(t.Id)));
 
             var periodsDelResult = await _dbService.TimePeriods.DeleteManyAsync(timePeriodsFilter);
 
@@ -215,7 +212,7 @@ namespace MerosWebApi.Persistence.Repositories
                 return meroDelResult.DeletedCount == 1
                     ? new QuerryStatus(true, false, "Мероприятие успешно удаленно")
                     : new QuerryStatus(false, false,
-                        "Периоды мероприятия удалены, мероприятие не было удаленно");
+                        "Периоды мероприятия удалены, мероприятие не было удаленно1");
             }
 
             return new QuerryStatus(false, false, "Мероприятие найдено, удаление безуспешно.");
@@ -249,6 +246,17 @@ namespace MerosWebApi.Persistence.Repositories
             }
 
             return result;
+        }
+
+        private List<DatabaseTimePeriod> transformTimePeriods(List<TimePeriod> timePeriods)
+        {
+            return timePeriods.Select(t => new DatabaseTimePeriod
+            {
+                Id = t.Id,
+                StartTime = t.StartTime,
+                BookedPlaces = t.BookedPlaces,
+                TotalPlaces = t.TotalPlaces
+            }).ToList();
         }
 
         private async Task<List<DatabaseMero>> GetListMerosAsync(Expression<Func<DatabaseMero, bool>> filter, int startIndex, int count)

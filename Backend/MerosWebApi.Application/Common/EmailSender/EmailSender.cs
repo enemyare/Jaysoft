@@ -1,5 +1,8 @@
-﻿using MerosWebApi.Application.Interfaces;
-using System.Net.Mail;
+﻿using MimeKit;
+using MailKit.Net.Smtp;
+using MailKit.Security;
+using MerosWebApi.Application.Interfaces;
+using MerosWebApi.Application.Common.Exceptions.EmailExceptions;
 
 namespace MerosWebApi.Application.Common.EmailSender
 {
@@ -7,36 +10,45 @@ namespace MerosWebApi.Application.Common.EmailSender
     {
         private readonly IEmailConfiguration _configuration;
 
-        private readonly MailAddress myAddress;
+        private readonly MailboxAddress myAddress;
 
         public EmailSender(IEmailConfiguration configuration)
         {
             _configuration = configuration;
-            if (!MailAddress.TryCreate(configuration.EmailAddress, out myAddress))
+            if (!MailboxAddress.TryParse(configuration.EmailAddress,out myAddress))
                 throw new ArgumentException("Not Valid EmailAddress");
         }
 
         public async Task<bool> SendAsync(string toEmail, string subject, string htmlContent)
         {
-            var email = new MailMessage();
-            email.From = myAddress;
-            email.To.Add(new MailAddress(toEmail));
-            email.Subject = subject;
-            email.Body = htmlContent;
+            var msg = new MimeMessage();
+            msg.From.Add(myAddress);
+            msg.To.Add(MailboxAddress.Parse(toEmail));
+            msg.Subject = subject;
+
+            var bodyBuilder = new BodyBuilder { HtmlBody = htmlContent };
+            msg.Body = bodyBuilder.ToMessageBody();
 
             try
             {
-                using var smtp = new SmtpClient(_configuration.EmailHost, _configuration.EmailHostPort);
+                using var smtp = new SmtpClient();
+                await smtp.ConnectAsync(_configuration.EmailHost, _configuration.EmailHostPort, _configuration.SecureSocketOptions);
+                await smtp.AuthenticateAsync(_configuration.EmailAddress, _configuration.Password);
 
-                await smtp.SendMailAsync(email);
+                var response =  await smtp.SendAsync(msg);
+                smtp.Disconnect(true);
+            }
+            catch (SmtpCommandException smtpEx)
+            {
+                throw new EmailNotSentException($"Ошибка отправки сообщения по адресу {toEmail}");
             }
             catch (Exception ex)
             {
                 // Здесь можно добавить логирование ошибки, если необходимо
-                return false; // В случае исключения возвращаем false
+                throw new EmailNotSentException(ex.Message);
             }
 
-            return true; // Если всё прошло успешно
+            return true;
         }
     }
 }

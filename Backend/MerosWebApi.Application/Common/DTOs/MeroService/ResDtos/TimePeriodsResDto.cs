@@ -8,8 +8,6 @@ namespace MerosWebApi.Application.Common.DTOs.MeroService
 
         public DateTime StartTime { get; set; }
 
-        public DateTime EndTime { get; set; }
-
         public int TotalPlaces { get; set; }
 
         public int TotalBookedPlaces { get; set; }
@@ -20,7 +18,6 @@ namespace MerosWebApi.Application.Common.DTOs.MeroService
             {
                 Id = timePeriod.Id,
                 StartTime = timePeriod.StartTime,
-                EndTime = timePeriod.EndTime,
                 TotalPlaces = timePeriod.TotalPlaces,
                 TotalBookedPlaces = timePeriod.BookedPlaces
             };

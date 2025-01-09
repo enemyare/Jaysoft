@@ -3,7 +3,6 @@ using MerosWebApi.Application.Common.DTOs;
 using MerosWebApi.Application.Common.DTOs.CommonDtos.CommonDtoValidators;
 using MerosWebApi.Application.Common.DTOs.MeroService;
 using MerosWebApi.Application.Common.DTOs.MeroService.ResDtos;
-using MerosWebApi.Application.Common.DTOs.UserService;
 using MerosWebApi.Application.Common.Exceptions;
 using MerosWebApi.Application.Common.Exceptions.Common;
 using MerosWebApi.Application.Interfaces;
@@ -35,7 +34,7 @@ namespace MerosWebApi.Controllers.V1
         /// </summary>
         /// <param name="meroReqDto">The request data</param>
         /// <returns></returns>
-        [AllowAnonymous]
+        [Authorize]
         [HttpPost]
         [ActionName(nameof(CreateMeroAsync))]
         [Produces("application/json")]
@@ -62,7 +61,7 @@ namespace MerosWebApi.Controllers.V1
         /// </summary>
         /// <param name="meroReqDto">The request data</param>
         /// <returns></returns>
-        [AllowAnonymous]
+        [Authorize]
         [HttpPost("update/{meroId}")]
         [ActionName(nameof(UpdateMeroAsync))]
         [Produces("application/json")]
@@ -162,7 +161,7 @@ namespace MerosWebApi.Controllers.V1
         /// </summary>
         /// <param name="meroId">Event id</param>
         /// <returns></returns>
-        [AllowAnonymous]
+        [Authorize]
         [HttpDelete("{meroId}")]
         [ActionName(nameof(DeleteMeroAsync))]
         [Produces("application/json")]
@@ -203,7 +202,7 @@ namespace MerosWebApi.Controllers.V1
         /// </summary>
         /// <param name="phormAnswerReqDto">Completed questionnaire response form</param>
         /// <returns></returns>
-        [AllowAnonymous]
+        [Authorize]
         [HttpPost("phorm-answer/create")]
         [ActionName(nameof(CreatePhormAnswerAsync))]
         [Produces("application/json")]
@@ -239,7 +238,7 @@ namespace MerosWebApi.Controllers.V1
         /// </summary>
         /// <param name="phormId">The phormId</param>
         /// <returns></returns>
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet("phorm-answer/get-one/{phormId}")]
         [ActionName(nameof(GetPhormAnswerDetails))]
         [Produces("application/json")]
@@ -272,7 +271,7 @@ namespace MerosWebApi.Controllers.V1
         /// <param name="count">Count of phorms to return</param>
         /// <param name="meroId">The meroId what phroms searching for</param>
         /// <returns></returns>
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet("phorm-answer/get-list-by-mero")]
         [ActionName(nameof(GetListMeroPhormsAnswersForMero))]
         [Produces("application/json")]
@@ -303,7 +302,7 @@ namespace MerosWebApi.Controllers.V1
         /// <param name="count">Count of phorms to return</param>
         /// <param name="userId">The meroId what phroms searching for</param>
         /// <returns></returns>
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet("list-meros/for-user")]
         [ActionName(nameof(GetListMyRegistredMeros))]
         [Produces("application/json")]
@@ -334,7 +333,7 @@ namespace MerosWebApi.Controllers.V1
         /// <param name="count">Count of phorms to return</param>
         /// <param name="userId">The meroId what phroms searching for</param>
         /// <returns></returns>
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet("list-meros/for-creator")]
         [ActionName(nameof(GetListMyCreatedMeros))]
         [Produces("application/json")]

@@ -1,9 +1,7 @@
 using System.Reflection;
 using Asp.Versioning;
-using FluentValidation.AspNetCore;
 using MerosWebApi.Persistence;
 using MerosWebApi.Application;
-using MerosWebApi.Application.Common.DTOs.UserService.DtoValidators;
 using MerosWebApi.ForSwagger;
 using Microsoft.OpenApi.Models;
 

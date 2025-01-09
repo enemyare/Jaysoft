@@ -76,7 +76,7 @@ namespace MerosWebApi.Controllers.V1
         /// </summary>
         /// <param name="id">User Id</param>
         /// <returns></returns>
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet("{id}")]
         [ActionName(nameof(GetDetailsAsync))]
         [Produces("application/json")]
@@ -168,7 +168,7 @@ namespace MerosWebApi.Controllers.V1
         /// </summary>
         /// <param name="id">User id</param>
         /// <returns></returns>
-        [AllowAnonymous]
+        [Authorize]
         [HttpDelete("{id}")]
         [ActionName(nameof(DeleteAsync))]
         [Produces("application/json")]
@@ -197,7 +197,7 @@ namespace MerosWebApi.Controllers.V1
         /// <param name="id">User id</param>
         /// <param name="dto">DTO with update information</param>
         /// <returns></returns>
-        [AllowAnonymous]
+        [Authorize]
         [HttpPatch("{id}")]
         [ActionName(nameof(UpdateAsync))]
         [Produces("application/json")]
@@ -231,9 +231,9 @@ namespace MerosWebApi.Controllers.V1
         /// </summary>
         /// <param name="userId">User Id</param>
         /// <returns></returns>
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet("statistic")]
-        [ActionName(nameof(GetDetailsAsync))]
+        [ActionName(nameof(GetUserStatistic))]
         [Produces("application/json")]
         [ProducesResponseType(typeof(UserStatisticResDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.NotFound)]

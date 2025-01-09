@@ -8,30 +8,24 @@ namespace MerosWebApi.Core.Models.Mero
 
         public DateTime StartTime { get; }
 
-        public DateTime EndTime { get; }
-
         public int TotalPlaces { get; }
 
         public int BookedPlaces { get; private set; }
 
-        public static TimePeriod CreateTimePeriod(string id, DateTime startTime, DateTime endTime,
+        public static TimePeriod CreateTimePeriod(string id, DateTime startTime,
             int totalPlaces, int bookedPlaces)
         {
-            return new TimePeriod(id, startTime, endTime, totalPlaces, bookedPlaces);
+            return new TimePeriod(id, startTime, totalPlaces, bookedPlaces);
         }
 
-        private TimePeriod(string id, DateTime startTime, DateTime endTime,
+        private TimePeriod(string id, DateTime startTime,
             int totalPlaces, int bookedPlaces = 0)
         {
-            if (endTime <= startTime)
-                throw new NotValidTimePeriodException("Не правильный формат периода мероприятия");
-
             if (totalPlaces <= 0)
                 throw new NotValidTimePeriodException("Число мест на период мероприятия должно быть больше нуля");
 
             Id = id;
             StartTime = startTime;
-            EndTime = endTime;
             TotalPlaces = totalPlaces;
             BookedPlaces = bookedPlaces;
         }

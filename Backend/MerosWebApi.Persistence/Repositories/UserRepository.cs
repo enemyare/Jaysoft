@@ -80,7 +80,7 @@ namespace MerosWebApi.Persistence.Repositories
 
         private int CalculateParticipantsCount(IEnumerable<DatabaseTimePeriod> timePeriods, DateTime now)
         {
-            var completedTimePeriods = timePeriods.Where(tp => tp.EndTime < now);
+            var completedTimePeriods = timePeriods.Where(tp => tp.StartTime < now);
             return completedTimePeriods.Sum(tp => tp.BookedPlaces);
         }
 
@@ -93,7 +93,7 @@ namespace MerosWebApi.Persistence.Repositories
             var visitedTimePeriodsFilter = Builders<DatabaseTimePeriod>.Filter.In(tp => tp.Id, visitedTimePeriodIds);
             var visitedTimePeriods = await _dbService.TimePeriods.Find(visitedTimePeriodsFilter).ToListAsync();
 
-            return visitedTimePeriods.Where(tp => tp.EndTime < now).ToList();
+            return visitedTimePeriods.Where(tp => tp.StartTime < now).ToList();
         }
 
         public async Task<User> GetUserByEmail(string email)

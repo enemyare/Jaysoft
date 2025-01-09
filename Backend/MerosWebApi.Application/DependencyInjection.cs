@@ -16,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
 using System.Text;
+using MailKit.Security;
 using MerosWebApi.Application.Common.EmailSender.Configurations;
 
 namespace MerosWebApi.Application
@@ -32,16 +33,46 @@ namespace MerosWebApi.Application
             var emailAddress = devConfiguration["UserName"];
             var emailPassword = devConfiguration["Password"];
 
-            if (string.IsNullOrWhiteSpace(hostAddress) || hostPort == default(int) ||
+            ReadOnlySpan<char> secureOptionsSpan = devConfiguration["SecureSocketOptions"].AsSpan();
+            var parseResult = SecureSocketOptions.TryParse(secureOptionsSpan, out SecureSocketOptions secureOptions);
+
+            if (string.IsNullOrWhiteSpace(hostAddress) || hostPort == default(int) || !parseResult ||
                 string.IsNullOrWhiteSpace(emailAddress) || string.IsNullOrWhiteSpace(emailPassword))
             {
                 throw new ArgumentException($"Не правильно сконфигурирована" +
                     $"секция '{nameof(devConfiguration.Value)}' в 'appsettings.json'");
             }
 
+            var emailConfiguration = new DevelopmentConfiguration(emailAddress, emailPassword, 
+                hostAddress, hostPort, secureOptions);
 
-            var emailConfiguration = new DevelopmentConfiguration(emailAddress, emailPassword, hostAddress,
-                hostPort);
+            services.AddSingleton<IEmailConfiguration>(emailConfiguration);
+
+            return services;
+        }
+
+        public static IServiceCollection AddRelizeEmailConfiguration(this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            var devConfiguration = configuration.GetSection("RelizeEmailConfiguration");
+
+            var hostAddress = devConfiguration["Host"];
+            int.TryParse(devConfiguration["Port"], out var hostPort);
+            var emailAddress = devConfiguration["UserName"];
+            var emailPassword = devConfiguration["Password"];
+
+            ReadOnlySpan<char> secureOptionsSpan = devConfiguration["SecureSocketOptions"].AsSpan();
+            var parseResult = SecureSocketOptions.TryParse(secureOptionsSpan, out SecureSocketOptions secureOptions);
+
+            if (string.IsNullOrWhiteSpace(hostAddress) || hostPort == default(int) || !parseResult ||
+                string.IsNullOrWhiteSpace(emailAddress) || string.IsNullOrWhiteSpace(emailPassword))
+            {
+                throw new ArgumentException($"Не правильно сконфигурирована" +
+                                            $"секция '{nameof(devConfiguration.Value)}' в 'appsettings.json'");
+            }
+
+            var emailConfiguration = new RelizeConfiguration(emailAddress, emailPassword,
+                hostAddress, hostPort, secureOptions);
 
             services.AddSingleton<IEmailConfiguration>(emailConfiguration);
 
