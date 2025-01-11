@@ -2,29 +2,23 @@ import type { FC} from "react";
 import { useEffect } from "react"
 import addField from "../assets/addField.svg"
 import dump from "../assets/dump.svg"
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import useSWR from "swr"
-import { sendRequest } from "../api/api"
+import { getRequest, sendRequest } from "../api/api"
 import type { SubmitHandler} from "react-hook-form";
 import { useFieldArray, useForm } from "react-hook-form"
 import type { ICreateForm } from "../model/types"
 import useSWRMutation from "swr/mutation"
 
-async function getProfileRequest(path: string) {
-  const url =  "http://localhost:5000" + path;
-  return await fetch(url, {
-    method: 'GET',
-    credentials: 'include',
-    headers: { 'Content-Type': 'application/json' }
-  }).then(res => res.json())
-}
+
 
 const EditMero: FC = () => {
   const {id} = useParams()
+  const navigate = useNavigate()
   //ЗАПРОС
   const {data, isLoading, error, isValidating} = useSWR(
     `/api/Mero/by-id/${id}`,
-    getProfileRequest,
+    getRequest,
     {
       revalidateIfStale: false,  // Не отправлять новый запрос, если есть закешированные данные
       revalidateOnFocus: false,  // Не отправлять запрос при переключении вкладок
@@ -52,7 +46,9 @@ const EditMero: FC = () => {
     control,
     register,
     handleSubmit,
-    reset
+    reset,
+    getValues,
+    setValue
   } = useForm<ICreateForm>({
     defaultValues: {
       meetName: "",
@@ -74,7 +70,6 @@ const EditMero: FC = () => {
   })
 
   useEffect(() => {
-    console.log(data)
     if (data) {
       reset({
         meetName: data.meetName,
@@ -86,7 +81,21 @@ const EditMero: FC = () => {
     }
   }, [data, reset]);
 
+  const handleStartTimeChange = (index: number, type: string, value: string) => {
+    const periods = getValues("periods")
+    const currentStartTime = periods[index]?.startTime
+    const [currentDate, currentTime] = currentStartTime.split("T")
+    let newDate = currentDate || ""
+    let newTime = currentTime ? currentTime.split("Z")[0] : ""
 
+    if (type === "date") newDate = value
+    if (type === "time") newTime = value
+
+    if (newDate && newTime) {
+      const combinedDateTime = `${newDate}T${newTime}:00.000Z`
+      setValue(`periods.${index}.startTime`, combinedDateTime)
+    }
+  }
 
   if (isLoading){
     return <>хуй</>
@@ -123,12 +132,13 @@ const EditMero: FC = () => {
                         type={"date"}
                         placeholder={""}
                         className={"base-input meta-input"}
-                        {...register(`periods.${index}.startTime`)}
+                        onChange={(e) => handleStartTimeChange(index,"date", e.target.value)}
                       />
                       <input
                         type={"time"}
                         placeholder={""}
                         className={"base-input meta-input"}
+                        onChange={(e) => handleStartTimeChange(index, "time" , e.target.value)}
                       />
                       <input
                         type={"text"}
@@ -142,6 +152,7 @@ const EditMero: FC = () => {
               </div>
               <div className={"flex justify-between mt-3 text-[14px] leading-5"}>
                 <button
+                  type={"button"}
                   onClick={() => {
                     appendPeriods({
                       startTime: "",
@@ -154,7 +165,7 @@ const EditMero: FC = () => {
                     className={"inline mr-1.5 pb-0.5"} />
                   Добавить ещё временной интервал
                 </button>
-                <button className={"text-danger"} onClick={() => {
+                <button type={"button"} className={"text-danger"} onClick={() => {
                   removePeriods(-1)
                 }}>
                   <img
@@ -195,6 +206,7 @@ const EditMero: FC = () => {
             </div>
             <div className={"flex justify-between mt-3 text-[14px] leading-5"}>
               <button
+                type={"button"}
                 onClick={() => {
                   append({
                     type: "text",
@@ -204,7 +216,7 @@ const EditMero: FC = () => {
                 <img src={addField} alt="" className={"inline mr-1.5 pb-0.5"} />
                 Добавить ещё поле
               </button>
-              <button className={"text-danger"} onClick={() => {
+              <button type={"button"} className={"text-danger"} onClick={() => {
                 remove(-1)
               }}>
                 <img src={dump} alt="" className={"inline mr-1.5 pb-0.5"} /> Удалить
@@ -214,11 +226,12 @@ const EditMero: FC = () => {
           </div>
 
           <div className={"flex flex-col gap-4"}>
-            <button className={"base-btn"} type={"submit"}>
+            <button type={"submit"} className={"base-btn"} >
               Сохранить изменения
             </button>
             <div className={"flex gap-4"}>
-              <button className={"border border-primary-text base-btn text-black bg-background max-w-[424px]"}>
+              <button type={"button"} className={"border border-primary-text base-btn text-black bg-background max-w-[424px]"}
+                      onClick={()=>{navigate("/profile")}}>
                 Назад без изменений
               </button>
               <button

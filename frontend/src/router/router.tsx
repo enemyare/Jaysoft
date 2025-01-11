@@ -11,14 +11,20 @@ import FormFilledSuccess from "../pages/FormFilledSuccess"
 import EditMero from "../pages/EditMero"
 import AuthConfirm from "../pages/AuthConfirm"
 import { Navigate } from "react-router-dom";
-import type { FC, ReactNode } from "react" 
+import type { FC, ReactNode } from "react"
 
 interface PrivateRouteProps {
   children: ReactNode;
 }
 
 const isAuthenticated = (): boolean => {
-  return true;
+  try {
+    const authValue = !!localStorage.getItem("userId");
+    return authValue; // Возвращаем результат проверки
+  } catch (e) {
+    console.log('Ошибка при проверке аутентификации:', e);
+    return false;
+  }
 };
 
 const PrivateRoute: FC<PrivateRouteProps> = ({ children }) => {

@@ -27,15 +27,9 @@ const AuthConfirm: FC = () => {
   const onSumbit: SubmitHandler<IauthCodeForm> = async (data) => {
     try {
       const response = await trigger(data)
-      if (response.ok ) {
-        response.json().then(res => {
-          localStorage.setItem("userId", res.id)
-          localStorage.setItem("userEmail", res.email)
-        })
-        navigate('/')
-      } else {
-        console.error('Ошибка:', response);
-      }
+      localStorage.setItem("userId", response.id)
+      localStorage.setItem("userEmail", response.email)
+      navigate('/')
     }
     catch (err){
         console.error('Произошла ошибка:', err);

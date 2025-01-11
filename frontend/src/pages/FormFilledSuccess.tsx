@@ -1,27 +1,16 @@
 import type { FC} from "react";
-import { Link, useLocation, useParams } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 import FormCard from "../components/FormCard"
 import useSWR from "swr"
 import { getRequest } from "../api/api"
 import type { ICreateForm } from "../model/types"
-import useFormattedDate from "../hooks/useFormattedDate"
-
-async function getProfileRequest(path: string) {
-  const url =  "http://localhost:5000" + path;
-  return await fetch(url, {
-    method: 'GET',
-    credentials: 'include',
-    headers: { 'Content-Type': 'application/json' }
-  }).then(res => res.json())
-}
 
 const FormFilledSuccess: FC = () => {
   const {id} = useParams()
   const {data, error, isLoading} = useSWR(
     `/api/Mero/by-id/${id}`,
-    getProfileRequest
+    getRequest
   )
-  console.log(data)
   const mero: ICreateForm = data
 
   if (isLoading) return <>Загрузка...</>

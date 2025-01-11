@@ -17,15 +17,11 @@ const Home: FC = () => {
   const handleSubmit =  async () => {
     try {
       let response = await trigger()
-      if (response.ok){
-        const responseData = await response.json();
-        navigate(`/form/${responseData.id}`, { state: responseData})
-      }
+      navigate(`/form/${response.id}`, { state: response})
     } catch (e) {
       console.error(e)
     }
   }
-
 
   return (
     <div className={"main-container p-16 text-center flex-col flex items-center gap-8  text-[20px]"}>

@@ -7,7 +7,6 @@ import useSWRMutation from "swr/mutation"
 import { sendRequest } from "../api/api"
 import { useState } from "react"
 
-
 const Form = () => {
   const [selectedPeriod, setSelectedPeriod] = useState<string | undefined>();
   const location = useLocation()
@@ -16,8 +15,6 @@ const Form = () => {
   const mero: ICreateForm = location.state
   const periods: IPeriods = mero?.periods[0]
   const {date, time, dayOfWeek} = useFormattedDate(periods?.startTime)
-  console.log(mero)
-  console.log(selectedPeriod)
   // Форма
   const {register,
     handleSubmit,
@@ -37,17 +34,12 @@ const Form = () => {
   //Запрос
   const {trigger, isMutating} = useSWRMutation(
     '/api/Mero/phorm-answer/create',
-    sendRequest,
-    {
-
-    })
+    sendRequest)
 
   const onSubmit: SubmitHandler<any> = async (data) => { 
     try {
-      const response = await trigger(data)
-      if ( response.ok ) {
-        navigate(`/filledSuccess/${id}`, {state: mero})
-      }
+      await trigger(data)
+      navigate(`/filledSuccess/${id}`, {state: mero})
     }catch (e){
       return <>хуй тебе</>
     }

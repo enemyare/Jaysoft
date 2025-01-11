@@ -6,23 +6,16 @@ import { getRequest } from "../api/api"
 import type { ICreateForm, IPeriods } from "../model/types"
 import useFormattedDate from "../hooks/useFormattedDate"
 
-async function getProfileRequest(path: string) {
-  const url =  "http://localhost:5000" + path;
-  return await fetch(url, {
-    method: 'GET',
-    credentials: 'include',
-    headers: { 'Content-Type': 'application/json' }
-  }).then(res => res.json())
-}
-
 const DetailedMero = () => {
   const [isOpen, setIsOpen] = useState(false)
   const navigate = useNavigate()
   const {id} = useParams()
-  const {data, error} = useSWR(`/api/Mero/by-id/${id}`, getProfileRequest)
+  const {data, error} = useSWR(`/api/Mero/by-id/${id}`, getRequest)
   const mero: ICreateForm  = data
   const periods:  IPeriods = mero?.periods[0]
   const {date, time} = useFormattedDate(periods?.startTime)
+
+  if (error) return <>хзуй</>
 
   return (
     <>
@@ -30,7 +23,7 @@ const DetailedMero = () => {
       <div className={"main-container flex flex-col gap-8"}>
         <div className={"flex justify-between"}>
           <h1 className={"font-semibold text-[32px]"}>{ mero?.meetName }</h1>
-          <span className={"block px-4 py-1 bg-primary rounded-[66px] text-white"}>
+          <span className={"block flex items-center px-4 py-1 bg-primary rounded-[66px] text-white"}>
             {  periods?.totalPlaces }
             <svg className={"inline-block"} width="20" height="20" viewBox="0 0 20 20" fill="#F36E24" xmlns="http://www.w3.org/2000/svg">
                 <path

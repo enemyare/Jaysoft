@@ -5,7 +5,7 @@ import dump from "../assets/dump.svg"
 import type { SubmitHandler } from "react-hook-form"
 import { useFieldArray, useForm } from "react-hook-form"
 import type { ICreateForm } from "../model/types"
-import { Link, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import useSWRMutation from "swr/mutation"
 import { sendRequest } from "../api/api"
 
@@ -90,8 +90,8 @@ const FormCreate: FC = () => {
       const combinedDateTime = `${newDate}T${newTime}:00.000Z`
       setValue(`periods.${index}.startTime`, combinedDateTime)
     }
-    console.log(getValues())
   }
+
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -154,10 +154,10 @@ const FormCreate: FC = () => {
                     </div>
                     <div className={"flex justify-between mt-3 text-[14px] leading-5"}>
                       <button
+                        type="button"
                         onClick={() => {
                           appendPeriods({
-                            startTime: "",
-                            totalPlaces: 10
+                            startTime: ""
                           })
                         }}>
                         <img
@@ -166,7 +166,7 @@ const FormCreate: FC = () => {
                           className={"inline mr-1.5 pb-0.5"} />
                         Добавить ещё временной интервал
                       </button>
-                      <button className={"text-danger"} onClick={() => {
+                      <button  type="button" className={"text-danger"} onClick={() => {
                         removePeriods(-1)
                       }}>
                         <img
@@ -178,7 +178,8 @@ const FormCreate: FC = () => {
                       </button>
                     </div>
                   </div>
-                  <button className={"base-btn primary-responsiveness"} onClick={() => {
+                  <button  type="button" className={"base-btn primary-responsiveness"} onClick={(e) => {
+                    e.preventDefault();
                     setIsStepOne(!isStepOne)
                   }}>Далее
                   </button>
@@ -212,6 +213,7 @@ const FormCreate: FC = () => {
                     </div>
                     <div className={"flex justify-between mt-3 text-[14px] leading-5"}>
                       <button
+                        type="button"
                         onClick={() => {
                           append({
                             type: "text",
@@ -221,7 +223,7 @@ const FormCreate: FC = () => {
                         <img src={addField} alt="" className={"inline mr-1.5 pb-0.5"} />
                         Добавить ещё поле
                       </button>
-                      <button className={"text-danger"} onClick={() => {
+                      <button  type="button" className={"text-danger"} onClick={() => {
                         remove(-1)
                       }}>
                         <img src={dump} alt="" className={"inline mr-1.5 pb-0.5"} /> Удалить
@@ -231,14 +233,14 @@ const FormCreate: FC = () => {
                   </div>
 
                   <div>
-                    <button className={"white-responsiveness border border-primary-text base-btn text-black mt-4 bg-background "}
+                    <button  type="button" className={"white-responsiveness border border-primary-text base-btn text-black mt-4 bg-background "}
                             onClick={() =>
                               setIsStepOne(!isStepOne)
                             }>Назад
                     </button>
                   </div>
                   {/*<Link to={"/successForm"}>*/}
-                    <button className={"base-btn primary-responsiveness"} type="submit">Создать форму
+                    <button type={"submit"}  className={"base-btn primary-responsiveness"} >Создать форму
                     </button>
                   {/*</Link>*/}
                 </div>

@@ -6,18 +6,10 @@ import { Link, useNavigate } from "react-router-dom"
 import type { SubmitHandler} from "react-hook-form";
 import { useForm } from "react-hook-form"
 import useSWR from "swr"
-import Cookies from "js-cookie"
 import type { ICreateForm } from "../model/types"
 import { useAppSelector } from "../app/hooks"
+import { getRequest } from "../api/api"
 
-async function getProfileRequest(path: string) {
-  const url =  "http://localhost:5000" + path;
-  return await fetch(url, {
-    method: 'GET',
-    credentials: 'include',
-    headers: { 'Content-Type': 'application/json' }
-  }).then(res => res.json())
-}
 
 const Profile: FC = () => {
   const state = useAppSelector((state) => state.user)
@@ -36,7 +28,7 @@ const Profile: FC = () => {
 
   const {data, error, isLoading} = useSWR(
     `/api/Mero/list-meros/for-creator?${params.toString()}&userId=${localStorage.getItem("userId")}`,
-    getProfileRequest
+    getRequest
   )
 
   const onSubmit: SubmitHandler<any> = (data) => {
@@ -49,9 +41,10 @@ const Profile: FC = () => {
     window.location.reload()
   }
 
-  if (error) return <>Ошибка</>
+  if (error) return <>ошибка</>
 
   if (isLoading) return  <>Загрузка...</>
+
   return (
     <>
       <div className={"main-container flex flex-col gap-8"}>
@@ -63,6 +56,7 @@ const Profile: FC = () => {
         <div className={"flex flex-col gap-4"}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <input
+              disabled={true}
               type={"text"}
               placeholder={"sultanovMi@gmail.com"}
               className={"base-input meta-input"}

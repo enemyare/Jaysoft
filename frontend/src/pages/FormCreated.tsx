@@ -4,6 +4,7 @@ import { Link, useLocation } from "react-router-dom"
 import copy from '../assets/copy.svg'
 import qrcode from '../assets/qrcode.svg'
 import QrModal from "../components/QrModal"
+
 const FormCreated:FC = () => {
   const [isOpen, setIsOpen] = useState(false)
   const location = useLocation()

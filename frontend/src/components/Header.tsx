@@ -1,13 +1,20 @@
 import type { FC} from "react";
-import { useState } from "react"
 import { useEffect } from "react"
+import { useState } from "react"
 import logo from "../assets/logo.svg"
 import profile from "../assets/profile.svg"
 import { NavLink } from "react-router-dom"
 
 const Header: FC = () => {
-  const [isAuth, setIsAuth] = useState<boolean>(!!localStorage.getItem("userId"))
-
+  const [isAuth, setIsAuth] = useState<boolean>()
+  useEffect(()=>{
+    try {
+      const authValue = !!localStorage.getItem("userId")
+      setIsAuth(authValue)
+    } catch (e){
+      console.log(e)
+    }
+  }, [isAuth])
   return (
     <header className="flex items-center text-[20px]">
       <NavLink to={"/"}>
