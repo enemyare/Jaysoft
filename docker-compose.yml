@@ -1,20 +1,42 @@
 version: "3.7"
 
 services:
+  nginx:
+    image: nginx:stable-alpine
+    ports:
+     - "80:80"
+    volumes: 
+     - "./nginx.conf:/etc/nginx/nginx.conf"
+    depends_on:
+     - meroswebapi
+     - frontend
+    networks:
+     - rb-network
+
   meroswebapi:
     container_name: meros_web_api
     image: ${DOCKER_REGISTRY-}meroswebapi
     build:
       context: ./Backend
       dockerfile: Dockerfile
-    ports:
-      - "5000:5000"
-      - "5001:5001"
+    # ports:
+    #   - "5000:5000"
+    #   - "5001:5001"
     networks:
       - rb-network
     depends_on:
       - mongodb
-      - mailhog_server
+
+  frontend:
+    container_name: frontend
+    image: frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    # ports:
+    #  - "5173:5173"
+    networks:
+      - rb-network
 
   mongodb:
     build:
@@ -38,26 +60,26 @@ services:
     networks:
       - rb-network
 
-  mongo-express:
-    image: mongo-express:latest
-    container_name: mongo-express
-    restart: unless-stopped
-    ports:
-      - "8081:8081"
-    env_file: .env
-    networks:
-      - rb-network
+  # mongo-express:
+  #   image: mongo-express:latest
+  #   container_name: mongo-express
+  #   restart: unless-stopped
+  #   ports:
+  #     - "8081:8081"
+  #   env_file: .env
+  #   networks:
+  #     - rb-network
 
-  mailhog_server:
-    image: mailhog/mailhog:latest
-    container_name: mailhog_server
-    ports:
-      - "1025:1025"
-      - "8025:8025"
-    env_file: .env
-    networks:
-      - rb-network
-    restart: always
+  # mailhog_server:
+  #   image: mailhog/mailhog:latest
+  #   container_name: mailhog_server
+  #   ports:
+  #     - "1025:1025"
+  #     - "8025:8025"
+  #   env_file: .env
+  #   networks:
+  #     - rb-network
+  #   restart: always
 
 name: meros_applicatoin
 networks:
