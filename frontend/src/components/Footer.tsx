@@ -8,7 +8,7 @@ const Footer: FC = () => {
       <div className={"flex flex-col justify-between"}>
         <h2 className={"font-semibold mb-5 text-2xl"}>Мероприятия</h2>
         <Link className={""} to={"/createForm"}>
-          <button className={"border border-primary-text bg-primary-text text-white rounded-xl px-4 py-1.5"}>Создать форму бронирования</button>
+          <button className={"secondary-responsiveness border border-primary-text bg-primary-text text-white rounded-xl px-4 py-1.5"}>Создать форму бронирования</button>
         </Link>
       </div>
       <div>

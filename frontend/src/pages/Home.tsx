@@ -40,7 +40,7 @@ const Home: FC = () => {
           placeholder={"Код мероприятия"}
           value={inviteCode}
           onChange={(e) => setInviteCode(e.target.value)} />
-        <button className={"arrow-btn px-[18px]"} disabled={isMutating} onClick={handleSubmit}>
+        <button className={"arrow-btn px-[18px] primary-responsiveness"} disabled={isMutating} onClick={handleSubmit}>
           <img className={"h-6 w-6"} src={arrow}/>
         </button>
       </div>

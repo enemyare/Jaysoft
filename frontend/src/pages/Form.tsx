@@ -5,22 +5,27 @@ import type { SubmitHandler} from "react-hook-form";
 import { useFieldArray, useForm } from "react-hook-form"
 import useSWRMutation from "swr/mutation"
 import { sendRequest } from "../api/api"
+import { useState } from "react"
 
 
 const Form = () => {
+  const [selectedPeriod, setSelectedPeriod] = useState<string | undefined>();
   const location = useLocation()
   const {id} = useParams()
   const navigate = useNavigate()
   const mero: ICreateForm = location.state
   const periods: IPeriods = mero?.periods[0]
-  const {date, time} = useFormattedDate(periods?.startTime)
+  const {date, time, dayOfWeek} = useFormattedDate(periods?.startTime)
+  console.log(mero)
+  console.log(selectedPeriod)
   // Форма
   const {register,
     handleSubmit,
-    control} = useForm<IPhormAnswer>({
+    control,
+    setValue} = useForm<IPhormAnswer>({
       defaultValues: {
         meroId: mero.id,
-        timePeriodId: "677d613e6a1d89be5a72e45a",
+        timePeriodId: "",
         answers: mero.fields?.map((field) => ({ questionTitle: field.title, questionAnswer: "" }))
       }
     }
@@ -44,8 +49,12 @@ const Form = () => {
         navigate(`/filledSuccess/${id}`, {state: mero})
       }
     }catch (e){
-      console.log(e)
+      return <>хуй тебе</>
     }
+  }
+
+  const freePlaces = (totalPlaces: any , bookedPlaces: any) => {
+    return totalPlaces-bookedPlaces
   }
 
   return (
@@ -78,11 +87,24 @@ const Form = () => {
             </div>
           </div>
           <div>
-            {/*<h3 className={"mb-3"}>Нажмите на время, в которое хотите посетить мероприятие:</h3>*/}
+            <h3 className={"mb-3"}>Нажмите на время, в которое хотите посетить мероприятие:</h3>
+            <div className={"flex flex-col gap-4"}>
+              {
+                mero.periods.map((period, index) => (
+                  <div className={`flex gap-2 font-medium cursor-pointer`} key={period.id} onClick={()=>{
+                    setSelectedPeriod(period.id)
+                    setValue("timePeriodId", period.id || "")
+                  }}>
+                    <span className={`${selectedPeriod === period.id ? "bg-primary text-white": ""} block meta-input px-4 py-[9px] text-[16px] leading-[22px] text-black`}>{index+1}</span>
+                    <div className={`${selectedPeriod === period.id ? "bg-primary text-white": ""} meta-input base-input`}>{dayOfWeek}, {date} в {time}. Осталось {freePlaces(period.totalPlaces, period.bookedPlaces)}</div>
+                  </div>
+                ))
+              }
+            </div>
           </div>
           <div className={"flex flex-col gap-4"}>
-            <button disabled={isMutating} className={"base-btn"} type={"submit"} >Зарегистрироваться</button>
-            <button className={"border border-primary-text base-btn text-black bg-background"} >
+            <button disabled={isMutating} className={"primary-responsiveness base-btn"} type={"submit"} >Зарегистрироваться</button>
+            <button className={"white-responsiveness border border-primary-text base-btn text-black bg-background"} >
               На главную
             </button>
           </div>

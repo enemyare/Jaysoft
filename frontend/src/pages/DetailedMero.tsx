@@ -49,14 +49,14 @@ const DetailedMero = () => {
           { mero?.description }
         </p>
         <div className={"flex flex-col gap-4"}>
-          <button className={"base-btn"} onClick={()=> setIsOpen(true)} >Поделиться мероприятием</button>
+          <button className={"primary-responsiveness base-btn"} onClick={()=> setIsOpen(true)} >Поделиться мероприятием</button>
           <div className={"flex gap-4"}>
-            <button className={"border border-primary-text base-btn text-black bg-background max-w-[424px]"}
+            <button className={"white-responsiveness border border-primary-text base-btn text-black bg-background max-w-[424px]"}
                     onClick={() => {navigate(`/editMero/${id}`)}}
             >
               Редактировать форму
             </button>
-            <button className={"border border-primary-text bg-primary-text text-white rounded-xl max-w-[424px] w-full"}>
+            <button className={"secondary-responsiveness border border-primary-text bg-primary-text text-white rounded-xl max-w-[424px] w-full"}>
               Получить данные о посетителях
             </button>
           </div>

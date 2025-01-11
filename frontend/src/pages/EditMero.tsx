@@ -5,7 +5,8 @@ import dump from "../assets/dump.svg"
 import { useParams } from "react-router-dom"
 import useSWR from "swr"
 import { sendRequest } from "../api/api"
-import { SubmitHandler, useFieldArray, useForm } from "react-hook-form"
+import type { SubmitHandler} from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form"
 import type { ICreateForm } from "../model/types"
 import useSWRMutation from "swr/mutation"
 
@@ -73,6 +74,7 @@ const EditMero: FC = () => {
   })
 
   useEffect(() => {
+    console.log(data)
     if (data) {
       reset({
         meetName: data.meetName,

@@ -18,12 +18,13 @@ const FormCreate: FC = () => {
     control,
     register,
     handleSubmit,
+    setValue,
+    getValues
     } = useForm<ICreateForm>({
     defaultValues: {
       periods: [
         {
-          startTime: "2025-01-29T21:05:21.370Z",
-          endTime: "2025-12-19T21:05:21.370Z",
+          startTime: "2026-01-29T21:05:21.370Z",
         },
       ],
       fields: [
@@ -59,13 +60,10 @@ const FormCreate: FC = () => {
     sendRequest
   )
 
-  const meroMapper  = (data:ICreateForm)=>{
-
-    return data
-  }
 
   // Обработчик для отправки формы
   const onSubmit:SubmitHandler<ICreateForm> = async (data) => {
+    console.log(data)
     try {
       const response = await trigger(data)
       const responseData = await response.json()
@@ -75,6 +73,24 @@ const FormCreate: FC = () => {
     }catch (e){
       console.log(e)
     }
+  }
+
+  //Фукнция для объединения даты и времни
+  const handleStartTimeChange = (index: number, type: string, value: string) => {
+    const periods = getValues("periods")
+    const currentStartTime = periods[index]?.startTime
+    const [currentDate, currentTime] = currentStartTime.split("T")
+    let newDate = currentDate || ""
+    let newTime = currentTime ? currentTime.split("Z")[0] : ""
+
+    if (type === "date") newDate = value
+    if (type === "time") newTime = value
+
+    if (newDate && newTime) {
+      const combinedDateTime = `${newDate}T${newTime}:00.000Z`
+      setValue(`periods.${index}.startTime`, combinedDateTime)
+    }
+    console.log(getValues())
   }
   return (
     <>
@@ -118,12 +134,13 @@ const FormCreate: FC = () => {
                               type={"date"}
                               placeholder={""}
                               className={"base-input meta-input"}
-                              {...register(`periods.${index}.startTime`)}
+                              onChange={(e) => handleStartTimeChange(index,"date", e.target.value)}
                             />
                             <input
                               type={"time"}
                               placeholder={""}
                               className={"base-input meta-input"}
+                              onChange={(e) => handleStartTimeChange(index, "time" , e.target.value)}
                             />
                             <input
                               type={"text"}
@@ -161,7 +178,7 @@ const FormCreate: FC = () => {
                       </button>
                     </div>
                   </div>
-                  <button className={"base-btn"} onClick={() => {
+                  <button className={"base-btn primary-responsiveness"} onClick={() => {
                     setIsStepOne(!isStepOne)
                   }}>Далее
                   </button>
@@ -214,14 +231,14 @@ const FormCreate: FC = () => {
                   </div>
 
                   <div>
-                    <button className={"border border-primary-text base-btn text-black mt-4 bg-background "}
+                    <button className={"white-responsiveness border border-primary-text base-btn text-black mt-4 bg-background "}
                             onClick={() =>
                               setIsStepOne(!isStepOne)
                             }>Назад
                     </button>
                   </div>
                   {/*<Link to={"/successForm"}>*/}
-                    <button className={"base-btn"} type="submit">Создать форму
+                    <button className={"base-btn primary-responsiveness"} type="submit">Создать форму
                     </button>
                   {/*</Link>*/}
                 </div>

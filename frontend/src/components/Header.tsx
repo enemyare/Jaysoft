@@ -10,9 +10,11 @@ const Header: FC = () => {
 
   return (
     <header className="flex items-center text-[20px]">
-      <img className="pt-1.5" src={logo} />
+      <NavLink to={"/"}>
+        <img className="pt-1.5" src={logo} />
+      </NavLink>
       <nav className={"ml-6"}>
-        <ul className={"flex gap-5"}>
+      <ul className={"flex gap-5"}>
           <li>
             <NavLink to={"/"}>Главная</NavLink>
           </li>

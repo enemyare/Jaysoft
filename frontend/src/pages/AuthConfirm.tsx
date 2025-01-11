@@ -60,7 +60,7 @@ const AuthConfirm: FC = () => {
               {...register('authCode', {
                 required: 'Это поле является обязательным'
               })} />
-            <button disabled={isMutating} className={"arrow-btn px-2.5 py-3.5 rounded-[12px] ml-2"}><img src={arrow} alt="" /></button>
+            <button disabled={isMutating} className={"primary-responsiveness arrow-btn px-2.5 py-3.5 rounded-[12px] ml-2"}><img src={arrow} alt="" /></button>
           </form>
         </div>
       </div>

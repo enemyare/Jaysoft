@@ -12,9 +12,16 @@ export default {
         'primary-hover':'#F37E3D',
         'primary-text': '#1B1B1B',
         'secondary-text': '#818181',
+        'secondary-d': '#818181',
         'danger': '#FF2F00',
         'background': '#F9F9F9',
         'secondary-bg': '#E6E6E6',
+        'primary-pressed': '#FF5B00',
+        'secondary': '#1B1B1B',
+        'secondary-hover': '#333333',
+        'secondary-pressed': '#000000',
+        'danger-hover': '#FF5833',
+        'danger-pressed': '#CC2500'
       }
     },
   },

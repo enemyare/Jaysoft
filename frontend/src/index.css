@@ -28,6 +28,22 @@
   .base-input{
     @apply  px-4 py-[9px] text-[16px] leading-[22px] w-full text-black;
   }
+
+  .primary-responsiveness{
+    @apply hover:bg-primary-hover active:bg-primary-pressed
+  }
+
+  .secondary-responsiveness{
+    @apply hover:bg-secondary-hover active:bg-secondary-pressed
+  }
+
+  .danger-responsiveness{
+    @apply hover:bg-danger-hover active:bg-danger-pressed
+  }
+
+  .white-responsiveness{
+    @apply hover:bg-[#F2F2F2] active:bg-[#E6E6E6]
+  }
 }
 
 *{

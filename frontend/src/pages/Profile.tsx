@@ -75,7 +75,7 @@ const Profile: FC = () => {
             />
           </form>
         </div>
-        <button className={"base-btn w-[248px] bg-danger"} onClick={()=>{onLogout()}}>
+        <button className={"danger-responsiveness base-btn w-[248px] bg-danger"} onClick={()=>{onLogout()}}>
           <img src={logout} alt="" className={"inline-block mr-2.5 pb-1"} />
           Выйти из аккаунта
         </button>
@@ -101,7 +101,7 @@ const Profile: FC = () => {
             )
           }
           <Link to={"/createform"}>
-            <button className={"bg-secondary-bg size-[266px] rounded-2xl"}>
+            <button className={"hover:bg-primary bg-secondary-bg size-[266px] rounded-2xl"}>
               <img src={addEventCard} alt="" className={"m-auto"} />
             </button>
           </Link>

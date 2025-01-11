@@ -4,9 +4,9 @@ export  interface IInput {
 }
 
 export interface IPeriods {
+  id?: string
   startTime: string,
   bookedPlaces?: string,
-  endTime?: string,
   totalPlaces?: number
 }
 
