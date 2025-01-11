@@ -6,22 +6,7 @@ import { useForm } from "react-hook-form"
 import type { IauthForm } from "../model/types"
 import useSWRMutation from "swr/mutation"
 import { useNavigate } from "react-router-dom"
-
-export async function sendRequest(path:string, {arg}: {arg: any}){
-  const url =  "http://localhost:5000" + path;
-  const res = await fetch(url, {
-    method: "POST",
-    credentials: 'include',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(arg)
-  })
-
-  if (!res.ok) {
-    const error = new Error('An error occurred while fetching the data.')
-    throw error
-  }
-  return res
-}
+import { sendRequest } from "../api/api"
 
 const Auth: FC = () => {
   const navigate = useNavigate()
