@@ -108,14 +108,14 @@ namespace MerosWebApi.Controllers.V1
         [HttpPost("send-authcode")]
         [ActionName(nameof(SendAuthCode))]
         [Produces("application/json")]
-        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        [ProducesResponseType(typeof(object), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadRequest)]
         public async Task<ActionResult> SendAuthCode([FromBody] SendEmailReqDto email)
         {
             try
             {
                 await _userService.SendUserUniqueInviteCode(email.Email);
-                return NoContent();
+                return Ok(new object());
             }
             catch (AppException ex)
             {
@@ -132,7 +132,7 @@ namespace MerosWebApi.Controllers.V1
         [HttpGet("refresh-token")]
         [ActionName(nameof(RefreshToken))]
         [Produces("application/json")]
-        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        [ProducesResponseType(typeof(object), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(MyResponseMessage), (int)HttpStatusCode.BadRequest)]
         public async Task<ActionResult<string>> RefreshToken()
@@ -147,7 +147,7 @@ namespace MerosWebApi.Controllers.V1
                 var accessToken = await _userService.RefreshAccessToken(refreshToken);
                 SetTokenToCookie(accessToken, ACCESS_COOKIE_KEY);
 
-                return NoContent();
+                return Ok(new object());
             }
             catch (EntityNotFoundException ex)
             {

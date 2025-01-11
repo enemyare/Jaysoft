@@ -1,5 +1,4 @@
-const baseUrl = "http://localhost:5000";
-
+const baseUrl = "http://138.124.20.138";
 
 export async function getRequest(path: string) {
   const url =  baseUrl + path;
@@ -34,5 +33,3 @@ export async function sendRequest(path:string, {arg}: {arg: any}){
 
   return res.json()
 }
-
-
