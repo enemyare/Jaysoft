@@ -1,4 +1,4 @@
-const baseUrl = "http://138.124.20.138/backend";
+const baseUrl = "http://127.0.0.1/backend";
 
 export async function getRequest(path: string) {
   const url =  baseUrl + path;
