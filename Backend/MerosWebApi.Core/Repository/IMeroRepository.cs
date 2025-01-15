@@ -23,6 +23,8 @@ namespace MerosWebApi.Core.Repository
 
         public Task<List<PhormAnswer>> GetListMeroPhormAnswersByMeroAsync(int startIndex, int count, string meroId);
 
+        public Task<List<PhormAnswer>> GetListMeroPhormAnswersByMeroAsync(string meroId);
+
         public Task<List<Mero>> GetListMerosWhereCreator(int startIndex, int count, string creatorId);
 
         public Task<List<Mero>> GetListMerosWhereUser(int startIndex, int count, string userId);

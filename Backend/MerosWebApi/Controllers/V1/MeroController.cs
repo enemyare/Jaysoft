@@ -296,6 +296,41 @@ namespace MerosWebApi.Controllers.V1
         }
 
         /// <summary>
+        /// Returns all completed application forms for a certain
+        /// event belonging to a certain range
+        /// </summary>
+        /// <param name="startIndex">Index of start sequence</param>
+        /// <param name="count">Count of phorms to return</param>
+        /// <param name="meroId">The meroId what phroms searching for</param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpGet("phorm-answer/get-csv-for-mero")]
+        [ActionName(nameof(GetListMeroPhormsAnswersForMero))]
+        [Produces("text/csv")]
+        [ProducesResponseType(typeof(File), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.BadGateway)]
+        public async Task<IResult>
+            GetCsvFilePhormsAnswersForMero([MustBeObjectId] string meroId)
+        {
+            try
+            {
+                var phormAnswerStream = await _meroService
+                    .GetMeroPhormsCsvStreamForMeroAsync(meroId);
+
+                return Results.File(phormAnswerStream, "text/csv", "meroPhormAnswers");
+            }
+            catch (AppException ex)
+            {
+                return Results.StatusCode((int)HttpStatusCode.BadRequest);
+            }
+            catch (Exception ex)
+            {
+                return Results.StatusCode((int)HttpStatusCode.BadGateway);
+            }
+        }
+
+        /// <summary>
         /// Returns all the events that the user is registered for
         /// </summary>
         /// <param name="startIndex">Index of start sequence</param>

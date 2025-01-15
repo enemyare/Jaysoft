@@ -22,6 +22,8 @@ namespace MerosWebApi.Application.Interfaces
 
         public Task<List<ShowWritenPhromResDto>> GetMeroPhormsListByMeroAsync(int startIndex, int count, string meroId);
 
+        public Task<byte[]> GetMeroPhormsCsvStreamForMeroAsync(string meroId);
+
         public Task<List<MyCreatedMerosResDto>> GetListMyMeroListForCreator(int startIndex, int count, string creatorId);
 
         public Task<List<MyRegistredMerosResDto>> GetListMyMeroListForUser(int startIndex, int count, string userId);
