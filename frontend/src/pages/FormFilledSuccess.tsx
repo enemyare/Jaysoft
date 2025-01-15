@@ -4,6 +4,7 @@ import FormCard from "../components/FormCard"
 import useSWR from "swr"
 import { getRequest } from "../api/api"
 import type { ICreateForm } from "../model/types"
+import useFormattedDate from "../hooks/useFormattedDate"
 
 const FormFilledSuccess: FC = () => {
   const {id} = useParams()
@@ -12,7 +13,7 @@ const FormFilledSuccess: FC = () => {
     getRequest
   )
   const mero: ICreateForm = data
-
+  const {date, time} = useFormattedDate(mero?.periods[0].startTime)
   if (isLoading) return <>Загрузка...</>
   return (
     <>
@@ -20,7 +21,7 @@ const FormFilledSuccess: FC = () => {
         <h1 className={"font-semibold text-[32px]"}>Регистрация прошла успешно</h1>
         <p className={"mt-3"}>
           Вы успешно зарегистрировались на мероприятие «{mero.meetName}»,
-          которое пройдёт 18.11.2024 в 10:00. Подробнее о мероприятии по карточке ниже.
+          которое пройдёт {date} в {time}. Подробнее о мероприятии по карточке ниже.
           Нажмите, чтобы перейти на страницу события.
         </p>
         <div className={"flex flex-col gap-8 flex-wrap"}>

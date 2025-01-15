@@ -63,13 +63,9 @@ const FormCreate: FC = () => {
 
   // Обработчик для отправки формы
   const onSubmit:SubmitHandler<ICreateForm> = async (data) => {
-    console.log(data)
     try {
       const response = await trigger(data)
-      const responseData = await response.json()
-      if (response?.ok){
-        navigate('/successForm', {state: responseData})
-      }
+      navigate('/successForm', {state: response})
     }catch (e){
       console.log(e)
     }
@@ -232,17 +228,17 @@ const FormCreate: FC = () => {
                     </div>
                   </div>
 
-                  <div>
-                    <button  type="button" className={"white-responsiveness border border-primary-text base-btn text-black mt-4 bg-background "}
+                  <div className={"flex flex-col gap-4"}>
+                    <button type="button"
+                            className={"white-responsiveness border border-primary-text base-btn text-black mt-4 bg-background "}
                             onClick={() =>
                               setIsStepOne(!isStepOne)
                             }>Назад
                     </button>
-                  </div>
-                  {/*<Link to={"/successForm"}>*/}
-                    <button type={"submit"}  className={"base-btn primary-responsiveness"} >Создать форму
+                    <button type={"submit"} className={"base-btn primary-responsiveness"}>Создать форму
                     </button>
-                  {/*</Link>*/}
+                  </div>
+
                 </div>
               </>
             )
