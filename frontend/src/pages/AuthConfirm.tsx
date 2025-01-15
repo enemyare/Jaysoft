@@ -8,7 +8,6 @@ import useSWRMutation from "swr/mutation"
 import { useLocation, useNavigate } from "react-router-dom"
 import { sendRequest } from "../api/api"
 import { useAppDispatch, useAppSelector } from "../app/hooks"
-import { userAuth } from "../app/slices/slices"
 
 
 const AuthConfirm: FC = () => {

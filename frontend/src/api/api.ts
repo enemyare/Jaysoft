@@ -9,8 +9,7 @@ export async function getRequest(path: string) {
   })
 
   if (!res.ok) {
-    const error = new Error('An error occurred while fetching the data.')
-    // Добавление дополнительной информации в объект ошибки.
+    const error = new Error('error')
     throw error
   }
   
@@ -27,7 +26,7 @@ export async function sendRequest(path:string, {arg}: {arg: any}){
   })
 
   if (!res.ok) {
-    const error = new Error('An error occurred while fetching the data.')
+    const error = new Error('error')
     throw error
   }
 

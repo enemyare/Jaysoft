@@ -9,7 +9,7 @@ import { useLocation, useNavigate } from "react-router-dom"
 const Home: FC = () => {
   const navigate = useNavigate()
   const [inviteCode, setInviteCode] = useState<string>('')
-  const {data, error, trigger, isMutating} = useSWRMutation(
+  const {trigger, isMutating} = useSWRMutation(
     `/api/Mero/by-invite-code/${inviteCode}`,
     getRequest,
   )

@@ -14,7 +14,6 @@ type Props = {
 const FormCard  = ({cardData, styleList}: Props) => {
   const {meetName, periods, description} = cardData
   const {date, time} = useFormattedDate(periods[0].startTime)
-
   return (
     <>
       <div className={`${styleList} flex flex-col gap-3 p-6 bg-secondary-bg size-[266px] rounded-2xl text-base`}>
