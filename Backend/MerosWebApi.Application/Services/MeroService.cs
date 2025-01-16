@@ -12,6 +12,8 @@ using MerosWebApi.Core.Models.PhormAnswer;
 using MerosWebApi.Core.Models.QuestionFields;
 using MerosWebApi.Core.Repository;
 using MongoDB.Bson;
+using System.Text;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace MerosWebApi.Application.Services
 {
@@ -178,6 +180,54 @@ namespace MerosWebApi.Application.Services
             return phormAnswers
                 .Select(p => ShowWritenPhromResDto.Map(p))
                 .ToList(); ;
+        }
+
+        public async Task<byte[]> GetMeroPhormsCsvStreamForMeroAsync(string meroId)
+        {
+            var phormAnswers = await _repository.GetListMeroPhormAnswersByMeroAsync(meroId);
+
+            var csv = ConvertPhormAnswersToCsv(phormAnswers);
+            
+            return Encoding.UTF8.GetBytes(csv); ;
+        }
+
+        // Метод для преобразования списка PhormAnswer в CSV
+        private string ConvertPhormAnswersToCsv(List<PhormAnswer> phormAnswers)
+        {
+            var csvBuilder = new StringBuilder();
+
+            // Заголовки CSV
+            csvBuilder.AppendLine("CreatedTime,TimePeriodStartTime,TotalPlaces,BookedPlaces,QuestionText,QuestionAnswer");
+
+            // Добавление данных
+            foreach (var phormAnswer in phormAnswers)
+            {
+                foreach (var answer in phormAnswer.Answers)
+                {
+                    csvBuilder.AppendLine($"{EscapeCsvValue(FormatDate(phormAnswer.CreatedTime))}," + // Форматирование даты
+                                          $"{EscapeCsvValue(FormatDate(phormAnswer.TimePeriod.StartTime))}," + // Форматирование даты
+                                          $"{phormAnswer.TimePeriod.TotalPlaces}," +
+                                          $"{phormAnswer.TimePeriod.BookedPlaces}," +
+                                          $"{EscapeCsvValue(answer.QuestionText)}," +
+                                          $"{EscapeCsvValue(answer.QuestionAnswer)}");
+                }
+            }
+            return csvBuilder.ToString();
+        }
+
+        private string FormatDate(DateTime date)
+        {
+            return date.ToString("yyyy-MM-dd HH:mm:ss"); // Форматирование даты
+        }
+
+        private string EscapeCsvValue(object value)
+        {
+            if (value == null) return ""; // Обработка null
+
+            var stringValue = value.ToString();
+
+
+            return $"\"{stringValue}\"";
         }
 
         public async Task<List<MyCreatedMerosResDto>> GetListMyMeroListForCreator(int startIndex, int count,

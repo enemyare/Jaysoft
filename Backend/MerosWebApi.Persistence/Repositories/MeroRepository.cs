@@ -171,6 +171,15 @@ namespace MerosWebApi.Persistence.Repositories
             return TransformPhormAnswers(phormAnswers);
         }
 
+        public async Task<List<PhormAnswer>> GetListMeroPhormAnswersByMeroAsync(string meroId)
+        {
+            var phormAnswers = await _dbService.PhormAnswers
+                .Find(p => p.MeroId == meroId)
+                .ToListAsync();
+
+            return TransformPhormAnswers(phormAnswers);
+        }
+
         public async Task<List<TimePeriod>> GetTimePeriodsAsync(IEnumerable<string> ids)
         {
             var periodFilter = Builders<DatabaseTimePeriod>.Filter
