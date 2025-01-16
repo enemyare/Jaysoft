@@ -15,12 +15,16 @@ const FormCreate: FC = () => {
   const [isStepOne, setIsStepOne] = useState(true)
   // Форма
   const {
+    setError,
     control,
     register,
     handleSubmit,
     setValue,
-    getValues
+    getValues,
+    formState: {errors, isValid },
+    clearErrors
     } = useForm<ICreateForm>({
+    mode: "onChange",
     defaultValues: {
       periods: [
         {
@@ -63,11 +67,15 @@ const FormCreate: FC = () => {
 
   // Обработчик для отправки формы
   const onSubmit:SubmitHandler<ICreateForm> = async (data) => {
-    try {
-      const response = await trigger(data)
-      navigate('/successForm', {state: response})
-    }catch (e){
-      console.log(e)
+    if (!isValid) {
+      setError("root", { message: "Форма заполнена не полностью или неверно" });
+    } else {
+      try {
+        const response = await trigger(data)
+        navigate('/successForm', {state: response})
+      }catch (e){
+        console.log(e)
+      }
     }
   }
 
@@ -88,6 +96,7 @@ const FormCreate: FC = () => {
     }
   }
 
+  console.log(errors)
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -95,31 +104,76 @@ const FormCreate: FC = () => {
             (
               <>
                 <div className={"main-container flex flex-col gap-8"}>
-                  <h2 className={"text-secondary-text"}>Шаг 1 из 2</h2>
+                  <div className={"flex justify-between"}>
+                    <h2 className={"text-secondary-text"}>Шаг 1 из 2</h2>
+                    {Object.keys(errors).length > 0 && (
+                      <p className="text-danger">Все поля обязательны для заполнения</p>
+                    )}
+                  </div>
                   <div className={""}>
                     <h1 className={"font-semibold text-[32px]"}>Создание формы бронирования</h1>
                     <p className={"mt-3"}>Введите основную информацию о мероприятии, а затем укажите его временные
                       интервалы и максимальное количество посетителей.</p>
                   </div>
                   <div className={"flex flex-col gap-4"}>
-                    <input
-                      type={"text"}
-                      placeholder={"Ваша почта"}
-                      className={"base-input meta-input"}
-                      {...register("creatorEmail")}
-                    />
-                    <input
-                      type={"text"}
-                      placeholder={"Название мероприятия"}
-                      className={"base-input meta-input"}
-                      {...register("meetName")}
-                    />
-                    <input
-                      type={"textarea"}
-                      placeholder={"Описание"}
-                      className={"base-input meta-input"}
-                      {...register("description")}
-                    />
+                    <div>
+                      <input
+                        type={"text"}
+                        placeholder={"Ваша почта"}
+                        className={"base-input meta-input"}
+                        {...register("creatorEmail",
+                          {
+                            required: true,
+                            minLength: {
+                              value: 3,
+                              message: "Минимальная длина названия — 3 символа",
+                            },
+                          })}
+                      />
+                      {errors.creatorEmail && (
+                        <span className="text-danger text-[14px]">{errors.creatorEmail.message}</span>
+                      )}
+                    </div>
+
+                    <div>
+                      <input
+                        type={"text"}
+                        placeholder={"Название мероприятия"}
+                        className={"base-input meta-input"}
+                        {...register("meetName",
+                          {
+                            required: true,
+                            minLength: {
+                              value: 3,
+                              message: "Минимальная длина названия — 3 символа",
+                            },
+                          })
+                        }
+                      />
+                      {errors.meetName && (
+                        <span className="text-danger text-[14px]">{errors.meetName.message}</span>
+                      )}
+                    </div>
+
+                    <div>
+                      <input
+                        type={"textarea"}
+                        placeholder={"Описание"}
+                        className={"base-input meta-input"}
+                        {...register("description",
+                          {
+                            required: true,
+                            minLength: {
+                              value: 3,
+                              message: "Минимальная длина названия — 3 символа",
+                            },
+                          })}
+                      />
+                      {errors.description && (
+                        <span className="text-danger text-[14px]">{errors.description.message}</span>
+                      )}
+                    </div>
+
                   </div>
                   <div>
                     <div className={"flex flex-col gap-8"}>
@@ -138,12 +192,20 @@ const FormCreate: FC = () => {
                               className={"base-input meta-input"}
                               onChange={(e) => handleStartTimeChange(index, "time" , e.target.value)}
                             />
-                            <input
-                              type={"text"}
-                              placeholder={"Количество мест в этот интервал"}
-                              className={"base-input meta-input"}
-                              {...register(`periods.${index}.totalPlaces`, { valueAsNumber: true })}
-                            />
+                            <div>
+                              <input
+                                type={"text"}
+                                placeholder={"Количество мест в этот интервал"}
+                                className={"base-input meta-input"}
+                                {...register(`periods.${index}.totalPlaces`, {
+                                  required: "Укажите количество мест",
+                                  valueAsNumber: true,
+                                  min: { value: 2, message: "Число должно быть больше 1" }})}
+                              />
+                              {errors.periods?.[index]?.totalPlaces && (
+                                <p className="text-danger text-[14px]">{errors.periods[index].totalPlaces.message}</p>
+                              )}
+                            </div>
                           </div>
                         ))
                       }
@@ -174,18 +236,28 @@ const FormCreate: FC = () => {
                       </button>
                     </div>
                   </div>
-                  <button  type="button" className={"base-btn primary-responsiveness"} onClick={(e) => {
+                  <button  type="button" className={"base-btn primary-responsiveness"}  onClick={(e) => {
                     e.preventDefault();
-                    setIsStepOne(!isStepOne)
+                    if (!isValid) {
+                      setError("fields", { type: "", message: "Заполните это поле" });
+                    } else {
+                      setIsStepOne(false);
+                    }
                   }}>Далее
                   </button>
                 </div>
+
               </>
             ) :
             (
               <>
                 <div className={"main-container flex flex-col gap-8"}>
-                  <h2 className={"text-secondary-text"}>Шаг 2 из 2</h2>
+                  <div className={"flex justify-between"}>
+                    <h2 className={"text-secondary-text"}>Шаг 2 из 2</h2>
+                    {Object.keys(errors).length > 0 && (
+                      <p className="text-danger">Все поля обязательны для заполнения</p>
+                    )}
+                  </div>
                   <div className={""}>
                     <h1 className={"font-semibold text-[32px]"}>Информация о посетителях</h1>
                     <p className={"mt-3"}>Вы можете указать, какую информацию хотите запрашивать у посетителей
@@ -220,6 +292,9 @@ const FormCreate: FC = () => {
                         Добавить ещё поле
                       </button>
                       <button  type="button" className={"text-danger"} onClick={() => {
+                        if (fields.length === 1) {
+                          return  
+                        }
                         remove(-1)
                       }}>
                         <img src={dump} alt="" className={"inline mr-1.5 pb-0.5"} /> Удалить
@@ -235,7 +310,7 @@ const FormCreate: FC = () => {
                               setIsStepOne(!isStepOne)
                             }>Назад
                     </button>
-                    <button type={"submit"} className={"base-btn primary-responsiveness"}>Создать форму
+                    <button type={"submit"} className={"base-btn primary-responsiveness"}  >Создать форму
                     </button>
                   </div>
 
