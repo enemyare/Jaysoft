@@ -14,9 +14,9 @@ const DetailedMero = () => {
   const mero: ICreateForm  = data
   const periods:  IPeriods = mero?.periods[0]
   const {date, time} = useFormattedDate(periods?.startTime)
-  const {data: dataListUsers, error: errorListUsers} = useSWR(`/api/Mero/phorm-answer/get-list-by-mero`, getRequest)
-
-  if (error) return <>хзуй</>
+  const {data: dataListUsers, error: errorListUsers} = useSWR(`/api/Mero/phorm-answer/get-csv-for-mero?meroId=${mero.id}`, getRequest)
+  console.log(dataListUsers)
+  if (error) return <>Ошибка</>
 
   return (
     <>
