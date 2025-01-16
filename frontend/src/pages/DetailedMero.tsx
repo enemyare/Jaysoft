@@ -49,7 +49,15 @@ const DetailedMero = () => {
               Редактировать форму
             </button>
             <button
-              onClick={() => window.open(`http://127.0.0.1/backend/api/Mero/phorm-answer/get-csv-for-mero?meroId=${id}`, '_blank')}
+              onClick={() => {
+                const link = document.createElement('a');
+                link.href = `http://127.0.0.1/backend/api/Mero/phorm-answer/get-csv-for-mero?meroId=${id}`;
+                link.download = 'visitors-data.csv';
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+              }}
               className={"secondary-responsiveness border border-primary-text bg-primary-text text-white rounded-xl max-w-[424px] w-full"}>
               Получить данные о посетителях
             </button>
