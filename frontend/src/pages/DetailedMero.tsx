@@ -14,8 +14,6 @@ const DetailedMero = () => {
   const mero: ICreateForm  = data
   const periods:  IPeriods = mero?.periods[0]
   const {date, time} = useFormattedDate(periods?.startTime)
-  const {data: dataListUsers, error: errorListUsers} = useSWR(`/api/Mero/phorm-answer/get-csv-for-mero?meroId=${mero.id}`, getRequest)
-  console.log(dataListUsers)
   if (error) return <>Ошибка</>
 
   return (
@@ -50,7 +48,9 @@ const DetailedMero = () => {
             >
               Редактировать форму
             </button>
-            <button className={"secondary-responsiveness border border-primary-text bg-primary-text text-white rounded-xl max-w-[424px] w-full"}>
+            <button
+              onClick={() => window.open(`http://127.0.0.1/backend/api/Mero/phorm-answer/get-csv-for-mero?meroId=${id}`, '_blank')}
+              className={"secondary-responsiveness border border-primary-text bg-primary-text text-white rounded-xl max-w-[424px] w-full"}>
               Получить данные о посетителях
             </button>
           </div>
